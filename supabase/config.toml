@@ -1,0 +1,4 @@
+project_id = "rclgrmlqfrndlhcufaav"
+[api]
+port = 54321
+external_url = "http://localhost:54321"
