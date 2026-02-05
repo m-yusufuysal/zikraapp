@@ -367,7 +367,7 @@ const translations = {
         mock_post_1: "أرجو الدعاء لي في امتحاني غداً.",
         mock_post_2: "سأبدأ ختمة جديدة اليوم.",
         mock_amen: "آمين",
-        nav_logo: "ذكرى",
+        nav_logo: "إسلامي",
         mock_juz_title: "الجزء ١",
         mock_quran_subtitle: "القرآن الكريم",
         mock_verse_quran_1: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ",
