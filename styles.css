@@ -67,16 +67,25 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+    background-color: #05100d;
+    /* Fix white space at bottom */
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+html {
+    background-color: #05100d;
+    /* Ensure html is also dark */
+    overscroll-behavior-y: none;
+    /* Prevent white bounce area */
 }
 
 body {
     font-family: var(--font-body);
     background: var(--bg-gradient);
-    color: var(--text-primary);
     line-height: 1.6;
-    overflow-x: hidden;
-    min-height: 100vh;
 }
 
 /* Swiss Minimal Pattern - Subtle Grid */
@@ -2653,10 +2662,13 @@ h1 {
    PREMIUM FOOTER (Start Your Journey)
    ============================================ */
 .main-footer {
-    background: linear-gradient(180deg, #0e2a22 0%, #05100d 100%);
+    background: #0e2a22;
+    /* Solid dark green as requested to remove separation logic */
     color: #fff;
     padding-top: 6rem;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: -1px;
+    /* Fix any sub-pixel gaps */
 }
 
 .footer-cta-container {
