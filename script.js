@@ -509,6 +509,133 @@ const translations = {
         mock_comm_zikir_title: "Kami memiliki pasien, maukah Anda bergabung dalam dzikir...",
         mock_comm_zikir_sub: "Ya Shafi",
         footer_copyright: "© 2026 Islamvy App. Seluruh hak cipta dilindungi."
+    },
+    fr: {
+        hero_title: "Harmonie Spirituelle<br>pour l'Âme Moderne",
+        hero_subtitle: "Analyse des rêves par IA, dhikr numérologique IA, communauté spirituelle mondiale, hatims de groupe, sagesse quotidienne par IA, et boutique islamique sélectionnée.",
+        download_on: "Télécharger sur",
+        get_it_on: "DISPONIBLE SUR",
+        feat_prayer_title: "Rythme Divin",
+        feat_prayer_desc: "Alignez votre journée avec des horaires de prière précis basés sur la localisation et des rappels doux.",
+        feat_quran_title: "Lecture Sacrée",
+        feat_quran_desc: "Plongez dans le Saint Coran avec une typographie élégante et un son de classe mondiale.",
+        feat_dhikr_title: "Dhikr Conscient",
+        feat_dhikr_desc: "Un Tasbih numérique qui s'adapte à vous. Objectifs spirituels personnalisés et dhikrs favorisant la concentration basés sur votre nom, date de naissance, et situation/intention actuelle.",
+        feat_dream_title: "Interprétation de Rêves Personnalisée",
+        feat_dream_desc: "Déchiffrez les messages de votre sommeil. Obtenez des interprétations spéciales pour vos rêves, adaptées à votre chemin, à la lumière des interprétations islamiques avec des couches d'IA.",
+        cta_title: "Commencez Votre Voyage Aujourd'hui",
+        cta_subtitle: "Rejoignez des milliers d'utilisateurs trouvant la paix, la clarté et la connexion avec Islamvy.",
+        mock_verse_text: "\"N'est-ce pas par l'évocation d'Allah que se tranquillisent les cœurs?\"",
+        mock_verse_source: "Sourate Ar-Ra'd, 13:28",
+        proof_title: "Aimé par des Milliers",
+        badge_top: "Top 10 Style de Vie",
+        badge_region: "Moyen-Orient & CCG",
+        badge_downloads: "Téléchargements",
+        footer_privacy: "Politique de Confidentialité",
+        footer_terms: "Conditions d'Utilisation",
+        footer_contact: "Contact",
+        mock_location: "Paris, FR",
+        dream_example_user: "J'ai vu un oiseau blanc voler vers une montagne...",
+        dream_example_ai: "Un oiseau blanc symbolise souvent la pureté et l'élévation spirituelle. La montagne représente un rang élevé ou un objectif stimulant...",
+        feat_community_title: "Communauté Spirituelle",
+        feat_community_desc: "Connectez-vous avec un réseau mondial de croyants. Partagez vos prières, demandez des duas, et rejoignez des hatims collectifs dans un environnement solidaire.",
+        feat_hatim_title: "Système Hatim",
+        feat_hatim_desc: "Participez à des hatims de groupe avec gestion automatisée des créneaux et rappels.",
+        feat_qibla_title: "Boussole Qibla",
+        feat_qibla_desc: "Localisateur de direction Qibla précis avec retour haptique et beau design.",
+        feat_kaaba_title: "Kaaba en Direct",
+        feat_kaaba_desc: "Regardez les émissions en direct directement depuis La Mecque.",
+        feat_mosque_title: "Trouver une Mosquée",
+        feat_mosque_desc: "Localisez facilement les mosquées à proximité en utilisant votre emplacement actuel.",
+        feat_zakat_title: "Calculateur de Zakat",
+        feat_zakat_desc: "Calculez votre zakat avec précision en fonction de l'or, de l'argent et d'autres actifs.",
+        feat_shop_title: "Boutique Islamique",
+        feat_shop_desc: "Découvrez des produits de style de vie islamique sélectionnés pour votre voyage spirituel.",
+        feat_word_title: "Mot du Jour (IA)",
+        feat_word_desc: "Citations Quotidiennes Contextuelles (verset/hadith) générées via l'IA pour la croissance spirituelle.",
+        reviewer_5_name: "Omar F.",
+        reviewer_5_loc: "Paris, France",
+        feat_more_title: "Plus d'Outils Spirituels",
+        feat_more_subtitle: "Tout ce dont vous avez besoin pour votre culte quotidien en un seul endroit.",
+
+        // Mockup Content - FR
+        mock_time: "09:41",
+        mock_date_full: "Mardi 27 Janvier",
+        mock_location: "Paris, France",
+        mock_timer_label: "TEMPS RESTANT",
+        mock_timer_value: "00:47:57",
+        mock_next_prayer: "MAGHRIB",
+        mock_fajr: "Fajr", mock_sunrise: "Lever", mock_dhuhr: "Dhuhr", mock_asr: "Asr", mock_maghrib: "Maghrib", mock_isha: "Icha",
+        mock_fajr_time: "05:42", mock_sunrise_time: "07:08", mock_dhuhr_time: "12:35", mock_asr_time: "15:22", mock_maghrib_time: "18:02", mock_isha_time: "19:28",
+        mock_word_label: "CITATION DU JOUR",
+        mock_word_text_new: "\"Cette vie d'ici-bas n'est qu'amusement et jeu. La Demeure de l'au-delà est assurément la vraie vie. S'ils savaient!\"",
+        mock_word_source_new: "CORAN, AL-ANKABUT 29:64",
+        mock_dream_title: "Interprétation des Rêves",
+        mock_dream_subtitle: "Aperçu personnel par IA",
+        mock_dream_subtitle_new: "Obtenez une interprétation personnalisée à la lumière de l'IA et des sources islamiques.",
+        mock_dream_pinfo: "Informations Personnelles",
+        mock_dream_dob: "Date de Naissance",
+        mock_dream_time: "Heure",
+        mock_dream_pob: "Lieu de Naissance",
+        mock_dream_button_new: "INTERPRÉTER MON RÊVE",
+        mock_label_name: "Nom", mock_val_name: "Yusuf",
+        mock_label_dob: "Date de Naissance", mock_val_dob: "17 Déc 1996",
+        mock_label_dream: "Votre Rêve", mock_placeholder_dream: "Décrivez votre rêve en détail...",
+        mock_val_time: "17:45",
+        mock_val_pob: "Istanbul, Turquie",
+        mock_dhikr_title: "Compteur de Dhikr",
+        mock_dhikr_subtitle: "Comptez votre propre dhikr",
+        mock_dhikr_or: "OU",
+        mock_dhikr_main_title: "Dhikr",
+        mock_dhikr_main_desc: "Découvrez votre dhikr spécial basé sur votre intention, heure de naissance et état avec l'IA.",
+        mock_dhikr_intention: "Votre Intention / État",
+        mock_dhikr_placeholder_intent: "De quoi votre cœur a-t-il besoin aujourd'hui? (Plus vous fournissez de détails, plus votre prescription sera personnalisée et complète.)",
+        mock_dhikr_button: "CRÉER MON DHIKR PERSONNEL",
+        mock_comm_title: "Communauté Spirituelle",
+        mock_comm_all: "Tout",
+        mock_comm_dua: "Prière",
+        mock_comm_zikir: "Dhikr",
+        mock_comm_hatim: "Hatim",
+        mock_comm_hatim_invite: "INVITATION GROUPE HATIM",
+        mock_comm_hatim_kolektif: "HATIM COLLECTIF",
+        mock_comm_hatim_text: "Je commence un hatim pour avant le Ramadan. Vous pouvez rejoindre pour l'intercession et le pardon.",
+        mock_comm_dua_req: "DEMANDE DE PRIÈRE",
+        mock_comm_dua_text: "Je vais me marier, j'ai besoin de prières. Je demande vos prières pour que ce soit propice.",
+        mock_comm_zikir_req: "DEMANDE DE DHIKR",
+        mock_comm_zikir_text: "Nous avons un patient, voudriez-vous rejoindre le dhikr s'il vous plaît... Ya Shafi",
+        mock_comm_share: "Partager",
+        mock_comm_report: "Signaler",
+        mock_comm_open: "Ouvert à la Participation",
+        mock_comm_amin: "Amin",
+        mock_comm_support: "Soutien",
+        mock_comm_user_1: "Hanım",
+        mock_comm_meta_1: "Istanbul, TR • 28/01/2026",
+        mock_comm_user_2: "Fatima A.",
+        mock_comm_meta_2: "Riyad, Arabie Saoudite • 29/01/2026",
+        mock_comm_user_3: "David R.",
+        mock_comm_meta_3: "New York, USA • 29/01/2026",
+        mock_comm_step: "Étape",
+        mock_quran_title: "Le Saint Coran",
+        mock_juz_1: "Juz 1", mock_juz_2: "Juz 2", mock_juz_3: "Juz 3",
+        mock_tap_read: "Appuyez pour lire",
+        mock_location_dubai: "Dubaï, EAU", mock_location_istanbul: "Istanbul, TR",
+        mock_post_1: "Veuillez prier pour mon examen demain.",
+        mock_post_2: "Commence un nouveau hatim aujourd'hui.",
+        mock_amen: "Amin",
+        nav_logo: "Islamvy",
+        mock_juz_title: "Juz 1",
+        mock_quran_subtitle: "Le Saint Coran",
+        mock_verse_quran_1: "Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux.",
+        mock_verse_quran_2: "Louange à Allah, Seigneur de l'univers.",
+        mock_hijri: "9 Cha'ban 1447 AH",
+        proof_badge: "AMOUR COMMUNAUTAIRE",
+        proof_title: "Aimé par des Milliers",
+        proof_subtitle: "Expériences de ceux qui ont entrepris un voyage spirituel avec Islamvy.",
+        mock_comm_hatim_title: "Je commence un hatim pour avant le Ramadan",
+        mock_comm_dua_title: "Je vais me marier, j'ai besoin de prières",
+        mock_comm_zikir_title: "Nous avons un patient, voudriez-vous rejoindre le dhikr...",
+        mock_comm_zikir_sub: "Ya Shafi",
+        footer_copyright: "© 2026 Application Islamvy. Tous droits réservés."
     }
 };
 
@@ -640,6 +767,38 @@ const privacyContent = {
             <h4>5. Hak Anda</h4>
             <p>Anda berhak mengakses, memperbaiki, atau menghapus data Anda ("Hak untuk Dilupakan"). Gunakan <strong>Pengaturan > Hapus Akun Saya</strong> di aplikasi untuk menghapus semua data secara instan.</p>
         </div>
+    `,
+    fr: `
+        <div class="privacy-scroll-area">
+            <p><strong>Dernière mise à jour :</strong> 29 Janvier 2026</p>
+            <p>Cette Politique de Confidentialité explique comment l' Application Islamvy ("l'App") collecte, traite, stocke et protège vos données conformément au KVKK et au RGPD.</p>
+
+            <h4>1. Responsable du Traitement</h4>
+            <p>Application Islamvy (Équipe Islamvy)<br>Email : privacy@islamvy.com<br>Lieu : EAU</p>
+
+            <h4>2. Données Personnelles que Nous Traitons</h4>
+            <ul>
+                <li><strong>Info Compte :</strong> Email, Nom Complet, Photo de Profil (Stockage Supabase).</li>
+                <li><strong>Données Sensibles :</strong> Préférences religieuses, objectifs spirituels et participation aux prières (traitées avec consentement explicite).</li>
+                <li><strong>Données d'Utilisation :</strong> Jetons d'appareil (Notifications Push), adresses IP et données de Modération IA pour la sécurité de la communauté.</li>
+                <li><strong>Finance :</strong> Statut d'abonnement et suivi des parrainages.</li>
+            </ul>
+
+            <h4>3. Partage de Données & Tiers</h4>
+            <p>Nous partageons les données uniquement pour la prestation de service avec :</p>
+            <ul>
+                <li><strong>Supabase Inc :</strong> Base de données, Auth, Stockage et Temps Réel.</li>
+                <li><strong>OpenAI Inc :</strong> Fonctionnalités IA et Modération de Contenu.</li>
+                <li><strong>Google AdMob :</strong> Publicité et analyses.</li>
+                <li><strong>Amazon Affiliate :</strong> Redirections boutique et suivi des clics.</li>
+            </ul>
+
+            <h4>4. Sécurité & Conservation</h4>
+            <p>Les données sont chiffrées via HTTPS/TLS et AES-256. Les données utilisateur sont isolées grâce à la Sécurité au Niveau des Lignes (RLS). Les entrées IA sont supprimées/anonymisées sous 30 jours.</p>
+
+            <h4>5. Vos Droits</h4>
+            <p>Vous avez le droit d'accéder, de corriger ou de supprimer vos données ("Droit à l'Oubli"). Utilisez <strong>Paramètres > Supprimer Mon Compte</strong> dans l'application pour effacer tous les enregistrements instantanément.</p>
+        </div>
     `
 };
 
@@ -739,6 +898,30 @@ const termsContent = {
             <h4>6. Batasan Tanggung Jawab</h4>
             <p>Tim Islamvy tidak bertanggung jawab atas keputusan spiritual atau material yang dibuat berdasarkan konten aplikasi. Kami mengupayakan akurasi tetapi tidak menjamin presisi 100%.</p>
         </div>
+    `,
+    fr: `
+        <div class="privacy-scroll-area">
+            <p><strong>Dernière mise à jour :</strong> 29 Janvier 2026</p>
+            <p>En utilisant Islamvy, vous acceptez ces Conditions d'Utilisation. Veuillez les lire attentivement.</p>
+
+            <h4>1. Description du Service</h4>
+            <p>Islamvy est une application compagnon spirituelle fournissant des outils pour une vie consciente et le culte islamique, y compris mais sans s'y limiter les horaires de prière, la lecture du Coran, le dhikr alimenté par l'IA et l'interprétation des rêves.</p>
+
+            <h4>2. Responsabilités de l'Utilisateur</h4>
+            <p>Vous acceptez d'utiliser Islamvy à des fins légales et conformément aux valeurs islamiques. Vous êtes responsable du maintien de la confidentialité des informations de votre compte. Tout abus des fonctionnalités d'IA ou des outils communautaires peut entraîner la suspension du compte.</p>
+
+            <h4>3. Abonnements Premium</h4>
+            <p>Les fonctionnalités premium sont disponibles via des achats in-app gérés par l'App Store d'Apple ou le Google Play Store. Les remboursements sont soumis aux politiques respectives des magasins.</p>
+
+            <h4>4. Avertissement sur le Contenu IA</h4>
+            <p>Les informations générées par l'IA, y compris les interprétations des rêves et les prescriptions de dhikr, sont uniquement destinées à la réflexion et à l'orientation. Elles <strong>ne constituent pas</strong> des conseils professionnels ou des décisions religieuses absolues (fatwas). La vérité ultime appartient à Allah seul.</p>
+
+            <h4>5. Directives Communautaires</h4>
+            <p>Les utilisateurs doivent rester respectueux dans toutes les interactions. Le partage d'informations de contact personnelles dans les flux publics est interdit. Nous nous réservons le droit de supprimer le contenu non conforme.</p>
+
+            <h4>6. Limitation de Responsabilité</h4>
+            <p>L'équipe Islamvy n'est pas responsable des décisions spirituelles ou matérielles prises sur la base du contenu de l'application. Nous nous efforçons d'assurer l'exactitude mais ne garantissons pas une précision de 100 % dans le contenu généré par l'IA ou les calculs des horaires de prière.</p>
+        </div>
     `
 };
 
@@ -766,6 +949,12 @@ const contactContent = {
         <p>Kami senang membantu Anda dengan pertanyaan atau umpan balik apa pun.</p>
         <p><strong>Dukungan:</strong> <a href="mailto:support@islamvy.com">support@islamvy.com</a></p>
         <p><strong>Privasi:</strong> <a href="mailto:privacy@islamvy.com">privacy@islamvy.com</a></p>
+    `,
+    fr: `
+        <h3>📧 Contactez-Nous</h3>
+        <p>Nous sommes heureux de vous aider avec toutes vos questions ou commentaires.</p>
+        <p><strong>Support :</strong> <a href="mailto:support@islamvy.com">support@islamvy.com</a></p>
+        <p><strong>Confidentialité :</strong> <a href="mailto:privacy@islamvy.com">privacy@islamvy.com</a></p>
     `
 };
 
