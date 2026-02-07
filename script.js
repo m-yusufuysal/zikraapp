@@ -977,8 +977,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Check saved language or default to TR for this user request
-    const savedLang = localStorage.getItem('islamvy_lang') || 'tr';
+    // Check for lang query parameter first, then saved language or default to TR
+    const urlParamsLang = new URLSearchParams(window.location.search);
+    const langParam = urlParamsLang.get('lang');
+    const savedLang = langParam || localStorage.getItem('islamvy_lang') || 'tr';
     setLanguage(savedLang);
     renderReviews();
 
