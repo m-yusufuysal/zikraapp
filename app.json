@@ -30,6 +30,8 @@
         "NSSpeechRecognitionUsageDescription": "Zikra uses on-device speech recognition to enable hands-free Dhikr counting, allowing accessible usage for users with limited mobility.",
         "NSMicrophoneUsageDescription": "Zikra accesses the microphone strictly for real-time speech recognition during Dhikr sessions. Audio is processed locally and never stored or transmitted.",
         "NSUserTrackingUsageDescription": "Zikra requests permission to deliver personalized advertising relevant to your interests. Your data is not linked to your identity across other apps and websites.",
+        "NSCameraUsageDescription": "Zikra needs access to your camera to let you take a profile photo.",
+        "NSPhotoLibraryUsageDescription": "Zikra needs access to your photo library to let you choose a profile photo.",
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": false,
           "NSAllowsLocalNetworking": true
@@ -127,6 +129,10 @@
         "projectId": "2636bcd5-49b8-4f8d-a35a-0f67d3a4fdad"
       }
     },
-    "owner": "myusufuysal"
+    "owner": "myusufuysal",
+    "react-native-google-mobile-ads": {
+      "android_app_id": "ca-app-pub-3940256099942544~3347511713",
+      "ios_app_id": "ca-app-pub-3940256099942544~1458002511"
+    }
   }
 }

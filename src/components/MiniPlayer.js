@@ -11,7 +11,7 @@ import { COLORS } from '../utils/theme';
 
 const MiniPlayer = ({ currentRouteName }) => {
     const { t } = useTranslation();
-    const { isPlaying, currentAyah, playAyah, pause, resume, stop, isLoading, playlistPosition } = useAudio();
+    const { isPlaying, currentAyah, playAyah, pause, resume, stop, isLoading, playlistPosition, playbackContext } = useAudio();
     const { ramadanModeEnabled } = useTheme();
     const { position, duration } = useProgress(200);
     const navigation = useNavigation();
@@ -51,13 +51,24 @@ const MiniPlayer = ({ currentRouteName }) => {
     const totalTime = duration > 0 ? formatTime(duration) : '--:--';
 
     const handlePress = () => {
-        navigation.navigate('Main', {
-            screen: 'Quran',
-            params: {
-                targetSurahNumber: currentAyah.surahNumber || (currentAyah.surah && currentAyah.surah.number),
-                targetAyahNumber: currentAyah.number
-            }
-        });
+        // Smart Navigation based on Playback Context
+        if (playbackContext?.type === 'juz') {
+            navigation.navigate('Main', {
+                screen: 'Quran',
+                params: {
+                    targetJuzNumber: playbackContext.id
+                }
+            });
+        } else {
+            // Default to Surah navigation
+            navigation.navigate('Main', {
+                screen: 'Quran',
+                params: {
+                    targetSurahNumber: currentAyah.surahNumber || (currentAyah.surah && currentAyah.surah.number),
+                    targetAyahNumber: currentAyah.number // Optional: Scroll to specific ayah
+                }
+            });
+        }
     };
 
     return (

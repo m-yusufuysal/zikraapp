@@ -3,7 +3,13 @@ import * as Location from 'expo-location';
 import { ArrowLeft, Map as MapIcon, MapPin } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Animated, Dimensions, Easing, StatusBar, StyleSheet, Text, TouchableOpacity, Vibration, View } from 'react-native';
+import { Dimensions, StatusBar, StyleSheet, Text, TouchableOpacity, Vibration, View } from 'react-native';
+import Animated, {
+    Easing,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming
+} from 'react-native-reanimated';
 import RamadanBackground from '../components/RamadanBackground';
 import { useTheme } from '../contexts/ThemeContext';
 import { COLORS } from '../utils/theme';
@@ -17,9 +23,12 @@ const QiblaCompass = ({ navigation }) => {
     const [qiblaDirection, setQiblaDirection] = useState(0);
     const [isAligned, setIsAligned] = useState(false);
     const [errorMsg, setErrorMsg] = useState(null);
+    const [calibrationNeeded, setCalibrationNeeded] = useState(false);
 
-    // Standard Animated Value for max Expo Go compatibility
-    const rotationAnim = useRef(new Animated.Value(0)).current;
+    // === REANIMATED STATE (UI Thread) ===
+    const rotation = useSharedValue(0);
+
+    // JS side ref to calculate shortest path
     const currentRotation = useRef(0);
 
     // Mecca Coordinates
@@ -36,18 +45,23 @@ const QiblaCompass = ({ navigation }) => {
                 return;
             }
 
-            // Get Current Location for Qibla Calculation
             let location = await Location.getCurrentPositionAsync({});
             calculateQibla(location.coords.latitude, location.coords.longitude);
 
             // Start Watch Heading
             headingSubscription = await Location.watchHeadingAsync((newHeading) => {
-                const { trueHeading, magHeading } = newHeading;
+                const { trueHeading, magHeading, accuracy } = newHeading;
                 const headingVal = trueHeading >= 0 ? trueHeading : magHeading;
+
+                if (accuracy !== undefined && accuracy < 2) {
+                    setCalibrationNeeded(true);
+                } else {
+                    setCalibrationNeeded(false);
+                }
 
                 setHeading(headingVal);
 
-                // Shortest path logic for standard Animated
+                // Shortest path logic
                 let targetRot = (360 - headingVal);
                 let diff = targetRot - (currentRotation.current % 360);
 
@@ -57,12 +71,11 @@ const QiblaCompass = ({ navigation }) => {
                 const nextRot = currentRotation.current + diff;
                 currentRotation.current = nextRot;
 
-                Animated.timing(rotationAnim, {
-                    toValue: nextRot,
-                    duration: 150, // Fast enough to feel like real-time
-                    easing: Easing.out(Easing.quad),
-                    useNativeDriver: true,
-                }).start();
+                // Smooth update on UI thread
+                rotation.value = withTiming(nextRot, {
+                    duration: 300,
+                    easing: Easing.out(Easing.quad)
+                });
             });
         };
 
@@ -123,9 +136,10 @@ const QiblaCompass = ({ navigation }) => {
         return () => clearInterval(interval);
     }, [isAligned]);
 
-    const rotate = rotationAnim.interpolate({
-        inputRange: [-360000, 360000],
-        outputRange: ['-360000deg', '360000deg']
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ rotate: `${rotation.value}deg` }]
+        };
     });
 
     return (
@@ -160,7 +174,7 @@ const QiblaCompass = ({ navigation }) => {
                     <View style={[styles.compassContainer, isAligned && styles.compassAligned]}>
                         <View style={styles.centerLine} />
 
-                        <Animated.View style={[styles.dial, { transform: [{ rotate }] }]}>
+                        <Animated.View style={[styles.dial, animatedStyle]}>
                             <Text style={[styles.cardinal, { top: 45, alignSelf: 'center', color: '#E74C3C' }]}>{t('compass.cardinals.N')}</Text>
                             <Text style={[styles.cardinal, { bottom: 45, alignSelf: 'center' }]}>{t('compass.cardinals.S')}</Text>
                             <Text style={[styles.cardinal, { right: 45, top: '50%', marginTop: -13 }]}>{t('compass.cardinals.E')}</Text>
@@ -201,6 +215,12 @@ const QiblaCompass = ({ navigation }) => {
                     <View style={[styles.successBanner, { opacity: isAligned ? 1 : 0 }]}>
                         <Text style={styles.successText}>{t('compass.facing_qibla')}</Text>
                     </View>
+
+                    {calibrationNeeded && !isAligned && (
+                        <View style={styles.calibrationBanner}>
+                            <Text style={styles.calibrationText}>{t('compass.calibrate')}</Text>
+                        </View>
+                    )}
 
                     {errorMsg && <Text style={{ color: 'red', marginTop: 20 }}>{errorMsg}</Text>}
                 </View>
@@ -265,7 +285,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#95A5A6',
+        color: COLORS.matteGreen,
     },
     tickContainer: {
         position: 'absolute',
@@ -278,7 +298,7 @@ const styles = StyleSheet.create({
     tick: {
         width: 2,
         height: 10,
-        backgroundColor: '#BDC3C7',
+        backgroundColor: COLORS.matteGreen,
         marginTop: 20, // Offset from edge
     },
     centerHub: {
@@ -371,6 +391,20 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontWeight: 'bold',
         fontSize: 14,
+    },
+    calibrationBanner: {
+        position: 'absolute',
+        bottom: 130,
+        backgroundColor: '#F39C12',
+        paddingVertical: 8,
+        paddingHorizontal: 20,
+        borderRadius: 16,
+        elevation: 3,
+    },
+    calibrationText: {
+        color: '#FFF',
+        fontWeight: '600',
+        fontSize: 12,
     }
 });
 

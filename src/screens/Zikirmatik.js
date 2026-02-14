@@ -11,6 +11,7 @@ import { ArrowLeft, RotateCcw } from 'lucide-react-native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
     Easing,
     runOnJS,
@@ -24,8 +25,6 @@ import { useThrottledHaptic } from '../hooks/useThrottledHaptic';
 import { COLORS, COMMON_STYLES } from '../utils/theme';
 
 const { width } = Dimensions.get('window');
-
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 const Zikirmatik = ({ navigation }) => {
     const { t } = useTranslation();
@@ -41,22 +40,26 @@ const Zikirmatik = ({ navigation }) => {
     // Throttled haptic for performance
     const triggerHaptic = useThrottledHaptic();
 
-    // === TAP HANDLER (Runs on UI Thread) ===
-    const handlePress = () => {
-        'worklet';
-        // Increment on UI thread (instant, no bridge)
-        count.value = count.value + 1;
+    // === TAP GESTURE (Runs on UI Thread via Gesture Handler) ===
+    const tapGesture = Gesture.Tap()
+        .onStart(() => {
+            'worklet';
+            // Increment on UI thread (instant, no bridge)
+            count.value = count.value + 1;
 
-        // Instant mechanical response (30ms attack)
-        scale.value = withSequence(
-            withTiming(0.88, { duration: 30, easing: Easing.linear }),
-            withTiming(1, { duration: 60, easing: Easing.linear })
-        );
+            // Capture value immediately for sync
+            const newCount = count.value;
 
-        // Sync to JS thread for display (non-blocking)
-        runOnJS(setDisplayCount)(count.value);
-        runOnJS(triggerHaptic)();
-    };
+            // Instant mechanical response (30ms attack)
+            scale.value = withSequence(
+                withTiming(0.88, { duration: 30, easing: Easing.linear }),
+                withTiming(1, { duration: 60, easing: Easing.linear })
+            );
+
+            // Sync to JS thread for display (non-blocking)
+            runOnJS(setDisplayCount)(newCount);
+            runOnJS(triggerHaptic)();
+        });
 
     const handleReset = () => {
         count.value = 0;
@@ -70,65 +73,65 @@ const Zikirmatik = ({ navigation }) => {
     }));
 
     return (
-        <View style={COMMON_STYLES.container}>
-            <LinearGradient
-                colors={[COLORS.primaryDark, '#001a0d']}
-                style={COMMON_STYLES.container}
-            >
-                {/* Header */}
-                <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
-                    <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={() => navigation.goBack()}
-                    >
-                        <ArrowLeft size={24} color={COLORS.accentLight} />
-                    </TouchableOpacity>
-                    <Text style={styles.headerTitle}>{t('dhikr.zikirmatik')}</Text>
-                    <View style={{ width: 40 }} />
-                </View>
-
-                {/* Content */}
-                <View style={styles.content}>
-
-                    {/* ZIKIRMATIK DEVICE */}
-                    <View style={styles.zikirmatikContainer}>
-                        <View style={styles.zikirmatikBody}>
-                            {/* Display Screen */}
-                            <View style={styles.screenFrame}>
-                                <View style={styles.lcdScreen}>
-                                    <Text style={styles.digitalCount}>{displayCount}</Text>
-                                    <Text style={styles.targetLabel}>{t('dhikr.free_mode')}</Text>
-                                </View>
-                            </View>
-
-                            {/* Main Button - Animated with Worklets */}
-                            <TouchableOpacity
-                                activeOpacity={1}
-                                onPress={handlePress}
-                                style={styles.buttonContainer}
-                            >
-                                <Animated.View style={[styles.bigButton, animatedButtonStyle]}>
-                                    <View style={styles.buttonInnerShine} />
-                                </Animated.View>
-                            </TouchableOpacity>
-
-                            {/* Reset/Small Button */}
-                            <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
-                                <RotateCcw size={16} color="#000" strokeWidth={2.5} />
-                            </TouchableOpacity>
-                        </View>
-
-                        {/* Finger Strap Visual */}
-                        <View style={styles.strap} />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <View style={COMMON_STYLES.container}>
+                <LinearGradient
+                    colors={[COLORS.primaryDark, '#001a0d']}
+                    style={COMMON_STYLES.container}
+                >
+                    {/* Header */}
+                    <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
+                        <TouchableOpacity
+                            style={styles.backButton}
+                            onPress={() => navigation.goBack()}
+                        >
+                            <ArrowLeft size={24} color={COLORS.accentLight} />
+                        </TouchableOpacity>
+                        <Text style={styles.headerTitle}>{t('dhikr.zikirmatik')}</Text>
+                        <View style={{ width: 40 }} />
                     </View>
 
-                    <Text style={styles.instructions}>
-                        {t('dhikr.reset_instruction')}
-                    </Text>
+                    {/* Content */}
+                    <View style={styles.content}>
 
-                </View>
-            </LinearGradient>
-        </View>
+                        {/* ZIKIRMATIK DEVICE */}
+                        <View style={styles.zikirmatikContainer}>
+                            <View style={styles.zikirmatikBody}>
+                                {/* Display Screen */}
+                                <View style={styles.screenFrame}>
+                                    <View style={styles.lcdScreen}>
+                                        <Text style={styles.digitalCount}>{displayCount}</Text>
+                                        <Text style={styles.targetLabel}>{t('dhikr.free_mode')}</Text>
+                                    </View>
+                                </View>
+
+                                {/* Main Button - Animated with Gesture Handler */}
+                                <GestureDetector gesture={tapGesture}>
+                                    <Animated.View style={[styles.buttonContainer, animatedButtonStyle]}>
+                                        <View style={styles.bigButton}>
+                                            <View style={styles.buttonInnerShine} />
+                                        </View>
+                                    </Animated.View>
+                                </GestureDetector>
+
+                                {/* Reset/Small Button */}
+                                <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+                                    <RotateCcw size={16} color="#000" strokeWidth={2.5} />
+                                </TouchableOpacity>
+                            </View>
+
+                            {/* Finger Strap Visual */}
+                            <View style={styles.strap} />
+                        </View>
+
+                        <Text style={styles.instructions}>
+                            {t('dhikr.reset_instruction')}
+                        </Text>
+
+                    </View>
+                </LinearGradient>
+            </View>
+        </GestureHandlerRootView>
     );
 };
 

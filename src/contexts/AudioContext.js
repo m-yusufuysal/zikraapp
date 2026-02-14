@@ -21,6 +21,7 @@ export const AudioProvider = ({ children }) => {
     const [isSetup, setIsSetup] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentAyah, setCurrentAyah] = useState(null);
+    const [playbackContext, setPlaybackContext] = useState(null); // { type: 'surah' | 'juz', id: number }
     const [isLoading, setIsLoading] = useState(false);
 
     // Store original ayahs list to map back from Track ID
@@ -258,11 +259,12 @@ export const AudioProvider = ({ children }) => {
 
 
     // Main Play Function - Windowed Implementation
-    const playAyah = async (ayah, list = []) => {
+    const playAyah = async (ayah, list = [], context = null) => {
         if (!isSetup) return;
 
         // Sync local reference
         playlistRef.current = list;
+        if (context) setPlaybackContext(context);
         setIsLoading(true);
 
         try {
@@ -345,7 +347,8 @@ export const AudioProvider = ({ children }) => {
             resume,
             stop,
             playbackTime: progress,
-            playlistPosition
+            playlistPosition,
+            playbackContext
         }}>
             {children}
         </AudioContext.Provider>

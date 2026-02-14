@@ -54,7 +54,7 @@ const CURRENCIES = [
 ];
 
 // --- EXTRACTED COMPONENTS (Fixes Keyboard Focus/Dismissal Issue) ---
-const InputField = ({ label, value, onChangeText, placeholder = "0", isWeight = false, isTr, symbol }) => (
+const InputField = ({ label, value, onChangeText, placeholder = "0", unit }) => (
     <View style={styles.inputRow}>
         <Text style={styles.inputLabel}>{label}</Text>
         <View style={styles.inputWrapper}>
@@ -67,7 +67,7 @@ const InputField = ({ label, value, onChangeText, placeholder = "0", isWeight = 
                 placeholderTextColor="#999"
             />
             <Text style={styles.inputSuffix}>
-                {isWeight ? t('common.gram_short') : symbol}
+                {unit}
             </Text>
         </View>
     </View>
@@ -348,24 +348,24 @@ const ZakatCalculator = ({ navigation }) => {
                     {/* Inputs */}
                     <View style={styles.section}>
                         <SectionHeader icon={Wallet} title={t('zakat.cash_bank')} color="#10B981" />
-                        <InputField label={t('zakat.cash_on_hand')} value={assets.cash} onChangeText={(v) => updateAsset('cash', v)} symbol={selectedCurrency.symbol} isTr={isTr} />
-                        <InputField label={t('zakat.bank_accounts')} value={assets.bank} onChangeText={(v) => updateAsset('bank', v)} symbol={selectedCurrency.symbol} isTr={isTr} />
+                        <InputField label={t('zakat.cash_on_hand')} value={assets.cash} onChangeText={(v) => updateAsset('cash', v)} unit={selectedCurrency.symbol} />
+                        <InputField label={t('zakat.bank_accounts')} value={assets.bank} onChangeText={(v) => updateAsset('bank', v)} unit={selectedCurrency.symbol} />
                     </View>
 
                     <View style={styles.section}>
                         <SectionHeader icon={Coins} title={t('zakat.gold_silver')} color="#F59E0B" />
-                        <InputField label={t('zakat.gold_24k')} value={assets.gold24k} onChangeText={(v) => updateAsset('gold24k', v)} isWeight isTr={isTr} />
-                        <InputField label={t('zakat.gold_22k')} value={assets.gold22k} onChangeText={(v) => updateAsset('gold22k', v)} isWeight isTr={isTr} />
-                        <InputField label={t('zakat.gold_18k')} value={assets.gold18k} onChangeText={(v) => updateAsset('gold18k', v)} isWeight isTr={isTr} />
-                        <InputField label={t('zakat.silver')} value={assets.silver} onChangeText={(v) => updateAsset('silver', v)} isWeight isTr={isTr} />
+                        <InputField label={t('zakat.gold_24k')} value={assets.gold24k} onChangeText={(v) => updateAsset('gold24k', v)} unit={t('common.gram_short')} />
+                        <InputField label={t('zakat.gold_22k')} value={assets.gold22k} onChangeText={(v) => updateAsset('gold22k', v)} unit={t('common.gram_short')} />
+                        <InputField label={t('zakat.gold_18k')} value={assets.gold18k} onChangeText={(v) => updateAsset('gold18k', v)} unit={t('common.gram_short')} />
+                        <InputField label={t('zakat.silver')} value={assets.silver} onChangeText={(v) => updateAsset('silver', v)} unit={t('common.gram_short')} />
                     </View>
 
                     <View style={styles.section}>
                         <SectionHeader icon={Briefcase} title={t('zakat.business_investments')} color="#3B82F6" />
-                        <InputField label={t('zakat.business_goods')} value={assets.business} onChangeText={(v) => updateAsset('business', v)} symbol={selectedCurrency.symbol} isTr={isTr} />
-                        <InputField label={t('zakat.stocks_funds')} value={assets.stocks} onChangeText={(v) => updateAsset('stocks', v)} symbol={selectedCurrency.symbol} isTr={isTr} />
-                        <InputField label={t('zakat.other_investments')} value={assets.other} onChangeText={(v) => updateAsset('other', v)} symbol={selectedCurrency.symbol} isTr={isTr} />
-                        <InputField label={t('zakat.receivables')} value={assets.receivables} onChangeText={(v) => updateAsset('receivables', v)} symbol={selectedCurrency.symbol} isTr={isTr} />
+                        <InputField label={t('zakat.business_goods')} value={assets.business} onChangeText={(v) => updateAsset('business', v)} unit={selectedCurrency.symbol} />
+                        <InputField label={t('zakat.stocks_funds')} value={assets.stocks} onChangeText={(v) => updateAsset('stocks', v)} unit={selectedCurrency.symbol} />
+                        <InputField label={t('zakat.other_investments')} value={assets.other} onChangeText={(v) => updateAsset('other', v)} unit={selectedCurrency.symbol} />
+                        <InputField label={t('zakat.receivables')} value={assets.receivables} onChangeText={(v) => updateAsset('receivables', v)} unit={selectedCurrency.symbol} />
                     </View>
 
                     <View style={styles.section}>

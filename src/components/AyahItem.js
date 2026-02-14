@@ -108,19 +108,19 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
     arabicText: {
-        fontSize: 26,
+        fontSize: 28, // Increased from 26
         color: COLORS.primaryDark,
         textAlign: 'right',
         marginBottom: 12,
         fontFamily: 'Amiri-Regular', // Use specialized font for correct Quranic rendering
-        lineHeight: 48,
+        lineHeight: 52, // Increased line height
         writingDirection: 'rtl',
         paddingVertical: 2,
     },
     translationText: {
-        fontSize: 22,
+        fontSize: 20, // Adjusted for balance
         color: COLORS.textPrimary,
-        lineHeight: 32,
+        lineHeight: 30,
         textAlign: 'left',
         marginBottom: 8,
     },

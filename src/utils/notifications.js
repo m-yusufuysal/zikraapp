@@ -1,7 +1,11 @@
 import { Audio } from 'expo-av';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import { SchedulableTriggerInputTypes } from 'expo-notifications';
+import { WidgetService } from '../services/WidgetService';
+import { AppState, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import TrackPlayer, { State } from 'react-native-track-player';
 
 // Configure notification handler
 Notifications.setNotificationHandler({
@@ -14,16 +18,29 @@ Notifications.setNotificationHandler({
 
 // --- ADHAN AUDIO PLAYBACK ---
 let adhanSound = null;
+let wasPlayingBeforeAdhan = false;
+let adhanAppStateSubscription = null;
 
 export const playAdhanSound = async () => {
     try {
-        // Stop any existing adhan
+        try {
+            const state = await TrackPlayer.getPlaybackState();
+            if (state.state === State.Playing || state === State.Playing) {
+                wasPlayingBeforeAdhan = true;
+                await TrackPlayer.pause();
+                if (__DEV__) console.log('[Adhan] Paused Quran playback');
+            } else {
+                wasPlayingBeforeAdhan = false;
+            }
+        } catch (e) {
+            if (__DEV__) console.log('[Adhan] TrackPlayer check failed:', e);
+        }
+
         if (adhanSound) {
             await adhanSound.unloadAsync();
             adhanSound = null;
         }
 
-        // Configure audio for playback
         await Audio.setAudioModeAsync({
             staysActiveInBackground: true,
             playsInSilentModeIOS: true,
@@ -36,59 +53,74 @@ export const playAdhanSound = async () => {
         );
         adhanSound = sound;
 
-        // Auto-stop after 10 seconds (short clip for notification)
-        setTimeout(async () => {
-            if (adhanSound) {
-                await adhanSound.stopAsync();
-                await adhanSound.unloadAsync();
-                adhanSound = null;
+        sound.setOnPlaybackStatusUpdate(async (status) => {
+            if (status.didJustFinish) {
+                await stopAdhanSound();
             }
-        }, 10000);
+        });
 
+        adhanAppStateSubscription = AppState.addEventListener('change', async (nextAppState) => {
+            if (nextAppState === 'background' || nextAppState === 'inactive') {
+                if (__DEV__) console.log('[Adhan] App backgrounded/locked - Stopping Adhan');
+                await stopAdhanSound();
+            }
+        });
     } catch (error) {
-        // Adhan playback error - ignore
+        if (__DEV__) console.log('[Adhan] Playback error:', error);
     }
 };
 
 export const stopAdhanSound = async () => {
+    if (adhanAppStateSubscription) {
+        adhanAppStateSubscription.remove();
+        adhanAppStateSubscription = null;
+    }
+
     if (adhanSound) {
-        await adhanSound.stopAsync();
-        await adhanSound.unloadAsync();
+        try {
+            await adhanSound.stopAsync();
+            await adhanSound.unloadAsync();
+        } catch (e) { }
         adhanSound = null;
+
+        if (wasPlayingBeforeAdhan) {
+            try {
+                setTimeout(async () => {
+                    await TrackPlayer.play();
+                    if (__DEV__) console.log('[Adhan] Resumed Quran playback');
+                    wasPlayingBeforeAdhan = false;
+                }, 500);
+            } catch (e) {
+                if (__DEV__) console.log('[Adhan] Failed to resume Quran:', e);
+            }
+        }
     }
 };
 
 // --- PERMISSION REGISTRATION ---
 export const registerForPushNotificationsAsync = async () => {
-    // Check for Expo Go
-    if (Constants.appOwnership === 'expo') {
-        // Push notifications are not fully supported in Expo Go
-        return;
-    }
+    if (Constants.appOwnership === 'expo') return;
 
     if (Platform.OS === 'android') {
-        // Adhan channel with custom sound
         await Notifications.setNotificationChannelAsync('adhan', {
             name: 'Ezan Bildirimleri',
             importance: Notifications.AndroidImportance.MAX,
             vibrationPattern: [0, 250, 250, 250],
-            sound: 'adhan.mp3', // Custom sound file
+            sound: 'adhan.mp3',
         });
 
-        // Default channel
         await Notifications.setNotificationChannelAsync('default', {
             name: 'Genel Bildirimler',
             importance: Notifications.AndroidImportance.HIGH,
             vibrationPattern: [0, 250, 250, 250],
-            sound: true,
+            sound: 'islamvyappnotification.wav',
         });
 
-        // Engagement channel for promotional notifications (dream, dhikr, verse)
         await Notifications.setNotificationChannelAsync('engagement', {
             name: 'Günlük Hatırlatmalar',
             importance: Notifications.AndroidImportance.HIGH,
             vibrationPattern: [0, 250, 250, 250],
-            sound: true,
+            sound: 'islamvyappnotification.wav',
         });
     }
 
@@ -100,19 +132,15 @@ export const registerForPushNotificationsAsync = async () => {
         finalStatus = status;
     }
 
-    if (finalStatus !== 'granted') {
-        return finalStatus;
-    }
+    if (finalStatus !== 'granted') return finalStatus;
 
-    // 2. Get the token
     try {
         const token = (await Notifications.getExpoPushTokenAsync({
             projectId: Constants.expoConfig?.extra?.eas?.projectId,
         })).data;
 
-        console.log('[notifications] Token acquired:', token);
+        if (__DEV__) console.log('[notifications] Token acquired:', token);
 
-        // 3. Save to Supabase (if logged in)
         const { supabase } = require('../services/supabase');
         const { data: { user } } = await supabase.auth.getUser();
 
@@ -132,68 +160,78 @@ export const registerForPushNotificationsAsync = async () => {
     }
 };
 
-// --- PRAYER TIME NOTIFICATIONS ---
+// --- PRAYER TIME NOTIFICATIONS DATA ---
+const PRAYER_NAMES_DATA = {
+    tr: { Fajr: 'İmsak', Sunrise: 'Güneş', Dhuhr: 'Öğle', Asr: 'İkindi', Maghrib: 'Akşam', Isha: 'Yatsı' },
+    en: { Fajr: 'Fajr', Sunrise: 'Sunrise', Dhuhr: 'Dhuhr', Asr: 'Asr', Maghrib: 'Maghrib', Isha: 'Isha' },
+    fr: { Fajr: 'Imsak', Sunrise: 'Lever du soleil', Dhuhr: 'Dhuhr', Asr: 'Asr', Maghrib: 'Maghrib', Isha: 'Isha' },
+    ar: { Fajr: 'الفجر', Sunrise: 'الشروق', Dhuhr: 'الظهر', Asr: 'العصر', Maghrib: 'المغرب', Isha: 'العشاء' },
+    id: { Fajr: 'Subuh', Sunrise: 'Syuruq', Dhuhr: 'Dzuhur', Asr: 'Ashar', Maghrib: 'Maghrib', Isha: 'Isya' },
+};
+
+const WARNING_TEXTS_DATA = {
+    tr: (name) => `${name} vaktine 15 dakika kaldı.`,
+    en: (name) => `${name} prayer in 15 minutes.`,
+    fr: (name) => `${name} commence dans 15 minutes.`,
+    ar: (name) => `باقي 15 دقيقة على ${name}.`,
+    id: (name) => `${name} dalam 15 menit.`,
+};
+
+const ADHAN_TEXTS_DATA = {
+    tr: (name, key) => key === 'Sunrise' ? `☀️ ${name} vakti girdi. Güneş doğuyor.` : `🕌 ${name} vakti girdi. Ezan okunuyor...`,
+    en: (name, key) => key === 'Sunrise' ? `☀️ ${name} time. The sun is rising.` : `🕌 ${name} time. Adhan is being called...`,
+    fr: (name, key) => key === 'Sunrise' ? `☀️ Heure de ${name}. Le soleil se lève.` : `🕌 Heure de ${name}. L'Adhan est appelé...`,
+    ar: (name, key) => key === 'Sunrise' ? `☀️ حان وقت ${name}. الشمس تشرق.` : `🕌 حan وقت ${name}. الأذان...`,
+    id: (name, key) => key === 'Sunrise' ? `☀️ Waktu ${name}. Matahari terbit.` : `🕌 Waktu ${name}. Adzan berkumandang...`,
+};
+
+const WARNING_TITLE_DATA = {
+    tr: '⏰ Vakit Yaklaşıyor',
+    en: '⏰ Time Approaching',
+    fr: '⏰ L\'heure approche',
+    ar: '⏰ اقترب الوقت',
+    id: '⏰ Waktu Mendekat'
+};
+
+const PRAYER_SUFFIX_DATA = {
+    tr: 'Vakti',
+    en: 'Time',
+    fr: 'Heure',
+    ar: 'وقت',
+    id: 'Waktu'
+};
+
 const parseTime = (timeStr) => {
     if (!timeStr) return null;
     const [hours, minutes] = timeStr.split(':').map(Number);
     const date = new Date();
     date.setHours(hours, minutes, 0, 0);
-    // If time has passed for today, leave it as today. 
-    // The scheduling logic handles the "if in past, don't schedule" or "schedule for tomorrow" check.
-    // However, here we just want the Time Object for today.
     return date;
 };
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+// --- CORE PRAYER SCHEDULER ---
 export const scheduleAllPrayerNotifications = async (timings, language = 'tr') => {
-    // Check global setting
     const enabled = await AsyncStorage.getItem('notifications_enabled');
-    if (enabled === 'false') {
-        console.log('[notifications] Notifications disabled by user settings.');
-        return;
-    }
+    if (enabled === 'false') return;
 
-    console.log('[notifications] Internal: Scheduling individual prayer slots...');
-
-    const prayerNamesByLang = {
-        tr: { Fajr: 'İmsak', Sunrise: 'Güneş', Dhuhr: 'Öğle', Asr: 'İkindi', Maghrib: 'Akşam', Isha: 'Yatsı' },
-        en: { Fajr: 'Fajr', Sunrise: 'Sunrise', Dhuhr: 'Dhuhr', Asr: 'Asr', Maghrib: 'Maghrib', Isha: 'Isha' },
-        ar: { Fajr: 'الفجر', Sunrise: 'الشروق', Dhuhr: 'الظهر', Asr: 'العصر', Maghrib: 'المغرب', Isha: 'العشاء' },
-        id: { Fajr: 'Subuh', Sunrise: 'Syuruq', Dhuhr: 'Dzuhur', Asr: 'Ashar', Maghrib: 'Maghrib', Isha: 'Isya' },
-    };
-
-    const { getDailyQuote } = require('../services/dailyContentService');
-    const todayQuote = await getDailyQuote(language);
-
-    const warningTexts = {
-        tr: (name) => `${name} vaktine 15 dakika kaldı.`,
-        en: (name) => `${name} prayer in 15 minutes.`,
-        ar: (name) => `باقي 15 دقيقة على ${name}.`,
-        id: (name) => `${name} dalam 15 menit.`,
-    };
-
-    const adhanTexts = {
-        tr: (name, key) => key === 'Sunrise' ? `☀️ ${name} vakti girdi. Güneş doğuyor.` : `🕌 ${name} vakti girdi. Ezan okunuyor...`,
-        en: (name, key) => key === 'Sunrise' ? `☀️ ${name} time. The sun is rising.` : `🕌 ${name} time. Adhan is being called...`,
-        ar: (name, key) => key === 'Sunrise' ? `☀️ حان وقت ${name}. الشمس تشرق.` : `🕌 حان وقت ${name}. الأذان...`,
-        id: (name, key) => key === 'Sunrise' ? `☀️ Waktu ${name}. Matahari terbit.` : `🕌 Waktu ${name}. Adzan berkumandang...`,
-    };
-
-    const prayerNames = prayerNamesByLang[language] || prayerNamesByLang.tr;
-    const getWarning = warningTexts[language] || warningTexts.tr;
-    const getAdhan = adhanTexts[language] || adhanTexts.tr;
+    const prayerNames = PRAYER_NAMES_DATA[language] || PRAYER_NAMES_DATA.tr;
+    const getWarning = WARNING_TEXTS_DATA[language] || WARNING_TEXTS_DATA.tr;
+    const getAdhan = ADHAN_TEXTS_DATA[language] || ADHAN_TEXTS_DATA.tr;
+    const warningTitle = WARNING_TITLE_DATA[language] || WARNING_TITLE_DATA.tr;
+    const suffix = PRAYER_SUFFIX_DATA[language] || PRAYER_SUFFIX_DATA.tr;
 
     const keys = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    const nextPrayerCandidates = [];
+
+    const { getDailyQuote } = require('../services/dailyContentService');
+    const todayQuoteData = await getDailyQuote(language);
 
     for (const key of keys) {
         if (!timings[key]) continue;
-
         const timeStr = timings[key];
         let prayerDate = parseTime(timeStr);
         if (!prayerDate || isNaN(prayerDate.getTime())) continue;
 
-        // If time has passed today, schedule for TOMORROW
         if (prayerDate <= new Date()) {
             prayerDate.setDate(prayerDate.getDate() + 1);
         }
@@ -201,67 +239,60 @@ export const scheduleAllPrayerNotifications = async (timings, language = 'tr') =
         const prayerName = prayerNames[key];
 
         // 1. Warning Notification (15 mins before)
-        // We calculate warning time based on the adjust prayerDate
         const warningDate = new Date(prayerDate.getTime() - 15 * 60 * 1000);
-        // Only schedule if warning time hasn't passed (which shouldn't happen if we moved prayer to tomorrow, unless it's < 15 mins to midnight and fajr is very early... logic holds)
         if (warningDate > new Date()) {
-            const warningTitle = {
-                tr: '⏰ Vakit Yaklaşıyor',
-                en: '⏰ Time Approaching',
-                ar: '⏰ اقترب الوقت',
-                id: '⏰ Waktu Mendekat'
-            };
             await Notifications.scheduleNotificationAsync({
                 content: {
-                    title: warningTitle[language] || warningTitle.tr,
+                    title: warningTitle,
                     body: getWarning(prayerName),
-                    sound: true,
+                    sound: 'islamvyappnotification.wav',
                     data: { type: 'warning', prayer: key },
+                    ...(Platform.OS === 'android' && { channelId: 'default' }),
                 },
-                trigger: {
-                    type: 'calendar',
-                    date: warningDate
-                },
+                trigger: { type: SchedulableTriggerInputTypes.DATE, date: warningDate },
             });
         }
 
-        // 2. Exact Time Notification (Adhan)
-        // Always schedule since we adjusted date to be future
-        const isNotSunrise = key !== 'Sunrise';
-        const suffix = {
-            tr: 'Vakti',
-            en: 'Time',
-            ar: 'وقت',
-            id: 'Waktu'
-        };
+        nextPrayerCandidates.push({ name: prayerName, date: prayerDate, time: timeStr });
 
+        // 2. Exact Time Notification (Adhan)
+        const isNotSunrise = key !== 'Sunrise';
         let notificationBody = getAdhan(prayerName, key);
-        if (key === 'Sunrise') {
+
+        if (key === 'Dhuhr') {
             try {
-                const { getDailyQuote } = require('../services/dailyContentService');
+                const { getDailyQuote: getQuote } = require('../services/dailyContentService');
                 const dateStr = prayerDate.toISOString().split('T')[0];
-                const targetQuote = await getDailyQuote(language, dateStr);
+                const targetQuote = await getQuote(language, dateStr);
                 if (targetQuote) {
                     notificationBody = `${targetQuote.body} (${targetQuote.citation || targetQuote.title})`;
                 }
-            } catch (e) {
-                console.error("Failed to fetch quote for notification:", e);
-            }
+            } catch (e) { }
         }
 
         await Notifications.scheduleNotificationAsync({
             content: {
-                title: `${prayerName} ${suffix[language] || suffix.tr}`,
+                title: `${prayerName} ${suffix}`,
                 body: notificationBody,
                 sound: isNotSunrise ? 'adhan.mp3' : true,
-                data: { type: key === 'Sunrise' ? 'daily_quote' : 'adhan', prayer: key },
+                data: { type: key === 'Dhuhr' ? 'daily_quote' : (key === 'Sunrise' ? 'sunrise' : 'adhan'), prayer: key },
                 ...(Platform.OS === 'android' && { channelId: isNotSunrise ? 'adhan' : 'default' }),
             },
-            trigger: {
-                type: 'calendar',
-                date: prayerDate
-            },
+            trigger: { type: SchedulableTriggerInputTypes.DATE, date: prayerDate },
         });
+    }
+
+    if (nextPrayerCandidates.length > 0) {
+        try {
+            nextPrayerCandidates.sort((a, b) => a.date - b.date);
+            const nextPrayer = nextPrayerCandidates[0];
+            await WidgetService.updateWidgetData({
+                prayerName: nextPrayer.name,
+                prayerTime: nextPrayer.time,
+                quote: todayQuoteData?.body || '',
+                quoteSource: todayQuoteData?.title || ''
+            });
+        } catch (wErr) { }
     }
 };
 
@@ -302,10 +333,17 @@ const ISLAMIC_SPECIAL_DAYS = {
         { date: '2026-06-16', title: '📖 Tahun Baru Hijriah', body: 'Selamat Tahun Baru Hijriah!' },
         { date: '2026-08-25', title: '💚 Maulid Nabi', body: 'Memperingati kelahiran Nabi Muhammad SAW.' },
     ],
+    fr: [
+        { date: '2026-02-18', title: '🌙 Début du Ramadan', body: 'Bon Ramadan ! Que votre jeûne soit accepté.' },
+        { date: '2026-03-14', title: '🌟 Laylat al-Qadr', body: 'La Nuit du Destin - meilleure que mille mois.' },
+        { date: '2026-03-20', title: '🎉 Aïd el-Fitr', body: 'Aïd Moubarak ! Que votre Aïd soit béni.' },
+        { date: '2026-05-27', title: '🐑 Aïd el-Adha', body: 'Aïd Moubarak ! Que votre sacrifice soit accepté.' },
+        { date: '2026-06-16', title: '📖 Nouvel An Islamique', body: 'Bonne Année Islamique !' },
+        { date: '2026-08-25', title: '💚 Mawlid', body: 'Célébration de la naissance du Prophète Mahomet (PSL).' },
+    ],
 };
 
 export const scheduleSpecialDayNotifications = async (language = 'tr') => {
-    // Check global setting
     const enabled = await AsyncStorage.getItem('notifications_enabled');
     if (enabled === 'false') return;
 
@@ -314,44 +352,43 @@ export const scheduleSpecialDayNotifications = async (language = 'tr') => {
 
     for (const day of days) {
         const [year, month, date] = day.date.split('-').map(Number);
-        const notificationDate = new Date(year, month - 1, date, 9, 0, 0); // 9 AM
-
+        const notificationDate = new Date(year, month - 1, date, 9, 0, 0);
         if (notificationDate > today) {
             await Notifications.scheduleNotificationAsync({
                 content: {
                     title: day.title,
                     body: day.body,
-                    sound: true,
+                    sound: 'islamvyappnotification.wav',
                     data: { type: 'special_day' },
                     ...(Platform.OS === 'android' && { channelId: 'engagement' }),
                 },
-                trigger: {
-                    type: 'calendar',
-                    date: notificationDate
-                },
+                trigger: { type: SchedulableTriggerInputTypes.DATE, date: notificationDate },
             });
         }
     }
 };
 
-// --- PROMOTIONAL / ENGAGEMENT NOTIFICATIONS ---
-
+// --- PROMOTIONAL ---
 export const schedulePromotionalNotifications = async (language = 'tr') => {
-    // Check global setting
     const enabled = await AsyncStorage.getItem('notifications_enabled');
     if (enabled === 'false') return;
 
-    // 1. Morning Dream Notification - 09:00
-    // "Rüyada ne gördün?"
+    try {
+        const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+        for (const notif of scheduled) {
+            if (notif.content.data?.type === 'promotional') {
+                await Notifications.cancelScheduledNotificationAsync(notif.identifier);
+            }
+        }
+    } catch (e) { }
+
     const dreamTitle = {
-        tr: '💭 Rüya Tabiri',
-        en: '💭 Dream Interpretation',
-        ar: '💭 تفسير الأحلام',
-        id: '💭 Tafsir Mimpi'
+        tr: '💭 Rüya Tabiri', en: '💭 Dream Interpretation', fr: '💭 Interprétation des rêves', ar: '💭 تفسير الأحلام', id: '💭 Tafsir Mimpi'
     };
     const dreamBody = {
         tr: 'Bugün rüyanda ne gördün? Nasıl bir yol görünüyor?',
         en: 'What did you see in your dream today? How does the path appear?',
+        fr: 'Qu\'avez-vous vu dans votre rêve aujourd\'hui ? Quel chemin apparaît ?',
         ar: 'ماذا رأيت في حلمك اليوم؟ وكيف يبدو الطريق؟',
         id: 'Apa yang kamu lihat dalam mimpimu hari ini? Bagaimana jalan itu terlihat?'
     };
@@ -360,29 +397,20 @@ export const schedulePromotionalNotifications = async (language = 'tr') => {
         content: {
             title: dreamTitle[language] || dreamTitle.tr,
             body: dreamBody[language] || dreamBody.tr,
-            sound: true,
+            sound: 'islamvyappnotification.wav',
             data: { type: 'promotional', action: 'dream' },
             ...(Platform.OS === 'android' && { channelId: 'engagement' }),
         },
-        trigger: {
-            type: 'daily',
-            hour: 9,
-            minute: 0,
-            repeats: true,
-        },
+        trigger: { type: SchedulableTriggerInputTypes.DAILY, hour: 9, minute: 0 },
     });
 
-    // 2. Evening Intention/Dhikr Notification - 22:00
-    // "Zikir oluşturalım mı?"
     const eveningDhikrTitle = {
-        tr: '🌙 Günün Zikri',
-        en: '🌙 Daily Dhikr',
-        ar: '🌙 ذكر اليوم',
-        id: '🌙 Dzikir Harian'
+        tr: '🌙 Günün Zikri', en: '🌙 Daily Dhikr', fr: '🌙 Dhikr du jour', ar: '🌙 ذكر اليوم', id: '🌙 Dzikir Harian'
     };
     const eveningDhikrBody = {
         tr: 'Bugün yaşadıklarına veya niyetine göre sana özgün zikir oluşturalim mi?',
         en: 'Shall we create a unique dhikr for you based on your day or intention?',
+        fr: 'Souhaitez-vous créer un dhikr unique pour vous en fonction de votre journée ou de votre intention ?',
         ar: 'هل ننشئ لك ذكرًا فريدًا بناءً على يومك أو نيتك؟',
         id: 'Bolehkah kami buatkan dzikir unik untukmu berdasarkan harimu atau niatmu?'
     };
@@ -391,50 +419,34 @@ export const schedulePromotionalNotifications = async (language = 'tr') => {
         content: {
             title: eveningDhikrTitle[language] || eveningDhikrTitle.tr,
             body: eveningDhikrBody[language] || eveningDhikrBody.tr,
-            sound: true,
+            sound: 'islamvyappnotification.wav',
             data: { type: 'promotional', action: 'dhikr_evening' },
             ...(Platform.OS === 'android' && { channelId: 'engagement' }),
         },
-        trigger: {
-            type: 'daily',
-            hour: 22,
-            minute: 0,
-            repeats: true,
-        },
+        trigger: { type: SchedulableTriggerInputTypes.DAILY, hour: 22, minute: 0 },
     });
 
-    // 3. Daily Morning Verse - Removed (Handled by Sunrise Prayer Notification)
-
-    // 4. Friday Reminder (Jummah) - Fridays 10:00
-    const fridayMessages = {
-        tr: { title: '🤲 Cuma Mübarek', body: 'Bugün Cuma! Günlük zikrini yapmayı unutma.' },
-        en: { title: '🤲 Blessed Friday', body: 'It\'s Friday! Don\'t forget your daily dhikr.' },
-        ar: { title: '🤲 جمعة مباركة', body: 'اليوم الجمعة! لا تنس ذكرك اليومي.' },
-        id: { title: '🤲 Jumat Berkah', body: 'Hari Jumat! Jangan lupa dzikir harianmu.' },
-    };
-    const fridayMsg = fridayMessages[language] || fridayMessages.tr;
-
-    await Notifications.scheduleNotificationAsync({
-        content: {
-            title: fridayMsg.title,
-            body: fridayMsg.body,
-            sound: true,
-            data: { type: 'promotional', action: 'dhikr' },
-            ...(Platform.OS === 'android' && { channelId: 'engagement' }),
-        },
-        trigger: {
-            type: 'weekly',
-            weekday: 6, // Friday
-            hour: 10,
-            minute: 0,
-            repeats: true,
-        },
-    });
+    try {
+        const { getDailyQuote: getQuote } = require('../services/dailyContentService');
+        const quote = await getQuote(language);
+        const quoteTitle = {
+            tr: '📖 Günün Sözü', en: '📖 Quote of the Day', fr: '📖 Citation du Jour', ar: '📖 حكمة اليوم', id: '📖 Kata-kata Hari Ini'
+        };
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: quoteTitle[language] || quoteTitle.tr,
+                body: `"${quote.body}" — ${quote.citation || quote.title}`,
+                sound: 'islamvyappnotification.wav',
+                data: { type: 'promotional', action: 'daily_quote' },
+                ...(Platform.OS === 'android' && { channelId: 'engagement' }),
+            },
+            trigger: { type: SchedulableTriggerInputTypes.DAILY, hour: 12, minute: 45 },
+        });
+    } catch (e) { }
 };
 
 export const testNotification = async () => {
     try {
-        // 1. Ensure permissions
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
         if (existingStatus !== 'granted') {
@@ -442,15 +454,10 @@ export const testNotification = async () => {
             finalStatus = status;
         }
         if (finalStatus !== 'granted') {
-            alert('Bildirim izni verilmedi! Lütfen ayarlardan izin verin.');
+            alert('Bildirim izni verilmedi!');
             return;
         }
-
-        // 2. Play Sound Immediately (Foreground Test)
         await playAdhanSound();
-
-        // 3. Schedule Notification (Background Test)
-        // Schedule for 5 seconds from now
         await Notifications.scheduleNotificationAsync({
             content: {
                 title: "🔔 Test Bildirimi",
@@ -461,17 +468,10 @@ export const testNotification = async () => {
                 vibrate: [0, 250, 250, 250],
                 ...(Platform.OS === 'android' && { channelId: 'adhan' }),
             },
-            trigger: {
-                type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-                seconds: 5,
-                repeats: false,
-            },
+            trigger: { type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: 5, repeats: false },
         });
-
-        alert('Test bildirimi 5 saniye içinde gelecek. Lütfen uygulamayı arka plana atın.');
-
+        alert('Test bildirimi 5 saniye içinde gelecek.');
     } catch (error) {
-        console.error("Test notification failed:", error);
         alert('Test başarısız: ' + error.message);
     }
 };

@@ -536,7 +536,14 @@ const CommunityScreen = ({ navigation, route }) => {
                                         <View style={styles.typeSelector}>
                                             {['dua', 'dhikr', 'hatim'].map(type => (
                                                 <TouchableOpacity key={type} style={[styles.typeBtn, postType === type && styles.activeTypeBtn]} onPress={() => setPostType(type)}>
-                                                    <Text style={[styles.typeBtnText, postType === type && styles.activeTypeBtnText]}>{t(`community.type_${type}`)}</Text>
+                                                    <Text
+                                                        style={[styles.typeBtnText, postType === type && styles.activeTypeBtnText]}
+                                                        numberOfLines={1}
+                                                        adjustsFontSizeToFit
+                                                        minimumFontScale={0.7}
+                                                    >
+                                                        {t(`community.type_${type}`)}
+                                                    </Text>
                                                 </TouchableOpacity>
                                             ))}
                                         </View>
@@ -568,10 +575,8 @@ const CommunityScreen = ({ navigation, route }) => {
                                                 </TouchableOpacity>
                                             </View>
                                         )}
-                                        <View style={{ height: 20 }} />
                                     </ScrollView>
                                     <View style={styles.modalFooter}>
-                                        <View style={styles.modalFooterFiller} />
                                         <TouchableOpacity style={[styles.confirmBtn, !isPremium && { opacity: 0.5 }]} onPress={handleCreate} disabled={creating || !isPremium}>
                                             {creating ? <ActivityIndicator color="#FFF" /> : <Text style={styles.confirmBtnText}>{t('community.share')}</Text>}
                                         </TouchableOpacity>
@@ -672,8 +677,7 @@ const styles = StyleSheet.create({
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
     keyboardAvoidingView: { width: '100%', justifyContent: 'flex-end' },
     modalContent: { backgroundColor: '#FFF', borderTopLeftRadius: 32, borderTopRightRadius: 32, paddingHorizontal: 24, paddingTop: 24, paddingBottom: 0, maxHeight: '96%', width: '100%', marginBottom: 0, overflow: 'hidden' },
-    modalFooter: { paddingHorizontal: 24, paddingTop: 16, paddingBottom: Platform.OS === 'ios' ? 44 : 24, backgroundColor: '#FFF', borderTopWidth: 1, borderTopColor: '#EEE', position: 'relative' },
-    modalFooterFiller: { position: 'absolute', bottom: -100, left: 0, right: 0, height: 100, backgroundColor: '#FFF' },
+    modalFooter: { paddingHorizontal: 24, paddingTop: 16, paddingBottom: Platform.OS === 'ios' ? 44 : 24, backgroundColor: '#FFF', borderTopWidth: 1, borderTopColor: '#EEE' },
     modalHandle: { width: 40, height: 4, backgroundColor: '#DDD', borderRadius: 2, alignSelf: 'center', marginBottom: 20 },
     modalScroll: { paddingBottom: 20 },
     modalTitle: { fontSize: 24, fontWeight: 'bold', color: COLORS.primary, marginBottom: 20, textAlign: 'center' },

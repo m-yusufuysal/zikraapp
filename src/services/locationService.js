@@ -1,3 +1,4 @@
+import { MMKV } from "react-native-mmkv";
 /**
  * Location Service - Hybrid Cache Strategy
  * 
@@ -73,10 +74,6 @@ export const getHybridLocation = async ({ onCached, onFresh, onError }) => {
             }
             throw locError;
         }
-
-        if (onFresh) onFresh(fresh);
-
-        return fresh;
 
     } catch (error) {
         console.error('[LocationService] Error:', error);

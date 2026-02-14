@@ -1,9 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
+import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
+import * as Notifications from 'expo-notifications';
 import {
     Bell,
+    Camera,
     ChevronRight,
     Crown,
     Download,
@@ -55,6 +58,7 @@ const SettingsScreen = ({ navigation }) => {
     const [showIconSelector, setShowIconSelector] = useState(false);
     const [selectedIcon, setSelectedIcon] = useState(null);
     const [isInfluencer, setIsInfluencer] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     // 1. Session Management (Still Auth Listener)
     useEffect(() => {
@@ -70,7 +74,7 @@ const SettingsScreen = ({ navigation }) => {
     }, []);
 
     // 2. React Query for Profile (Caches data!)
-    const { data: profile } = useQuery({
+    const { data: profile, refetch: refetchProfile } = useQuery({
         queryKey: ['profile', session?.user?.id],
         queryFn: () => getUserProfile(session.user.id),
         enabled: !!session?.user?.id,
@@ -191,7 +195,145 @@ const SettingsScreen = ({ navigation }) => {
         );
     };
 
-    // KVKK/GDPR: Data Export Function
+    // --- AVATAR HANDLING ---
+    const handleAvatarPress = () => {
+        Alert.alert(
+            t('settings.profile_photo'),
+            t('settings.profile_photo_msg'),
+            [
+                {
+                    text: t('settings.camera'),
+                    onPress: () => pickImage(true)
+                },
+                {
+                    text: t('settings.gallery'),
+                    onPress: () => pickImage(false)
+                },
+                profile?.avatar_url ? {
+                    text: t('settings.remove_photo'),
+                    style: 'destructive',
+                    onPress: removeAvatar
+                } : null,
+                {
+                    text: t('cancel'),
+                    style: 'cancel'
+                }
+            ].filter(Boolean)
+        );
+    };
+
+    const pickImage = async (useCamera) => {
+        try {
+            // Request permissions
+            if (useCamera) {
+                const { status } = await ImagePicker.requestCameraPermissionsAsync();
+                if (status !== 'granted') {
+                    Alert.alert(t('error'), t('settings.camera_permission_required'));
+                    return;
+                }
+            } else {
+                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (status !== 'granted') {
+                    Alert.alert(t('error'), t('settings.gallery_permission_required'));
+                    return;
+                }
+            }
+
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.5,
+                base64: true, // using base64 for direct upload if needed, or uri
+            });
+
+            if (!result.canceled && result.assets[0]) {
+                uploadAvatar(result.assets[0]);
+            }
+        } catch (error) {
+            Alert.alert(t('error'), error.message);
+        }
+    };
+
+    const uploadAvatar = async (image) => {
+        try {
+            setUploading(true);
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error("No user");
+
+            const ext = image.uri.substring(image.uri.lastIndexOf('.') + 1);
+            const fileName = `${user.id}/${Date.now()}.${ext}`;
+            const formData = new FormData();
+
+            // React Native specific form data for file upload
+            formData.append('files', {
+                uri: image.uri,
+                name: fileName,
+                type: image.mimeType || `image/${ext}`
+            });
+
+            // Using Supabase Storage API direct upload via standard fetch if wrapper fails, 
+            // but here we assume standard supabase-js usage:
+            // For React Native, we need to pass the file object carefully.
+            // Simplified approach: Upload base64 if supported or handle via file system.
+            // Best React Native Supabase storage practice:
+            const arrayBuffer = await fetch(image.uri).then(res => res.arrayBuffer());
+
+            const { data, error } = await supabase.storage
+                .from('avatars')
+                .upload(fileName, arrayBuffer, {
+                    contentType: image.mimeType || 'image/jpeg',
+                    upsert: true
+                });
+
+            if (error) throw error;
+
+            // Get Public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('avatars')
+                .getPublicUrl(fileName);
+
+            // Update Profile
+            const { error: updateError } = await supabase
+                .from('profiles')
+                .update({ avatar_url: publicUrl })
+                .eq('id', user.id);
+
+            if (updateError) throw updateError;
+
+            await refetchProfile();
+            Alert.alert(t('success'), t('settings.photo_updated'));
+
+        } catch (error) {
+            Alert.alert(t('error'), t('settings.upload_failed') + ": " + error.message);
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const removeAvatar = async () => {
+        try {
+            setUploading(true);
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+
+            const { error } = await supabase
+                .from('profiles')
+                .update({ avatar_url: null })
+                .eq('id', user.id);
+
+            if (error) throw error;
+
+            await refetchProfile();
+            Alert.alert(t('success'), t('settings.photo_removed'));
+        } catch (error) {
+            Alert.alert(t('error'), error.message);
+        } finally {
+            setUploading(false);
+        }
+    };
+    // ----------------------
+
     // KVKK/GDPR: Data Export Function
     const handleExportData = async () => {
         if (isExporting) return;
@@ -384,11 +526,20 @@ ${t('settings.data_export_info')}`;
 
                 {/* Profile Header */}
                 <View style={styles.profileHeader}>
-                    <View style={styles.avatarContainer}>
-                        <Text style={styles.avatarText}>
-                            {profile?.full_name ? profile.full_name.charAt(0).toLocaleUpperCase(i18n.language) : (session?.user?.email?.charAt(0).toLocaleUpperCase(i18n.language) || 'Z')}
-                        </Text>
-                    </View>
+                    <TouchableOpacity onPress={handleAvatarPress} activeOpacity={0.8}>
+                        <View style={styles.avatarContainer}>
+                            {profile?.avatar_url ? (
+                                <Image source={{ uri: profile.avatar_url }} style={styles.avatarImage} />
+                            ) : (
+                                <Text style={styles.avatarText}>
+                                    {profile?.full_name ? profile.full_name.charAt(0).toLocaleUpperCase(i18n.language) : (session?.user?.email?.charAt(0).toLocaleUpperCase(i18n.language) || 'Z')}
+                                </Text>
+                            )}
+                            <View style={styles.cameraBadge}>
+                                <Camera size={12} color="#FFF" />
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                     <View style={styles.profileInfo}>
                         <Text style={[styles.profileName, ramadanModeEnabled && { color: '#FFF' }]}>
                             {profile?.full_name || session?.user?.email?.split('@')[0] || t('settings.guest_user')}
@@ -540,6 +691,7 @@ ${t('settings.data_export_info')}`;
                                             >
                                                 <Image
                                                     source={require('../../assets/images/icon.png')}
+                                                    fadeDuration={0}
                                                     style={[
                                                         styles.iconPreview,
                                                         selectedIcon === 'default' && styles.iconPreviewSelected
@@ -554,6 +706,7 @@ ${t('settings.data_export_info')}`;
                                             >
                                                 <Image
                                                     source={require('../../assets/images/icon_light.png')}
+                                                    fadeDuration={0}
                                                     style={[
                                                         styles.iconPreview,
                                                         selectedIcon === 'light' && styles.iconPreviewSelected
@@ -568,6 +721,7 @@ ${t('settings.data_export_info')}`;
                                             >
                                                 <Image
                                                     source={require('../../assets/images/icon_dark.png')}
+                                                    fadeDuration={0}
                                                     style={[
                                                         styles.iconPreview,
                                                         selectedIcon === 'dark' && styles.iconPreviewSelected
@@ -585,6 +739,7 @@ ${t('settings.data_export_info')}`;
                                             >
                                                 <Image
                                                     source={require('../../assets/images/icon_blue_gold.png')}
+                                                    fadeDuration={0}
                                                     style={[
                                                         styles.iconPreview,
                                                         selectedIcon === 'blue_gold' && styles.iconPreviewSelected
@@ -599,6 +754,7 @@ ${t('settings.data_export_info')}`;
                                             >
                                                 <Image
                                                     source={require('../../assets/images/icon_sage.png')}
+                                                    fadeDuration={0}
                                                     style={[
                                                         styles.iconPreview,
                                                         selectedIcon === 'sage' && styles.iconPreviewSelected
@@ -613,6 +769,7 @@ ${t('settings.data_export_info')}`;
                                             >
                                                 <Image
                                                     source={require('../../assets/images/icon_silver.png')}
+                                                    fadeDuration={0}
                                                     style={[
                                                         styles.iconPreview,
                                                         selectedIcon === 'silver' && styles.iconPreviewSelected
@@ -630,6 +787,7 @@ ${t('settings.data_export_info')}`;
                                             >
                                                 <Image
                                                     source={require('../../assets/images/icon_burgundy.png')}
+                                                    fadeDuration={0}
                                                     style={[
                                                         styles.iconPreview,
                                                         selectedIcon === 'burgundy' && styles.iconPreviewSelected
@@ -644,6 +802,7 @@ ${t('settings.data_export_info')}`;
                                             >
                                                 <Image
                                                     source={require('../../assets/images/icon_navy_red.png')}
+                                                    fadeDuration={0}
                                                     style={[
                                                         styles.iconPreview,
                                                         selectedIcon === 'navy_red' && styles.iconPreviewSelected
@@ -797,6 +956,25 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 8,
+        position: 'relative', // For badge positioning
+    },
+    avatarImage: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+    },
+    cameraBadge: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        backgroundColor: COLORS.primary,
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1.5,
+        borderColor: '#FFF',
     },
     avatarText: {
         fontSize: 24,

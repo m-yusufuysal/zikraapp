@@ -333,7 +333,7 @@ const HomeScreen = ({ navigation }) => {
                         </View>
                         <View style={styles.headerRightButtons}>
                             <TouchableOpacity onPress={() => navigation.navigate('QiblaCompass')} style={styles.iconBtn}><Compass size={24} color={COLORS.matteGreen} strokeWidth={1.5} /></TouchableOpacity>
-                            <TouchableOpacity onPress={() => navigation.navigate('KaabaLive')} style={[styles.iconBtn, { marginTop: 10 }]}><Tv size={24} color={COLORS.matteGreen} strokeWidth={1.5} /></TouchableOpacity>
+                            <TouchableOpacity onPress={() => navigation.navigate('KaabaLive')} style={[styles.iconBtn, { marginTop: 10 }]}><Tv size={24} color="#000" strokeWidth={1.5} /></TouchableOpacity>
                             <TouchableOpacity onPress={() => navigation.navigate('Shop')} style={[styles.iconBtn, { marginTop: 10 }]}><ShoppingBag size={24} color="#E67E22" strokeWidth={1.5} /></TouchableOpacity>
                             <TouchableOpacity onPress={handleCommunityPress} style={[styles.iconBtn, { marginTop: 10 }]}>
                                 <Handshake size={24} color="#e74c3c" strokeWidth={1.5} />

@@ -369,11 +369,15 @@ https://zikraapp.com/download
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{ flex: 1 }}
             >
-                <ScrollView contentContainerStyle={[
-                    styles.content,
-                    { paddingTop: insets.top + 20, paddingBottom: 120 },
-                    isTablet && { width: TABLET_MAX_WIDTH, alignSelf: 'center' }
-                ]}>
+                <ScrollView
+                    contentContainerStyle={[
+                        styles.content,
+                        { paddingTop: insets.top + 20, paddingBottom: 120 },
+                        isTablet && { width: TABLET_MAX_WIDTH, alignSelf: 'center' }
+                    ]}
+                    keyboardShouldPersistTaps="handled"
+                    keyboardDismissMode="on-drag"
+                >
 
                     {/* Header */}
                     <View style={styles.header}>

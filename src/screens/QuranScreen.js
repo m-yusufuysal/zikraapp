@@ -74,16 +74,23 @@ const QuranScreen = ({ navigation, route }) => {
 
     // Handle Deep Link / Navigation Props
     useEffect(() => {
-        if (route.params?.targetSurahNumber) {
-            const { targetSurahNumber, targetAyahNumber } = route.params;
+        if (route.params?.targetSurahNumber || route.params?.targetJuzNumber) {
+            const { targetSurahNumber, targetAyahNumber, targetJuzNumber } = route.params;
 
             const handleDeepLink = async () => {
-                navigation.setParams({ targetSurahNumber: null, targetAyahNumber: null });
+                navigation.setParams({ targetSurahNumber: null, targetAyahNumber: null, targetJuzNumber: null });
 
-                const data = await getSurahs(i18n.language);
-                const surah = data.find(s => s.number === targetSurahNumber);
-                if (surah) {
-                    await openSurah(surah);
+                if (targetJuzNumber) {
+                    await openJuz(targetJuzNumber);
+                    // Juz items do not have reliable 'number' property matching ayah number globally like surah items might
+                    // But if we want to scroll to specific ayah in juz, logic would be needed. 
+                    // For now, Playback Context restoration just opens the list.
+                } else if (targetSurahNumber) {
+                    const data = await getSurahs(i18n.language);
+                    const surah = data.find(s => s.number === targetSurahNumber);
+                    if (surah) {
+                        await openSurah(surah);
+                    }
                 }
             };
             handleDeepLink();
@@ -202,7 +209,14 @@ const QuranScreen = ({ navigation, route }) => {
                 resume();
             }
         } else {
-            playAyah(ayah, ayahs);
+            // Pass the current context (Surah or Juz) to the player
+            // Transform selectedContext to a cleaner object for storage
+            const contextData = selectedContext ? {
+                type: selectedContext.type,
+                id: selectedContext.type === 'surah' ? selectedContext.data.number : selectedContext.data
+            } : null;
+
+            playAyah(ayah, ayahs, contextData);
         }
     };
 
