@@ -1,0 +1,25 @@
+# Islamvy — AI-Powered Islamic Lifestyle App
+> The most personalized Islamic companion app, powered by AI and authentic Islamic sources.
+
+## App Download
+- iOS App Store: https://apps.apple.com/app/islamvy
+- Google Play Store: https://play.google.com/store/apps/details?id=com.yusuf.islamvy
+
+## Core Features
+- AI Dream Interpretation (based on Ibn Sirin & Islamic sources)
+- Personalized AI Dhikr & Dua Plans
+- Prayer Times with Adhan Notifications
+- Quran with Multi-language Translation & Audio
+- Live Kaaba Stream
+- Muslim Community Hub (Dua Chains, Hatim Groups)
+- Qibla Compass & Mosque Finder
+- Zakat Calculator
+- Islamic Marketplace (Books, Prayer items)
+
+## Blog Content
+- /blog/tr/posts/islami-ruya-tabiri.html
+- /blog/tr/posts/en-iyi-islami-uygulamalar.html
+- /blog/tr/posts/kisisel-zikir-rehberi.html
+- /blog/tr/posts/namaz-vakti-uygulamalari.html
+- /blog/en/posts/islamic-dream-interpretation.html
+- /blog/en/posts/best-muslim-apps-2025.html
