@@ -268,7 +268,7 @@ const translations = {
         feat_dream_title: "تفسير أحلام خاص بك",
         feat_dream_desc: "فك رموز الرسائل في نومك. احصل على تفسيرات خاصة لأحلامك، مصممة لمسارك، في ضوء التفسيرات الإسلامية مع طبقات الذكاء الاصطناعي.",
         cta_title: "ابدأ رحلتك اليوم",
-        cta_subtitle: "انضم إلى آلاف المستخدمين الذين يجدون السلام والوضوح مع ذكرى.",
+        cta_subtitle: "انضم إلى آلاف المستخدمين الذين يجدون السلام والوضوح مع Islamvy.",
         mock_verse_text: "\"أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ\"",
         mock_verse_source: "سورة الرعد، 13:28",
         proof_title: "محبوب من قبل الآلاف",
@@ -367,7 +367,7 @@ const translations = {
         mock_post_1: "أرجو الدعاء لي في امتحاني غداً.",
         mock_post_2: "سأبدأ ختمة جديدة اليوم.",
         mock_amen: "آمين",
-        nav_logo: "إسلامي",
+        nav_logo: "Islamvy",
         mock_juz_title: "الجزء ١",
         mock_quran_subtitle: "القرآن الكريم",
         mock_verse_quran_1: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ",
@@ -375,12 +375,12 @@ const translations = {
         mock_hijri: "٩ شعبان ۱٤٤٧ هـ",
         proof_badge: "حب المجتمع",
         proof_title: "محبوب من قبل الآلاف",
-        proof_subtitle: "تجارب أولئك الذين انطلقوا في رحلة روحية مع ذكرى.",
+        proof_subtitle: "تجارب أولئك الذين انطلقوا في رحلة روحية مع Islamvy.",
         mock_comm_hatim_title: "أبدأ ختمة لما قبل رمضان",
         mock_comm_dua_title: "سأتزوج، أحتاج إلى دعائكم",
         mock_comm_zikir_title: "لدينا مريض، هل تتفضل بالانضمام إلى الذكر...",
         mock_comm_zikir_sub: "يا شافي",
-        footer_copyright: "© ٢٠٢٦ تطبيق ذكرى. جميع الحقوق محفوظة."
+        footer_copyright: "© ٢٠٢٦ تطبيق Islamvy. جميع الحقوق محفوظة."
     },
     id: {
         hero_title: "Harmoni Spiritual<br>untuk Jiwa Modern",

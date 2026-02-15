@@ -207,6 +207,12 @@ body {
     transform: translateY(0);
 }
 
+/* RTL Override for Language Menu */
+[dir="rtl"] .lang-menu {
+    right: auto;
+    left: 0;
+}
+
 .lang-option {
     background: none;
     border: none;
