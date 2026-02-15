@@ -260,11 +260,19 @@ RAMADAN_HUB_TEMPLATE = """<!DOCTYPE html>
  
     <div class="times-container">
         <div class="city-card">
-            <div class="city-selector">
-                <label style="font-weight: 600; font-size: 0.9rem; opacity:0.8;">{select_city}</label>
-                <select id="citySelect" onchange="updateTimes()">
-                    {city_options_html}
-                </select>
+            <div class="selection-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="city-selector">
+                    <label style="font-weight: 600; font-size: 0.8rem; opacity:0.8; display: block; margin-bottom: 0.4rem;">{select_country}</label>
+                    <select id="countrySelect" onchange="populateCities()">
+                        {country_options_html}
+                    </select>
+                </div>
+                <div class="city-selector">
+                    <label style="font-weight: 600; font-size: 0.8rem; opacity:0.8; display: block; margin-bottom: 0.4rem;">{select_city}</label>
+                    <select id="citySelect" onchange="updateTimes()">
+                        <option value="">{select_city}</option>
+                    </select>
+                </div>
             </div>
  
             <div class="countdown-banner" id="countdown">
@@ -324,30 +332,54 @@ RAMADAN_HUB_TEMPLATE = """<!DOCTYPE html>
     </div>
 
     <script>
-        async function updateTimes() {{
-            const select = document.getElementById('citySelect');
-            const cityCountry = select.value.split(',');
-            const city = cityCountry[0];
-            const country = cityCountry[1];
+        const CITIES_DATA = {cities_json};
+
+        function populateCities() {{
+            const country = document.getElementById('countrySelect').value;
+            const citySelect = document.getElementById('citySelect');
+            citySelect.innerHTML = '<option value="">{select_city}</option>';
             
-            try {{
-                const url = `https://api.aladhan.com/v1/timingsByCity?city=${{city}}&country=${{country}}&method=3`;
-                const response = await fetch(url);
-                const data = await response.json();
-                const timings = data.data.timings;
+            if (CITIES_DATA[country]) {{
+                CITIES_DATA[country].forEach(city => {{
+                    const opt = document.createElement('option');
+                    opt.value = city.id;
+                    opt.textContent = city.name;
+                    citySelect.appendChild(opt);
+                }});
                 
-                document.getElementById('sahurTime').innerText = timings.Fajr;
-                document.getElementById('iftarTime').innerText = timings.Maghrib;
-                document.getElementById('dhuhrTime').innerText = timings.Dhuhr;
-                document.getElementById('asrTime').innerText = timings.Asr;
-                document.getElementById('ishaTime').innerText = timings.Isha;
-            }} catch (e) {{
-                console.error("Failed to fetch times", e);
+                // Select first city by default
+                if (CITIES_DATA[country].length > 0) {{
+                    citySelect.value = CITIES_DATA[country][0].id;
+                    updateTimes();
+                }}
             }}
         }}
-        
-        // Initial load
-        updateTimes();
+
+        async function updateTimes() {{
+            const cityId = document.getElementById('citySelect').value;
+            if (!cityId) return;
+            
+            const country = document.getElementById('countrySelect').value;
+            const cityData = CITIES_DATA[country].find(c => c.id === cityId);
+            if (!cityData) return;
+
+            try {{
+                const response = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${{cityData.name}}&country=${{country}}&method=3`);
+                const data = await response.json();
+                const timings = data.data.timings;
+
+                document.getElementById('sahurTime').textContent = timings.Fajr;
+                document.getElementById('iftarTime').textContent = timings.Maghrib;
+                document.getElementById('dhuhrTime').textContent = timings.Dhuhr;
+                document.getElementById('asrTime').textContent = timings.Asr;
+                document.getElementById('ishaTime').textContent = timings.Isha;
+            }} catch (error) {{
+                console.error('Error fetching prayer times:', error);
+            }}
+        }}
+
+        // Initial population
+        window.onload = populateCities;
     </script>
 
     <footer class="main-footer">
@@ -370,7 +402,8 @@ TRANSLATIONS = {
         "faq_title": "Frequently Asked Questions", "copyright": "© 2026 Islamvy. All rights reserved.", "ramadan_hero_subtitle": "Countdown to Mercy and Blessings", "select_city": "Select your city",
         "first_day_approx": "First Day of Ramadan (approx):", "ramadan_essentials": "Ramadan Essentials", "spiritual_prep_title": "Spiritual Preparation", "spiritual_prep_desc": "How to prepare your heart for the month of the Quran.",
         "zakat_guide_title": "Zakat Guide", "zakat_guide_desc": "Understand the purification of wealth during this blessed month.", "times_calc_info": "Times are calculated using the Muslim World League method. Please consult your local mosque for exact timings.",
-        "label_sahur": "Sahur (Fajr)", "label_iftar": "Iftar (Maghrib)", "label_dhuhr": "Dhuhr", "label_asr": "Asr", "label_isha": "Isha"
+        "label_sahur": "Sahur (Fajr)", "label_iftar": "Iftar (Maghrib)", "label_dhuhr": "Dhuhr", "label_asr": "Asr", "label_isha": "Isha",
+        "select_country": "Select your country", "country_tr": "Turkey", "country_id": "Indonesia", "country_sa": "Saudi Arabia", "country_eg": "Egypt", "country_qa": "Qatar", "country_kw": "Kuwait", "country_gulf": "Gulf", "country_eu": "Europe & Others", "country_na": "North Africa"
     },
     "tr": {
         "dir": "ltr", "blog_suffix": "Blog", "label_all": "Tümü", "label_worship": "İbadet", "label_dream": "Rüya", "label_lifestyle": "Yaşam", "label_dhikr": "Zikir & Dua", "label_tech": "Teknoloji", 
@@ -381,7 +414,8 @@ TRANSLATIONS = {
         "faq_title": "Sıkça Sorulan Sorular", "copyright": "© 2026 Islamvy. Tüm hakları saklıdır.", "ramadan_hero_subtitle": "Rahmet ve Bereket Ayına Geri Sayım", "select_city": "Şehrinizi seçin",
         "first_day_approx": "Ramazan'ın İlk Günü (tahmini):", "ramadan_essentials": "Ramazan Hazırlıkları", "spiritual_prep_title": "Manevi Hazırlık", "spiritual_prep_desc": "Kalbinizi Kur'an ayına nasıl hazırlayabilirsiniz?",
         "zakat_guide_title": "Zekat Rehberi", "zakat_guide_desc": "Bu mübarek ayda malın temizlenmesini kavrayın.", "times_calc_info": "Vakitler Dünya Müslümanlar Birliği yöntemiyle hesaplanmaktadır. Kesin vakitler için yerel camiinize danışın.",
-        "label_sahur": "Sahur (İmsak)", "label_iftar": "İftar (Akşam)", "label_dhuhr": "Öğle", "label_asr": "İkindi", "label_isha": "Yatsı"
+        "label_sahur": "Sahur (İmsak)", "label_iftar": "İftar (Akşam)", "label_dhuhr": "Öğle", "label_asr": "İkindi", "label_isha": "Yatsı",
+        "select_country": "Ülki seçin", "country_tr": "Türkiye", "country_id": "Endonezya", "country_sa": "Suudi Arabistan", "country_eg": "Mısır", "country_qa": "Katar", "country_kw": "Kuveyt", "country_gulf": "Körfez", "country_eu": "Avrupa ve Diğerleri", "country_na": "Kuzey Afrika"
     },
     "ar": {
         "dir": "rtl", "blog_suffix": "مدونة", "label_all": "الكل", "label_worship": "العبادة", "label_dream": "الأحلام", "label_lifestyle": "نمط الحياة", "label_dhikr": "الذكر والدعاء", "label_tech": "التكنولوجيا", 
@@ -392,7 +426,8 @@ TRANSLATIONS = {
         "faq_title": "الأسئلة الشائعة", "copyright": "© 2026 Islamvy. جميع الحقوق محفوظة.", "ramadan_hero_subtitle": "العد التنازلي لشهور الرحمة والبركات", "select_city": "اختر مدينتك",
         "first_day_approx": "أول أيام رمضان (تقريباً):", "ramadan_essentials": "أساسيات رمضان", "spiritual_prep_title": "الاستعداد الروحي", "spiritual_prep_desc": "كيف تهيئ قلبك لشهر القرآن.",
         "zakat_guide_title": "دليل الزكاة", "zakat_guide_desc": "افهم تزكية المال خلال هذا الشهر الفضيل.", "times_calc_info": "يتم حساب الأوقات باستخدام طريقة رابطة العالم الإسلامي. يرجى استشارة المسجد المحلي لمعرفة الأوقات الدقيقة.",
-        "label_sahur": "السحور (الفجر)", "label_iftar": "الإفطار (المغرب)", "label_dhuhr": "الظهر", "label_asr": "العصر", "label_isha": "العشاء"
+        "label_sahur": "السحور (الفجر)", "label_iftar": "الإفطار (المغرب)", "label_dhuhr": "الظهر", "label_asr": "العصر", "label_isha": "العشاء",
+        "select_country": "اختر بلدك", "country_tr": "تركيا", "country_id": "إندونيسيا", "country_sa": "المملكة العربية السعودية", "country_eg": "مصر", "country_qa": "قطر", "country_kw": "الكويت", "country_gulf": "الخليج", "country_eu": "أوروبا وأخرى", "country_na": "شمال أفريقيا"
     },
     "fr": {
         "dir": "ltr", "blog_suffix": "Blog", "label_all": "Tous", "label_worship": "Culte", "label_dream": "Rêves", "label_lifestyle": "Vie", "label_dhikr": "Dhikr", "label_tech": "Tech", 
@@ -403,7 +438,8 @@ TRANSLATIONS = {
         "faq_title": "Questions Fréquemment Posées", "copyright": "© 2026 Islamvy. Tous droits réservés.", "ramadan_hero_subtitle": "Compte à rebours vers la miséricorde et les bénédictions", "select_city": "Sélectionnez votre ville",
         "first_day_approx": "Premier jour du Ramadan (environ) :", "ramadan_essentials": "Essentiels du Ramadan", "spiritual_prep_title": "Préparation Spirituelle", "spiritual_prep_desc": "Comment préparer son cœur pour le mois du Coran.",
         "zakat_guide_title": "Guide de la Zakat", "zakat_guide_desc": "Comprendre la purification des richesses pendant ce mois béni.", "times_calc_info": "Les horaires sont calculés selon la méthode de la Ligue Islamique Mondiale. Consultez votre mosquée locale pour les horaires exacts.",
-        "label_sahur": "Sahur (Fajr)", "label_iftar": "Iftar (Maghrib)", "label_dhuhr": "Dhuhr", "label_asr": "Asr", "label_isha": "Isha"
+        "label_sahur": "Sahur (Fajr)", "label_iftar": "Iftar (Maghrib)", "label_dhuhr": "Dhuhr", "label_asr": "Asr", "label_isha": "Isha",
+        "select_country": "Choisissez votre pays", "country_tr": "Turquie", "country_id": "Indonésie", "country_sa": "Arabie Saoudite", "country_eg": "Égypte", "country_qa": "Qatar", "country_kw": "Koweït", "country_gulf": "Golfe", "country_eu": "Europe et autres", "country_na": "Afrique du Nord"
     },
     "id": {
         "dir": "ltr", "blog_suffix": "Blog", "label_all": "Semua", "label_worship": "Ibadah", "label_dream": "Mimpi", "label_lifestyle": "Gaya Hidup", "label_dhikr": "Dzikir", "label_tech": "Teknologi", 
@@ -414,7 +450,8 @@ TRANSLATIONS = {
         "faq_title": "Pertanyaan yang Sering Diajukan", "copyright": "© 2026 Islamvy. Hak cipta dilindungi undang-undang.", "ramadan_hero_subtitle": "Hitung Mundur Menuju Rahmat dan Keberkahan", "select_city": "Pilih kota Anda",
         "first_day_approx": "Hari Pertama Ramadhan (perkiraan):", "ramadan_essentials": "Esensi Ramadhan", "spiritual_prep_title": "Persiapan Spiritual", "spiritual_prep_desc": "Cara mempersiapkan hati menyambut bulan Al-Quran.",
         "zakat_guide_title": "Panduan Zakat", "zakat_guide_desc": "Pahami penyucian harta selama bulan penuh berkah ini.", "times_calc_info": "Waktu dihitung menggunakan metode Liga Muslim Dunia. Silakan konsultasikan dengan masjid setempat untuk waktu yang tepat.",
-        "label_sahur": "Sahur (Fajr)", "label_iftar": "Iftar (Maghrib)", "label_dhuhr": "Dhuhur", "label_asr": "Ashar", "label_isha": "Isya"
+        "label_sahur": "Sahur (Fajr)", "label_iftar": "Iftar (Maghrib)", "label_dhuhr": "Dhuhur", "label_asr": "Ashar", "label_isha": "Isya",
+        "select_country": "Pilih negara Anda", "country_tr": "Turki", "country_id": "Indonesia", "country_sa": "Arab Saudi", "country_eg": "Mesir", "country_qa": "Qatar", "country_kw": "Kuwait", "country_gulf": "Teluk", "country_eu": "Eropa & Lainnya", "country_na": "Afrika Utara"
     }
 }
 
@@ -986,20 +1023,32 @@ for lang in LANGUAGES:
     ramadan_path = f"islamvy-web/blog/{lang}/ramadan"
     os.makedirs(ramadan_path, exist_ok=True)
     
-    # Generate City Options
-    city_options_html = ""
+    # Sort and Group Cities for JSON
+    import json
+    cities_for_js = {}
     for country, cities in CITIES_CONFIG.items():
-        city_options_html += f'                    <optgroup label="{country}">\n'
-        # Sort cities: if tuple, sort by city name
+        cities_for_js[country] = []
         sorted_cities = sorted(cities, key=lambda x: x[0] if isinstance(x, tuple) else x)
         for item in sorted_cities:
             if isinstance(item, tuple):
-                city, cc = item
+                name, cc = item
             else:
-                city = item
+                name = item
                 cc = COUNTRY_CODES.get(country, "Global")
-            city_options_html += f'                        <option value="{city},{cc}">{city}</option>\n'
-        city_options_html += '                    </optgroup>\n'
+            cities_for_js[country].append({"id": f"{name},{cc}", "name": name})
+
+    # Generate Country Options
+    country_options_html = ""
+    # Map country names to translation keys
+    country_map = {
+        "Turkey": "country_tr", "Indonesia": "country_id", "Saudi Arabia": "country_sa",
+        "Egypt": "country_eg", "Qatar": "country_qa", "Kuwait": "country_kw",
+        "Gulf": "country_gulf", "Europe & Others": "country_eu", "North Africa": "country_na"
+    }
+    for country_en in sorted(CITIES_CONFIG.keys()):
+        key = country_map.get(country_en)
+        label = trans.get(key, country_en) if key else country_en
+        country_options_html += f'                        <option value="{country_en}">{label}</option>\n'
 
     ramadan_navbar = NAVBAR_TEMPLATE.format(
         root_path="../../../",
@@ -1016,9 +1065,11 @@ for lang in LANGUAGES:
         dir=trans["dir"],
         blog_suffix=trans['blog_suffix'],
         navbar_html=ramadan_navbar,
-        city_options_html=city_options_html,
+        cities_json=json.dumps(cities_for_js, ensure_ascii=False),
+        country_options_html=country_options_html,
         ramadan_2026=trans['ramadan_2026'],
         ramadan_hero_subtitle=trans['ramadan_hero_subtitle'],
+        select_country=trans['select_country'],
         select_city=trans['select_city'],
         first_day_approx=trans['first_day_approx'],
         ramadan_essentials=trans['ramadan_essentials'],
