@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramadan 2026 | Islamvy</title>
+    <meta name="description" content="Iftar, Sahur, and prayer times for Ramadan 2026.">
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Kaushan+Script&display=swap" rel="stylesheet">
+    <style>
+        .logo { font-family: 'Kaushan Script', cursive !important; }
+        .ramadan-hero { text-align: center; padding: 4rem 5%; background: rgba(163, 217, 201, 0.05); border-radius: 0 0 50px 50px; border-bottom: 1px solid rgba(163, 217, 201, 0.2); }
+        .ramadan-hero i { font-size: 3rem; color: #A3D9C9; margin-bottom: 1.5rem; display: block; }
+        .ramadan-hero h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+        .times-container { max-width: 800px; margin: 3rem auto; padding: 0 5%; }
+        .city-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px; padding: 2.5rem; backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .city-selector { margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .city-selector select { background: rgba(30, 62, 52, 0.9); border: 1px solid rgba(163, 217, 201, 0.3); color: white; padding: 1rem; border-radius: 12px; font-size: 1.1rem; outline: none; transition: 0.3s; cursor: pointer; }
+        .city-selector select:focus { border-color: #A3D9C9; }
+        .times-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 2rem; }
+        .time-box { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(163, 217, 201, 0.2); padding: 1.5rem; border-radius: 20px; text-align: center; transition: 0.3s; }
+        .time-box:hover { background: rgba(163, 217, 201, 0.1); border-color: #A3D9C9; transform: translateY(-5px); }
+        .time-label { font-size: 0.9rem; opacity: 0.7; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+        .time-value { font-size: 2rem; font-weight: 700; color: #A3D9C9; font-family: 'Amiri', serif; }
+        .countdown-banner { background: linear-gradient(135deg, #1e3e34, #2d5a4c); padding: 1.5rem; border-radius: 16px; margin-top: 2rem; text-align: center; border: 1px solid rgba(163, 217, 201, 0.3); }
+        optgroup { background: #1e3e34; color: #fff; font-weight: 600; font-family: 'Inter', sans-serif; }
+        option { background: rgba(30, 62, 52, 0.9); }
+    </style>
+</head>
+<body>
+    <div class="geometric-bg"></div>
+    
+    <nav class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 5%; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10;">
+        <a href="../../../index.html" style="text-decoration:none;">
+            <div class="logo" style="font-family: 'Kaushan Script', cursive; font-size: 2.5rem; color: #FFFFFF; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">Islamvy <span style="font-size: 1.8rem; opacity: 0.8; font-weight: 400;">Blog</span></div>
+        </a>
+        <div class="nav-right" style="display: flex; align-items: center; gap: 1.5rem;">
+             <div class="nav-links" style="margin-right: 1.5rem; display: flex; gap: 1.5rem;">
+                <a href="../../../index.html" class="nav-item-link" style="color: #fff; text-decoration: none; font-weight: 500; font-size: 0.95rem; opacity: 0.9; transition: 0.3s;">App Home</a>
+                <a href="../../../blog/en/ramadan/index.html" class="nav-item-link" style="color: #A3D9C9; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: 0.3s;"><i class="fa-solid fa-moon"></i> Ramadan 2026</a>
+            </div>
+            
+            <div class="lang-dropdown" style="position: relative;">
+                <button class="lang-btn" onclick="toggleLangMenu(event)" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 0.6rem 1.2rem; border-radius: 99px; color: #FFFFFF; cursor: pointer; transition: 0.3s; backdrop-filter: blur(8px); font-weight: 600; font-size: 0.9rem;">
+                    <span>EN</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="lang-menu" id="langMenu" style="display: none; position: absolute; right: 0; top: 120%; background: rgba(30, 62, 52, 0.98); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 0.5rem; min-width: 180px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); z-index: 1000; backdrop-filter: blur(12px);">
+                    <a href="../../../blog/en/ramadan/index.html" class="lang-option">English</a>
+                    <a href="../../../blog/tr/ramadan/index.html" class="lang-option">Türkçe</a>
+                    <a href="../../../blog/ar/ramadan/index.html" class="lang-option">العربية</a>
+                    <a href="../../../blog/fr/ramadan/index.html" class="lang-option">Français</a>
+                    <a href="../../../blog/id/ramadan/index.html" class="lang-option">Bahasa Indonesia</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+    function toggleLangMenu(e) {
+        e.stopPropagation();
+        var menu = document.getElementById('langMenu');
+        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+        menu.style.flexDirection = 'column';
+    }
+    document.addEventListener('click', function() {
+        var menu = document.getElementById('langMenu');
+        if (menu) menu.style.display = 'none';
+    });
+    </script>
+    <style>
+        [dir="rtl"] .lang-menu { right: auto; left: 0; }
+        .nav-item-link:hover { opacity: 1; color: #A3D9C9 !important; }
+    </style>
+
+    
+    <header class="ramadan-hero">
+        <i class="fa-solid fa-moon"></i>
+        <h1>Ramadan 2026</h1>
+        <p style="font-size: 1.2rem; opacity: 0.8;">Countdown to Mercy and Blessings</p>
+    </header>
+ 
+    <div class="times-container">
+        <div class="city-card">
+            <div class="city-selector">
+                <label style="font-weight: 600; font-size: 0.9rem; opacity:0.8;">Select your city</label>
+                <select id="citySelect" onchange="updateTimes()">
+                                        <optgroup label="Turkey">
+                        <option value="Adana,TR">Adana</option>
+                        <option value="Adiyaman,TR">Adiyaman</option>
+                        <option value="Afyonkarahisar,TR">Afyonkarahisar</option>
+                        <option value="Agri,TR">Agri</option>
+                        <option value="Aksaray,TR">Aksaray</option>
+                        <option value="Amasya,TR">Amasya</option>
+                        <option value="Ankara,TR">Ankara</option>
+                        <option value="Antalya,TR">Antalya</option>
+                        <option value="Ardahan,TR">Ardahan</option>
+                        <option value="Artvin,TR">Artvin</option>
+                        <option value="Aydin,TR">Aydin</option>
+                        <option value="Balikesir,TR">Balikesir</option>
+                        <option value="Bartin,TR">Bartin</option>
+                        <option value="Batman,TR">Batman</option>
+                        <option value="Bayburt,TR">Bayburt</option>
+                        <option value="Bilecik,TR">Bilecik</option>
+                        <option value="Bingol,TR">Bingol</option>
+                        <option value="Bitlis,TR">Bitlis</option>
+                        <option value="Bolu,TR">Bolu</option>
+                        <option value="Burdur,TR">Burdur</option>
+                        <option value="Bursa,TR">Bursa</option>
+                        <option value="Canakkale,TR">Canakkale</option>
+                        <option value="Cankiri,TR">Cankiri</option>
+                        <option value="Corum,TR">Corum</option>
+                        <option value="Denizli,TR">Denizli</option>
+                        <option value="Diyarbakir,TR">Diyarbakir</option>
+                        <option value="Duzce,TR">Duzce</option>
+                        <option value="Edirne,TR">Edirne</option>
+                        <option value="Elazig,TR">Elazig</option>
+                        <option value="Erzincan,TR">Erzincan</option>
+                        <option value="Erzurum,TR">Erzurum</option>
+                        <option value="Eskisehir,TR">Eskisehir</option>
+                        <option value="Gaziantep,TR">Gaziantep</option>
+                        <option value="Giresun,TR">Giresun</option>
+                        <option value="Gumushane,TR">Gumushane</option>
+                        <option value="Hakkari,TR">Hakkari</option>
+                        <option value="Hatay,TR">Hatay</option>
+                        <option value="Igdir,TR">Igdir</option>
+                        <option value="Isparta,TR">Isparta</option>
+                        <option value="Istanbul,TR">Istanbul</option>
+                        <option value="Izmir,TR">Izmir</option>
+                        <option value="Kahramanmaras,TR">Kahramanmaras</option>
+                        <option value="Karabuk,TR">Karabuk</option>
+                        <option value="Karaman,TR">Karaman</option>
+                        <option value="Kars,TR">Kars</option>
+                        <option value="Kastamonu,TR">Kastamonu</option>
+                        <option value="Kayseri,TR">Kayseri</option>
+                        <option value="Kilis,TR">Kilis</option>
+                        <option value="Kirikkale,TR">Kirikkale</option>
+                        <option value="Kirklareli,TR">Kirklareli</option>
+                        <option value="Kirsehir,TR">Kirsehir</option>
+                        <option value="Kocaeli,TR">Kocaeli</option>
+                        <option value="Konya,TR">Konya</option>
+                        <option value="Kutahya,TR">Kutahya</option>
+                        <option value="Malatya,TR">Malatya</option>
+                        <option value="Manisa,TR">Manisa</option>
+                        <option value="Mardin,TR">Mardin</option>
+                        <option value="Mersin,TR">Mersin</option>
+                        <option value="Mugla,TR">Mugla</option>
+                        <option value="Mus,TR">Mus</option>
+                        <option value="Nevsehir,TR">Nevsehir</option>
+                        <option value="Nigde,TR">Nigde</option>
+                        <option value="Ordu,TR">Ordu</option>
+                        <option value="Osmaniye,TR">Osmaniye</option>
+                        <option value="Rize,TR">Rize</option>
+                        <option value="Sakarya,TR">Sakarya</option>
+                        <option value="Samsun,TR">Samsun</option>
+                        <option value="Sanliurfa,TR">Sanliurfa</option>
+                        <option value="Siirt,TR">Siirt</option>
+                        <option value="Sinop,TR">Sinop</option>
+                        <option value="Sirnak,TR">Sirnak</option>
+                        <option value="Sivas,TR">Sivas</option>
+                        <option value="Tekirdag,TR">Tekirdag</option>
+                        <option value="Tokat,TR">Tokat</option>
+                        <option value="Trabzon,TR">Trabzon</option>
+                        <option value="Tunceli,TR">Tunceli</option>
+                        <option value="Usak,TR">Usak</option>
+                        <option value="Van,TR">Van</option>
+                        <option value="Yalova,TR">Yalova</option>
+                        <option value="Yozgat,TR">Yozgat</option>
+                        <option value="Zonguldak,TR">Zonguldak</option>
+                    </optgroup>
+                    <optgroup label="Indonesia">
+                        <option value="Balikpapan,ID">Balikpapan</option>
+                        <option value="Bandar Lampung,ID">Bandar Lampung</option>
+                        <option value="Bandung,ID">Bandung</option>
+                        <option value="Banjarmasin,ID">Banjarmasin</option>
+                        <option value="Batam,ID">Batam</option>
+                        <option value="Bekasi,ID">Bekasi</option>
+                        <option value="Bogor,ID">Bogor</option>
+                        <option value="Cimahi,ID">Cimahi</option>
+                        <option value="Denpasar,ID">Denpasar</option>
+                        <option value="Depok,ID">Depok</option>
+                        <option value="Jakarta,ID">Jakarta</option>
+                        <option value="Jambi,ID">Jambi</option>
+                        <option value="Jayapura,ID">Jayapura</option>
+                        <option value="Kupang,ID">Kupang</option>
+                        <option value="Makassar,ID">Makassar</option>
+                        <option value="Malang,ID">Malang</option>
+                        <option value="Manado,ID">Manado</option>
+                        <option value="Medan,ID">Medan</option>
+                        <option value="Padang,ID">Padang</option>
+                        <option value="Palembang,ID">Palembang</option>
+                        <option value="Pekanbaru,ID">Pekanbaru</option>
+                        <option value="Pontianak,ID">Pontianak</option>
+                        <option value="Samarinda,ID">Samarinda</option>
+                        <option value="Semarang,ID">Semarang</option>
+                        <option value="Serang,ID">Serang</option>
+                        <option value="Surabaya,ID">Surabaya</option>
+                        <option value="Surakarta,ID">Surakarta</option>
+                        <option value="Tangerang,ID">Tangerang</option>
+                        <option value="Tasikmalaya,ID">Tasikmalaya</option>
+                    </optgroup>
+                    <optgroup label="Saudi Arabia">
+                        <option value="Abha,SA">Abha</option>
+                        <option value="Al-Hofuf,SA">Al-Hofuf</option>
+                        <option value="Al-Jubail,SA">Al-Jubail</option>
+                        <option value="Al-Khobar,SA">Al-Khobar</option>
+                        <option value="Buraidah,SA">Buraidah</option>
+                        <option value="Dammam,SA">Dammam</option>
+                        <option value="Ha'il,SA">Ha'il</option>
+                        <option value="Jeddah,SA">Jeddah</option>
+                        <option value="Jizan,SA">Jizan</option>
+                        <option value="Khamis Mushait,SA">Khamis Mushait</option>
+                        <option value="Mecca,SA">Mecca</option>
+                        <option value="Medina,SA">Medina</option>
+                        <option value="Najran,SA">Najran</option>
+                        <option value="Riyadh,SA">Riyadh</option>
+                        <option value="Tabuk,SA">Tabuk</option>
+                        <option value="Taif,SA">Taif</option>
+                        <option value="Yanbu,SA">Yanbu</option>
+                    </optgroup>
+                    <optgroup label="Egypt">
+                        <option value="Alexandria,EG">Alexandria</option>
+                        <option value="Asyut,EG">Asyut</option>
+                        <option value="Cairo,EG">Cairo</option>
+                        <option value="Giza,EG">Giza</option>
+                        <option value="Luxor,EG">Luxor</option>
+                        <option value="Mansoura,EG">Mansoura</option>
+                        <option value="Port Said,EG">Port Said</option>
+                        <option value="Shubra El Kheima,EG">Shubra El Kheima</option>
+                        <option value="Suez,EG">Suez</option>
+                        <option value="Tanta,EG">Tanta</option>
+                    </optgroup>
+                    <optgroup label="Qatar">
+                        <option value="Al Khor,QA">Al Khor</option>
+                        <option value="Al Rayyan,QA">Al Rayyan</option>
+                        <option value="Al Wakrah,QA">Al Wakrah</option>
+                        <option value="Doha,QA">Doha</option>
+                    </optgroup>
+                    <optgroup label="Kuwait">
+                        <option value="Farwaniya,KW">Farwaniya</option>
+                        <option value="Hawally,KW">Hawally</option>
+                        <option value="Kuwait City,KW">Kuwait City</option>
+                        <option value="Salmiya,KW">Salmiya</option>
+                    </optgroup>
+                    <optgroup label="Gulf">
+                        <option value="Abu Dhabi,AE">Abu Dhabi</option>
+                        <option value="Dubai,AE">Dubai</option>
+                        <option value="Manama,BH">Manama</option>
+                        <option value="Muscat,OM">Muscat</option>
+                        <option value="Sharjah,AE">Sharjah</option>
+                    </optgroup>
+                    <optgroup label="Europe & Others">
+                        <option value="Berlin,DE">Berlin</option>
+                        <option value="Brussels,BE">Brussels</option>
+                        <option value="Geneva,CH">Geneva</option>
+                        <option value="London,UK">London</option>
+                        <option value="Lyon,FR">Lyon</option>
+                        <option value="Marseille,FR">Marseille</option>
+                        <option value="New York,US">New York</option>
+                        <option value="Paris,FR">Paris</option>
+                        <option value="Sydney,AU">Sydney</option>
+                        <option value="Toronto,CA">Toronto</option>
+                    </optgroup>
+                    <optgroup label="North Africa">
+                        <option value="Algiers,DZ">Algiers</option>
+                        <option value="Casablanca,MA">Casablanca</option>
+                        <option value="Marrakech,MA">Marrakech</option>
+                        <option value="Oran,DZ">Oran</option>
+                        <option value="Tripoli,LY">Tripoli</option>
+                        <option value="Tunis,TN">Tunis</option>
+                    </optgroup>
+
+                </select>
+            </div>
+ 
+            <div class="countdown-banner" id="countdown">
+                <span style="font-size: 0.9rem; opacity: 0.8;">First Day of Ramadan (approx):</span><br>
+                <strong style="font-size: 1.5rem; color: #A3D9C9;">February 18, 2026</strong>
+            </div>
+ 
+            <div class="times-grid">
+                <div class="time-box">
+                    <div class="time-label">Sahur (Fajr)</div>
+                    <div class="time-value" id="sahurTime">--:--</div>
+                </div>
+                <div class="time-box" style="border-color: #D4AF37;">
+                    <div class="time-label" style="color: #D4AF37;">Iftar (Maghrib)</div>
+                    <div class="time-value" id="iftarTime" style="color: #D4AF37;">--:--</div>
+                </div>
+                <div class="time-box" style="grid-column: span 2;">
+                    <div style="display:flex; justify-content: space-around; font-size: 0.9rem;">
+                        <div>
+                            <span class="time-label">Dhuhr</span>
+                            <div id="dhuhrTime">--:--</div>
+                        </div>
+                        <div>
+                            <span class="time-label">Asr</span>
+                            <div id="asrTime">--:--</div>
+                        </div>
+                        <div>
+                            <span class="time-label">Isha</span>
+                            <div id="ishaTime">--:--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="margin-top: 2rem; font-size: 0.8rem; text-align: center; opacity: 0.6;">
+                <i class="fa-solid fa-circle-info"></i> Times are calculated using the Muslim World League method. Please consult your local mosque for exact timings.
+            </p>
+        </div>
+        
+        <div style="margin-top: 4rem;">
+            <h2 style="text-align:center; margin-bottom: 2rem;">Ramadan Essentials</h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <a href="../posts/ramadan-patience.html" style="text-decoration:none; color:inherit;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
+                        <h3>Spiritual Preparation</h3>
+                        <p style="font-size:0.9rem; opacity:0.8;">How to prepare your heart for the month of the Quran.</p>
+                    </div>
+                </a>
+                <a href="../posts/zakat-calculator-meaning.html" style="text-decoration:none; color:inherit;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
+                        <h3>Zakat Guide</h3>
+                        <p style="font-size:0.9rem; opacity:0.8;">Understand the purification of wealth during this blessed month.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function updateTimes() {
+            const select = document.getElementById('citySelect');
+            const cityCountry = select.value.split(',');
+            const city = cityCountry[0];
+            const country = cityCountry[1];
+            
+            try {
+                const url = `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=3`;
+                const response = await fetch(url);
+                const data = await response.json();
+                const timings = data.data.timings;
+                
+                document.getElementById('sahurTime').innerText = timings.Fajr;
+                document.getElementById('iftarTime').innerText = timings.Maghrib;
+                document.getElementById('dhuhrTime').innerText = timings.Dhuhr;
+                document.getElementById('asrTime').innerText = timings.Asr;
+                document.getElementById('ishaTime').innerText = timings.Isha;
+            } catch (e) {
+                console.error("Failed to fetch times", e);
+            }
+        }
+        
+        // Initial load
+        updateTimes();
+    </script>
+
+    <footer class="main-footer">
+        <div class="footer-bottom-row">
+            <div class="footer-brand" style="font-family: 'Kaushan Script', cursive; font-size: 1.5rem;">Islamvy <span style="font-size: 1rem; opacity:0.8;">Blog</span></div>
+            <div class="footer-copyright">© 2026 Islamvy. All rights reserved.</div>
+        </div>
+    </footer>
+</body>
+</html>
