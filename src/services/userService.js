@@ -187,3 +187,18 @@ export const updateUserSettings = async (userId, updates) => {
         return false;
     }
 };
+
+export const updateLastSeen = async (userId) => {
+    try {
+        const { error } = await supabase
+            .from('profiles')
+            .update({ last_seen: new Date().toISOString() })
+            .eq('id', userId);
+
+        if (error) {
+            // console.warn('Error updating last_seen:', error);
+        }
+    } catch (e) {
+        // console.warn('updateLastSeen exception:', e);
+    }
+};

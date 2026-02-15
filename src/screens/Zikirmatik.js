@@ -341,9 +341,10 @@ const styles = StyleSheet.create({
     },
     instructions: {
         marginTop: 60,
-        color: COLORS.textSecondary,
+        color: '#FFFFFF',
         fontSize: 12,
-        opacity: 0.6
+        opacity: 0.8,
+        textAlign: 'center'
     }
 });
 

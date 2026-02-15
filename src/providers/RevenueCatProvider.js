@@ -24,6 +24,12 @@ export const RevenueCatProvider = ({ children }) => {
         initRevenueCat();
     }, []);
 
+    useEffect(() => {
+        if (customerInfo) {
+            checkProStatus(customerInfo);
+        }
+    }, [customerInfo]);
+
     const initRevenueCat = async () => {
         try {
             if (Platform.OS === 'ios') {
@@ -102,28 +108,40 @@ export const RevenueCatProvider = ({ children }) => {
     };
 
     const checkProStatus = async (info) => {
-        console.log("RevenueCat Checking Status:", JSON.stringify(info?.entitlements?.active, null, 2));
+        console.log("RevenueCat Checking Status:", JSON.stringify(info, null, 2));
 
-        // Check for any common entitlement names if 'pro' is missing
         const activeEntitlements = info?.entitlements?.active || {};
-        const hasPro = activeEntitlements["pro"] || activeEntitlements["premium"] || activeEntitlements["starter"] || activeEntitlements["com.esat.islamvy.pro"];
+        const activeSubs = info?.activeSubscriptions || [];
 
-        if (hasPro) {
+        // Check entitlements OR active subscriptions
+        const hasProEntitlement = activeEntitlements["pro"] || activeEntitlements["premium"] || activeEntitlements["starter"] || activeEntitlements["unlimited"] || activeEntitlements["com.esat.islamvy.pro"];
+        const hasActiveSub = activeSubs.length > 0;
+
+        if (hasProEntitlement || hasActiveSub) {
             setIsPro(true);
             await AsyncStorage.setItem('isPremium', 'true');
 
-            // Detect specific tier from active entitlements
-            let detectedTier = 'starter'; // default
-            if (activeEntitlements["unlimited"] || activeEntitlements["com.esat.islamvy.unlimited"]) {
+            // Detect tier logic: Check Product IDs FIRST (more specific), then Entitlements
+            let detectedTier = 'starter';
+
+            // Check Product IDs (Strings in activeSubscriptions)
+            const hasUnlimitedSub = activeSubs.some(sub => sub.toLowerCase().includes('unlimited'));
+            const hasProSub = activeSubs.some(sub => sub.toLowerCase().includes('pro') || sub.toLowerCase().includes('premium'));
+            // Note: 'starter' might be just default, or have 'starter' in ID
+
+            // Check Entitlements
+            const hasUnlimitedEnt = activeEntitlements["unlimited"] || activeEntitlements["com.esat.islamvy.unlimited"];
+            const hasProEnt = activeEntitlements["pro"] || activeEntitlements["com.esat.islamvy.pro"];
+
+            if (hasUnlimitedSub || hasUnlimitedEnt) {
                 detectedTier = 'unlimited';
-            } else if (activeEntitlements["pro"] || activeEntitlements["com.esat.islamvy.pro"]) {
+            } else if (hasProSub || hasProEnt || activeEntitlements["premium"]) {
                 detectedTier = 'pro';
-            } else if (activeEntitlements["starter"] || activeEntitlements["com.esat.islamvy.starter"]) {
+            } else if (activeEntitlements["starter"]) {
                 detectedTier = 'starter';
-            } else if (activeEntitlements["premium"]) {
-                detectedTier = 'pro'; // Map generic "premium" to pro
             }
 
+            console.log("Detected Tier:", detectedTier);
             setPremiumTier(detectedTier);
             await AsyncStorage.setItem('premiumTier', detectedTier);
         } else {
@@ -134,9 +152,9 @@ export const RevenueCatProvider = ({ children }) => {
         }
     };
 
-    const purchasePackage = async (packageToPurchase) => {
+    const purchasePackage = async (packageToPurchase, upgradeInfo) => {
         try {
-            const { customerInfo } = await Purchases.purchasePackage(packageToPurchase);
+            const { customerInfo } = await Purchases.purchasePackage(packageToPurchase, upgradeInfo);
             setCustomerInfo(customerInfo);
             await checkProStatus(customerInfo);
             return true;

@@ -749,8 +749,8 @@ const CommunityScreen = ({ navigation, route }) => {
                             onPress={() => setFilter(tkey)}
                         >
                             {tkey === 'leaderboard' ? (
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 40 }}>
-                                    <Trophy size={20} color={filter === tkey ? '#FFF' : '#7f8c8d'} />
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 30 }}>
+                                    <Trophy size={16} color={filter === tkey ? '#FFF' : '#7f8c8d'} />
                                 </View>
                             ) : (
                                 <Text style={[styles.tabText, filter === tkey && styles.activeTabText]}>
@@ -774,89 +774,77 @@ const CommunityScreen = ({ navigation, route }) => {
                             </View>
                             {leaderboardData.length === 0 ? (
                                 <View style={styles.emptyBox}>
-                                    <Trophy size={60} color="#DDD" />
+                                    <Trophy size={28} color="#DDD" />
                                     <Text style={styles.emptyText}>{t('community.no_leaderboard') || 'Henüz veri yok'}</Text>
                                 </View>
                             ) : (
                                 leaderboardData.map((user, index) => (
                                     <View key={user.user_id || index} style={[
                                         styles.leaderboardCard,
-                                        index === 0 && styles.leaderboardGold, // 1st Place Enhanced
+                                        { flexDirection: 'column' },
+                                        index === 0 && styles.leaderboardGold,
                                         index === 1 && styles.leaderboardSilver,
-                                        // index === 2 && styles.leaderboardBronze // 3rd Place Normalized (removed bronze style)
                                     ]}>
-                                        <View style={styles.leaderboardRank}>
-                                            <Text style={[
-                                                styles.rankText,
-                                                index === 0 && { fontSize: 32, transform: [{ scale: 1.2 }] }, // Bigger for 1st
-                                                index === 1 && { fontSize: 22 }
-                                            ]}>
-                                                {index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`}
-                                            </Text>
-                                        </View>
-                                        <View style={styles.leaderboardInfo}>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                                {/* Avatar */}
-                                                <View style={[
-                                                    { borderRadius: 25, overflow: 'hidden', backgroundColor: '#f0f0f0', justifyContent: 'center', alignItems: 'center' },
-                                                    index === 0 && { borderWidth: 2, borderColor: '#FFD700', width: 54, height: 54 }, // Bigger border for 1st
-                                                    index !== 0 && { width: 40, height: 40 }
+                                        {/* Top: Rank + Avatar + Name + City */}
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                                            {/* Rank */}
+                                            <View style={styles.leaderboardRank}>
+                                                <Text style={[
+                                                    styles.rankText,
+                                                    index === 0 && { fontSize: 28 },
+                                                    index === 1 && { fontSize: 20 }
                                                 ]}>
-                                                    {user.avatar_url ? (
-                                                        <Image
-                                                            source={{ uri: user.avatar_url }}
-                                                            style={{ width: '100%', height: '100%', backgroundColor: '#f0f0f0' }}
-                                                        />
-                                                    ) : (
-                                                        <Text style={{
-                                                            fontSize: index === 0 ? 24 : 18,
-                                                            fontWeight: 'bold',
-                                                            color: '#555'
-                                                        }}>
-                                                            {(user.full_name && user.full_name.trim()) ? user.full_name.trim().charAt(0).toUpperCase() : '?'}
-                                                        </Text>
-                                                    )}
-                                                </View>
+                                                    {index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`}
+                                                </Text>
+                                            </View>
 
-                                                <View>
-                                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                                                        <Text style={[styles.leaderboardName, index === 0 && { fontSize: 18, color: '#d35400' }]}>
-                                                            {(user.full_name && user.full_name.trim()) ? user.full_name : '...'}
-                                                        </Text>
-                                                        <Text style={{ fontSize: 14 }}>{user.badge_emoji}</Text>
+                                            {/* Avatar */}
+                                            <View style={[
+                                                { borderRadius: 25, overflow: 'hidden', backgroundColor: '#f0f0f0', justifyContent: 'center', alignItems: 'center', marginLeft: 10 },
+                                                index === 0 ? { borderWidth: 2, borderColor: '#FFD700', width: 50, height: 50 } : { width: 40, height: 40 }
+                                            ]}>
+                                                {user.avatar_url ? (
+                                                    <Image
+                                                        source={{ uri: user.avatar_url }}
+                                                        style={{ width: '100%', height: '100%', backgroundColor: '#f0f0f0' }}
+                                                    />
+                                                ) : (
+                                                    <Text style={{ fontSize: index === 0 ? 22 : 16, fontWeight: 'bold', color: '#555' }}>
+                                                        {(user.full_name && user.full_name.trim()) ? user.full_name.trim().charAt(0).toUpperCase() : '?'}
+                                                    </Text>
+                                                )}
+                                            </View>
+
+                                            {/* Name + City */}
+                                            <View style={{ flex: 1, marginLeft: 10 }}>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                                                    <Text style={[styles.leaderboardName, index === 0 && { fontSize: 16, color: '#d35400' }]} numberOfLines={1}>
+                                                        {(user.full_name && user.full_name.trim()) ? user.full_name : '...'}
+                                                    </Text>
+                                                    <Text style={{ fontSize: 13 }}>{user.badge_emoji}</Text>
+                                                </View>
+                                                {(user.city && user.city.trim()) ? (
+                                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2, marginTop: 2 }}>
+                                                        <Text style={{ fontSize: 10 }}>📍</Text>
+                                                        <Text style={[styles.leaderboardCity, index === 0 && { color: '#e67e22', fontWeight: 'bold' }]} numberOfLines={1}>{user.city}</Text>
                                                     </View>
-
-                                                    {/* Always show location if available, enhanced for 1st place */}
-                                                    {(user.city && user.city.trim()) ? (
-                                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-                                                            <Text style={{ fontSize: 10 }}>📍</Text>
-                                                            <Text style={[styles.leaderboardCity, index === 0 && { color: '#e67e22', fontWeight: 'bold' }]}>{user.city}</Text>
-                                                        </View>
-                                                    ) : null}
-                                                </View>
+                                                ) : null}
                                             </View>
                                         </View>
 
-                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(0,0,0,0.05)' }}>
-                                            {/* Amens */}
-                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(0,0,0,0.05)' }}>
-                                                {/* 1. Dhikrs (Zikir) */}
-                                                <View style={{ alignItems: 'center', flex: 1 }}>
-                                                    <Text style={{ fontSize: 14, fontWeight: 'bold', color: COLORS.accent }}>📿 {user.completed_dhikrs || 0}</Text>
-                                                    <Text style={{ fontSize: 10, color: '#666', marginTop: 2 }}>{t('community.completed_dhikrs_short') || 'Zikir'}</Text>
-                                                </View>
-
-                                                {/* 2. Amens (Dua) */}
-                                                <View style={{ alignItems: 'center', flex: 1, borderLeftWidth: 1, borderRightWidth: 1, borderColor: 'rgba(0,0,0,0.05)' }}>
-                                                    <Text style={{ fontSize: 14, fontWeight: 'bold', color: COLORS.primary }}>🤲 {user.total_amens || 0}</Text>
-                                                    <Text style={{ fontSize: 10, color: '#666', marginTop: 2 }}>{t('community.total_amens_short') || 'Dua (Amin)'}</Text>
-                                                </View>
-
-                                                {/* 3. Hatims */}
-                                                <View style={{ alignItems: 'center', flex: 1 }}>
-                                                    <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#8e44ad' }}>📖 {user.completed_hatims || 0}</Text>
-                                                    <Text style={{ fontSize: 10, color: '#666', marginTop: 2 }}>{t('community.completed_hatims_short') || 'Hatim'}</Text>
-                                                </View>
+                                        {/* Bottom: Stats row - Zikir / Amin / Hatim */}
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingTop: 10, borderTopWidth: 1, borderTopColor: 'rgba(0,0,0,0.06)' }}>
+                                            <View style={{ alignItems: 'center', flex: 1 }}>
+                                                <Text style={{ fontSize: 14, fontWeight: 'bold', color: COLORS.accent }}>📿 {user.completed_dhikrs || 0}</Text>
+                                                <Text style={{ fontSize: 10, color: '#666', marginTop: 2 }}>{t('community.completed_dhikrs_short') || 'Zikir'}</Text>
+                                            </View>
+                                            <View style={{ alignItems: 'center', flex: 1, borderLeftWidth: 1, borderRightWidth: 1, borderColor: 'rgba(0,0,0,0.06)' }}>
+                                                <Text style={{ fontSize: 14, fontWeight: 'bold', color: COLORS.primary }}>🤲 {user.total_amens || 0}</Text>
+                                                <Text style={{ fontSize: 10, color: '#666', marginTop: 2 }}>{t('community.total_amens_short') || 'Amin'}</Text>
+                                            </View>
+                                            <View style={{ alignItems: 'center', flex: 1 }}>
+                                                <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#8e44ad' }}>📖 {user.completed_hatims || 0}</Text>
+                                                <Text style={{ fontSize: 10, color: '#666', marginTop: 2 }}>{t('community.completed_hatims_short') || 'Hatim'}</Text>
                                             </View>
                                         </View>
                                     </View>

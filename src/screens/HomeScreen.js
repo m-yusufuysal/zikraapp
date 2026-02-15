@@ -237,9 +237,15 @@ const HomeScreen = ({ navigation }) => {
                 if (citation && body.endsWith(citation)) {
                     body = body.slice(0, -citation.length).trim();
                 }
+
                 // Remove trailing parenthetical that matches citation
                 const citationEscaped = citation.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                body = body.replace(new RegExp(`\\s*\\(${citationEscaped}\\)\\s*$`), '').trim();
+                body = body.replace(new RegExp(`\\s*\\(${citationEscaped}\\)\\s*$`, 'i'), '').trim();
+
+                // Remove generic trailing parenthetical citations (e.g. "(Al-i İmran 3:186)")
+                // Looks for: (Text + Number:Number) or (Text + Number) at the end of string
+                body = body.replace(/\s*\([^)]*\d+[:\.]\d+\)\s*$/, '').trim();
+                body = body.replace(/\s*\([^)]+\d+\)\s*$/, '').trim();
 
                 setDailyVerse({
                     verse: {

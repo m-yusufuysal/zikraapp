@@ -3,7 +3,7 @@ import * as Localization from 'expo-localization';
 import { Check, Crown, ExternalLink, Heart, Shield, Star, X, Zap } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Dimensions, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import RamadanBackground from '../components/RamadanBackground';
 import { useTheme } from '../contexts/ThemeContext';
@@ -22,7 +22,7 @@ const PremiumScreen = ({ navigation }) => {
     const insets = useSafeAreaInsets();
     const { t } = useTranslation();
     const { nightModeEnabled } = useTheme();
-    const { purchasePackage, restorePurchases, isPro, currentOffering, loading } = useRevenueCat();
+    const { purchasePackage, restorePurchases, isPro, currentOffering, loading, customerInfo } = useRevenueCat();
     const [selectedTier, setSelectedTier] = useState('pro');
     const [currency, setCurrency] = useState('$');
     const [isProcessing, setIsProcessing] = useState(false);
@@ -54,7 +54,6 @@ const PremiumScreen = ({ navigation }) => {
     const handlePurchase = async () => {
         if (isProcessing) return;
 
-        // If we have products, allow purchase even if 'loading' is true (background refresh)
         // If we have products, allow purchase even if 'loading' is true (background refresh)
         if (!currentOffering && loading) {
             Alert.alert(t('error'), t('premium.market_loading_error'));
@@ -88,7 +87,24 @@ const PremiumScreen = ({ navigation }) => {
                 return;
             }
 
-            const success = await purchasePackage(packageToBuy);
+            // CHECK FOR UPGRADE (Android Only mostly, but good for tracking)
+            let upgradeInfo = null;
+            if (isPro && customerInfo?.activeSubscriptions?.length > 0) {
+                const oldSKU = customerInfo.activeSubscriptions[0]; // Assuming 1 active sub
+                // Only upgrade if different SKU
+                if (oldSKU !== packageToBuy.product.identifier) {
+                    if (Platform.OS === 'android') {
+                        // PRORATION_MODE_IMMEDIATE_WITH_TIME_PRORATION = 1
+                        upgradeInfo = {
+                            oldSKU: oldSKU,
+                            prorationMode: 1
+                        };
+                        console.log("Upgrading from", oldSKU, "to", packageToBuy.product.identifier);
+                    }
+                }
+            }
+
+            const success = await purchasePackage(packageToBuy, upgradeInfo);
 
             if (success) {
                 Alert.alert(
@@ -99,7 +115,7 @@ const PremiumScreen = ({ navigation }) => {
             }
         } catch (error) {
             console.error('Premium purchase error:', error);
-            Alert.alert(t('error'), t('community.save_error'));
+            Alert.alert(t('error'), error.message || t('community.save_error'));
         } finally {
             setIsProcessing(false);
         }
@@ -122,7 +138,7 @@ const PremiumScreen = ({ navigation }) => {
         }
     };
 
-    const getPrice = (tierKey) => {
+    const getPriceDisplay = (tierKey) => {
         // Try to fetch from RevenueCat packages
         if (currentOffering?.availablePackages) {
             const pkg = currentOffering.availablePackages.find((p) => {
@@ -135,13 +151,16 @@ const PremiumScreen = ({ navigation }) => {
                     || productId.includes(tier);
             });
             if (pkg) {
-                return pkg.product.priceString;
+                // Return formatted string from RevenueCat (e.g. "$4.99", "AED 14.99")
+                // and NO separate currency symbol, because priceString includes it.
+                return { price: pkg.product.priceString, symbol: null };
             }
         }
 
         // Fallback to hardcoded
         const tier = TIERS[tierKey.toUpperCase()];
-        return currency === '₺' ? tier.price_try : tier.price_usd;
+        const amount = currency === '₺' ? tier.price_try : tier.price_usd;
+        return { price: amount, symbol: currency };
     };
 
     const renderTierCard = (tierKey) => {
@@ -156,6 +175,8 @@ const PremiumScreen = ({ navigation }) => {
         // Let's stick to old logic for `isCurrent` if possible, but we don't have `currentTier` state anymore.
         // Let's bring back reading `premiumTier` from storage for UI purpose only.
 
+
+        const { price, symbol } = getPriceDisplay(tierKey);
 
         return (
             <TouchableOpacity
@@ -188,8 +209,10 @@ const PremiumScreen = ({ navigation }) => {
                 </View>
 
                 <View style={styles.priceRow}>
-                    <Text style={[styles.currency, isSelected && styles.textActive]} maxFontSizeMultiplier={1.3}>{currency}</Text>
-                    <Text style={[styles.price, isSelected && styles.textActive]} maxFontSizeMultiplier={1.3}>{getPrice(tierKey)}</Text>
+                    {symbol && (
+                        <Text style={[styles.currency, isSelected && styles.textActive]} maxFontSizeMultiplier={1.3}>{symbol}</Text>
+                    )}
+                    <Text style={[styles.price, isSelected && styles.textActive]} maxFontSizeMultiplier={1.3}>{price}</Text>
                     <Text style={[styles.period, isSelected && styles.textActive]} maxFontSizeMultiplier={1.3}>{t('premium.per_month')}</Text>
                 </View>
 

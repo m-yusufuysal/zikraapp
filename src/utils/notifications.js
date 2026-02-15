@@ -435,7 +435,7 @@ export const schedulePromotionalNotifications = async (language = 'tr') => {
         await Notifications.scheduleNotificationAsync({
             content: {
                 title: quoteTitle[language] || quoteTitle.tr,
-                body: `"${quote.body}" — ${quote.citation || quote.title}`,
+                body: `"${quote.body}"`,
                 sound: 'islamvyappnotification.wav',
                 data: { type: 'promotional', action: 'daily_quote' },
                 ...(Platform.OS === 'android' && { channelId: 'engagement' }),

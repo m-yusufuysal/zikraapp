@@ -7,12 +7,15 @@ import {
     TextInput,
     TouchableOpacity,
     View,
-    SafeAreaView
+    Modal,
+    Alert,
+    KeyboardAvoidingView,
+    Platform
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '../services/supabase';
 import { COLORS } from '../utils/theme';
-import { ChevronLeft, ChevronRight, Search, Users } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight, Search, Users, Activity, UserPlus, Star, X, Plus } from 'lucide-react-native';
 
 const InfluencerListScreen = ({ navigation }) => {
     const insets = useSafeAreaInsets();
@@ -20,10 +23,44 @@ const InfluencerListScreen = ({ navigation }) => {
     const [filteredInfluencers, setFilteredInfluencers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
+    const [stats, setStats] = useState({
+        activeUsers: 0,
+        totalRegistrations: 0,
+        influencerCount: 0
+    });
 
     useEffect(() => {
         fetchInfluencers();
+        fetchStats();
     }, []);
+
+    const fetchStats = async () => {
+        try {
+            // 1. Get Active Users (Online within last 5 minutes)
+            const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+            const { count: activeCount, error: activeError } = await supabase
+                .from('profiles')
+                .select('*', { count: 'exact', head: true })
+                .gt('last_seen', fiveMinutesAgo);
+
+            // 2. Get Influencer Count & Total Registrations
+            const { data: rpcData, error: rpcError } = await supabase.rpc('get_admin_stats');
+
+            const { count: totalReg, error: countError } = await supabase
+                .from('profiles')
+                .select('*', { count: 'exact', head: true });
+
+            setStats(prev => ({
+                ...prev,
+                activeUsers: activeCount || 0,
+                totalRegistrations: totalReg || 0,
+                influencerCount: rpcData?.influencers_count || 0
+            }));
+
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+        }
+    };
 
     const fetchInfluencers = async () => {
         try {
@@ -101,8 +138,27 @@ const InfluencerListScreen = ({ navigation }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
                     <ChevronLeft size={28} color="#333" />
                 </TouchableOpacity>
-                <Text style={styles.title}>İnfluencer Listesi</Text>
+                <Text style={styles.title}>Kullanıcılar</Text>
                 <View style={{ width: 40 }} />
+            </View>
+
+            {/* Quick Stats Grid */}
+            <View style={styles.gridStats}>
+                <View style={styles.gridItem}>
+                    <Activity size={20} color={COLORS.primary} style={{ marginBottom: 8 }} />
+                    <Text style={styles.gridValue}>{stats.activeUsers}</Text>
+                    <Text style={styles.gridLabel}>Aktif Kullanıcı</Text>
+                </View>
+                <View style={styles.gridItem}>
+                    <UserPlus size={20} color="#2ecc71" style={{ marginBottom: 8 }} />
+                    <Text style={styles.gridValue}>{stats.totalRegistrations}</Text>
+                    <Text style={styles.gridLabel}>Toplam Kayıt</Text>
+                </View>
+                <View style={styles.gridItem}>
+                    <Star size={20} color="#f1c40f" style={{ marginBottom: 8 }} />
+                    <Text style={styles.gridValue}>{stats.influencerCount}</Text>
+                    <Text style={styles.gridLabel}>İnf Sayısı</Text>
+                </View>
             </View>
 
             {/* Search */}
@@ -126,7 +182,7 @@ const InfluencerListScreen = ({ navigation }) => {
                 <FlatList
                     data={filteredInfluencers}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.influencer_id}
+                    keyExtractor={(item) => item.influencer_id || Math.random().toString()}
                     contentContainerStyle={styles.listContent}
                     ListEmptyComponent={
                         <View style={styles.center}>
@@ -145,6 +201,12 @@ const styles = StyleSheet.create({
     header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingBottom: 10 },
     backBtn: { padding: 8 },
     title: { fontSize: 20, fontWeight: 'bold', color: '#333' },
+
+    gridStats: { flexDirection: 'row', paddingHorizontal: 16, marginBottom: 16, gap: 12 },
+    gridItem: { flex: 1, backgroundColor: '#FFF', borderRadius: 12, padding: 12, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5, elevation: 2 },
+    gridValue: { fontSize: 18, fontWeight: 'bold', color: '#333', marginBottom: 2 },
+    gridLabel: { fontSize: 11, color: '#666' },
+
     searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', marginHorizontal: 16, marginBottom: 16, borderRadius: 12, paddingHorizontal: 12, height: 44, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5, elevation: 2 },
     searchIcon: { marginRight: 8 },
     searchInput: { flex: 1, height: '100%', fontSize: 15, color: '#333' },

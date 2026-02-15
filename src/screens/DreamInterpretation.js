@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
-import { AlertCircle, BookOpen, Calendar, Clock, MapPin, Moon, Share2, ThumbsDown, ThumbsUp } from 'lucide-react-native';
+import { AlertCircle, BookOpen, Calendar, Clock, History, MapPin, Moon, Share2, ThumbsDown, ThumbsUp } from 'lucide-react-native';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -392,7 +392,7 @@ https://islamvy.com/download
                                 style={{ position: 'absolute', right: 0, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 20, width: 40, height: 40, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,215,0,0.2)' }}
                                 onPress={() => navigation.navigate('DreamHistory')}
                             >
-                                <BookOpen size={20} color="#FFD700" />
+                                <History size={20} color="#FFD700" />
                             </TouchableOpacity>
                         </View>
                         <Text style={[styles.title, { color: '#FFF' }]}>{t('dream.title')}</Text>

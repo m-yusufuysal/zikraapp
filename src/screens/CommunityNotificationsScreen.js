@@ -1,4 +1,4 @@
-import { Bell, BookOpen, CheckCircle2, ChevronLeft, Heart, ShoppingBag, Users } from 'lucide-react-native';
+import { Bell, BookOpen, CheckCircle2, ChevronLeft, Heart, ShoppingBag, Users, GripHorizontal } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -67,7 +67,7 @@ const CommunityNotificationsScreen = ({ navigation }) => {
     const renderIcon = (type) => {
         switch (type) {
             case 'amen': return <Heart size={20} color={COLORS.primary} />;
-            case 'prayed': return <Heart size={20} color={COLORS.matteGreen} fill={COLORS.matteGreen} />;
+            case 'prayed': return <GripHorizontal size={24} color={COLORS.matteGreen} />;
             case 'support': return <Users size={20} color={COLORS.primary} />;
             case 'hatim_slot_taken': return <BookOpen size={20} color="#3498db" />;
             case 'hatim_completed': return <CheckCircle2 size={20} color={COLORS.matteGreen} />;

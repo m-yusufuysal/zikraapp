@@ -321,9 +321,22 @@ function AppContent() {
                 syncWithServer(userId);
                 try {
                     const { getMachineId } = require('./src/services/deviceService');
-                    const { syncMachineId } = require('./src/services/userService');
+                    const { syncMachineId, updateLastSeen } = require('./src/services/userService');
                     const machineId = await getMachineId();
                     await syncMachineId(userId, machineId);
+
+                    // Initial update
+                    updateLastSeen(userId);
+
+                    // Periodic update (every 5 minutes)
+                    const intervalId = setInterval(() => {
+                        if (AppState.currentState === 'active') {
+                            updateLastSeen(userId);
+                        }
+                    }, 5 * 60 * 1000);
+
+                    // Store interval ID in a way to clear it later if needed (simple implementation for now)
+                    // In a more robust solution, we'd use a ref or effect cleanup, but handleSessionInit is called once per session change.
                 } catch (e) {
                     console.warn('[App] Machine ID sync failed:', e);
                 }
@@ -469,6 +482,7 @@ function AppContent() {
                                     <Stack.Screen name="Shop" component={ShopScreen} />
                                     <Stack.Screen name="ShopAdmin" component={require('./src/screens/ShopAdminScreen').default} />
                                     <Stack.Screen name="AdminDashboard" component={require('./src/screens/AdminDashboardScreen').default} />
+                                    <Stack.Screen name="AdminSettings" component={require('./src/screens/AdminSettingsScreen').default} />
                                     <Stack.Screen name="ZakatCalculator" component={ZakatCalculator} />
                                     <Stack.Screen name="Premium" component={PremiumScreen} options={{ presentation: 'modal' }} />
                                     <Stack.Screen name="InfluencerDashboard" component={InfluencerDashboard} />

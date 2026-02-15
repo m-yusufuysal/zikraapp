@@ -277,7 +277,7 @@
             },
             {
                 "q": "Verilerim ne kadar güvende?",
-                "a": "Kişisel verileriniz ve rüya kayıtlarınız en üst düzey şifreleme yöntemleriyle korunmaktadır. Islamvy, kullanıcı verilerini asla üçüncü şahıslarla veya reklam ağlarıyla paylaşmaz. Gizlilik bizim için en kutsal değerdir."
+                "a": "Kişisel verileriniz ve rüya kayıtlarınız en üst düzey şifreleme yöntemleriyle korunmaktadır. Islamvy, kullanıcı verilerini asla üçüncü şahıslarla veya reklam ağlarıyla paylaşmaz. Gizliliğiniz bizim için çok önemlidir."
             },
             {
                 "q": "Topluluk alanında neden ismim görünüyor?",
@@ -357,7 +357,7 @@
     },
     "dhikr": {
         "title": "Zikir & Dua",
-        "create_custom": "SANA \u00d6ZEL Z\u0130KR\u0130 OLU\u015eTUR",
+        "create_custom": "SANA ÖZEL ZİKİR & DUAYI OLUŞTUR",
         "create_custom_subtitle": "Yapay zeka ve İslami kaynaklar ışığında; niyetiniz, isminiz ve doğum verileriniz ile tamamen size özel dua ve zikirleri keşfedin.",
         "zikirmatik": "Zikirmatik",
         "zikirmatik_subtitle": "Kendi zikrini \u00e7ek",

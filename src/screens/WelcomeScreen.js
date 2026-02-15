@@ -1,5 +1,5 @@
 import { ArrowRight, MapPin, Users, Compass, BookOpen, ShoppingBag, Scroll, Sparkles, HandCoins } from 'lucide-react-native';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Animated, Dimensions, Image, PanResponder, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -195,6 +195,14 @@ const WelcomeScreen = ({ navigation, onFinish }) => {
         }
     ];
 
+    const handleNextRef = useRef(null);
+    const handlePrevRef = useRef(null);
+
+    useEffect(() => {
+        handleNextRef.current = handleNext;
+        handlePrevRef.current = handlePrev;
+    });
+
     const panResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
@@ -206,10 +214,10 @@ const WelcomeScreen = ({ navigation, onFinish }) => {
                 // Lower threshold for navigation trigger (30px instead of 50px)
                 if (gestureState.dx > 30) {
                     // Swipe Right -> Go Back
-                    handlePrev();
+                    if (handlePrevRef.current) handlePrevRef.current();
                 } else if (gestureState.dx < -30) {
                     // Swipe Left -> Go Forward
-                    handleNext();
+                    if (handleNextRef.current) handleNextRef.current();
                 }
             },
         })
@@ -231,9 +239,7 @@ const WelcomeScreen = ({ navigation, onFinish }) => {
     };
 
     const handlePrev = () => {
-        if (currentSlide > 0) {
-            setCurrentSlide(prev => prev - 1);
-        }
+        setCurrentSlide(prev => (prev > 0 ? prev - 1 : prev));
     };
 
     const goToSlide = (index) => {

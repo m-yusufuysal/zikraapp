@@ -59,7 +59,7 @@ const AdminDashboardScreen = ({ navigation }) => {
         {
             id: 'analytics',
             title: 'Analitik & Gelir',
-            subtitle: 'Çok Yakında',
+            subtitle: 'Gelir ve Büyüme',
             icon: 'pie-chart',
             color: '#3498db',
             route: 'Analytics'
@@ -67,7 +67,7 @@ const AdminDashboardScreen = ({ navigation }) => {
         {
             id: 'users',
             title: 'Kullanıcılar',
-            subtitle: 'İnfluencer Listesi',
+            subtitle: '',
             icon: 'people',
             color: '#9b59b6',
             route: 'InfluencerList'
@@ -78,7 +78,7 @@ const AdminDashboardScreen = ({ navigation }) => {
             subtitle: 'Sistem yapılandırması',
             icon: 'settings',
             color: '#95a5a6',
-            route: null
+            route: 'AdminSettings'
         }
     ];
 
