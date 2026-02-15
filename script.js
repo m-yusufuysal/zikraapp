@@ -1162,6 +1162,11 @@ function setLanguage(lang) {
             el.innerHTML = translations[lang][key];
         }
     });
+
+    const blogLink = document.getElementById('navBlogLink');
+    if (blogLink) {
+        blogLink.href = `blog/${lang}/index.html`;
+    }
     if (lang === 'ar') {
         document.documentElement.dir = 'rtl';
         document.body.style.fontFamily = "'Amiri', serif";

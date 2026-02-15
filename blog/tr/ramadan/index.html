@@ -84,195 +84,28 @@
  
     <div class="times-container">
         <div class="city-card">
-            <div class="city-selector">
-                <label style="font-weight: 600; font-size: 0.9rem; opacity:0.8;">Şehrinizi seçin</label>
-                <select id="citySelect" onchange="updateTimes()">
-                                        <optgroup label="Turkey">
-                        <option value="Adana,TR">Adana</option>
-                        <option value="Adiyaman,TR">Adiyaman</option>
-                        <option value="Afyonkarahisar,TR">Afyonkarahisar</option>
-                        <option value="Agri,TR">Agri</option>
-                        <option value="Aksaray,TR">Aksaray</option>
-                        <option value="Amasya,TR">Amasya</option>
-                        <option value="Ankara,TR">Ankara</option>
-                        <option value="Antalya,TR">Antalya</option>
-                        <option value="Ardahan,TR">Ardahan</option>
-                        <option value="Artvin,TR">Artvin</option>
-                        <option value="Aydin,TR">Aydin</option>
-                        <option value="Balikesir,TR">Balikesir</option>
-                        <option value="Bartin,TR">Bartin</option>
-                        <option value="Batman,TR">Batman</option>
-                        <option value="Bayburt,TR">Bayburt</option>
-                        <option value="Bilecik,TR">Bilecik</option>
-                        <option value="Bingol,TR">Bingol</option>
-                        <option value="Bitlis,TR">Bitlis</option>
-                        <option value="Bolu,TR">Bolu</option>
-                        <option value="Burdur,TR">Burdur</option>
-                        <option value="Bursa,TR">Bursa</option>
-                        <option value="Canakkale,TR">Canakkale</option>
-                        <option value="Cankiri,TR">Cankiri</option>
-                        <option value="Corum,TR">Corum</option>
-                        <option value="Denizli,TR">Denizli</option>
-                        <option value="Diyarbakir,TR">Diyarbakir</option>
-                        <option value="Duzce,TR">Duzce</option>
-                        <option value="Edirne,TR">Edirne</option>
-                        <option value="Elazig,TR">Elazig</option>
-                        <option value="Erzincan,TR">Erzincan</option>
-                        <option value="Erzurum,TR">Erzurum</option>
-                        <option value="Eskisehir,TR">Eskisehir</option>
-                        <option value="Gaziantep,TR">Gaziantep</option>
-                        <option value="Giresun,TR">Giresun</option>
-                        <option value="Gumushane,TR">Gumushane</option>
-                        <option value="Hakkari,TR">Hakkari</option>
-                        <option value="Hatay,TR">Hatay</option>
-                        <option value="Igdir,TR">Igdir</option>
-                        <option value="Isparta,TR">Isparta</option>
-                        <option value="Istanbul,TR">Istanbul</option>
-                        <option value="Izmir,TR">Izmir</option>
-                        <option value="Kahramanmaras,TR">Kahramanmaras</option>
-                        <option value="Karabuk,TR">Karabuk</option>
-                        <option value="Karaman,TR">Karaman</option>
-                        <option value="Kars,TR">Kars</option>
-                        <option value="Kastamonu,TR">Kastamonu</option>
-                        <option value="Kayseri,TR">Kayseri</option>
-                        <option value="Kilis,TR">Kilis</option>
-                        <option value="Kirikkale,TR">Kirikkale</option>
-                        <option value="Kirklareli,TR">Kirklareli</option>
-                        <option value="Kirsehir,TR">Kirsehir</option>
-                        <option value="Kocaeli,TR">Kocaeli</option>
-                        <option value="Konya,TR">Konya</option>
-                        <option value="Kutahya,TR">Kutahya</option>
-                        <option value="Malatya,TR">Malatya</option>
-                        <option value="Manisa,TR">Manisa</option>
-                        <option value="Mardin,TR">Mardin</option>
-                        <option value="Mersin,TR">Mersin</option>
-                        <option value="Mugla,TR">Mugla</option>
-                        <option value="Mus,TR">Mus</option>
-                        <option value="Nevsehir,TR">Nevsehir</option>
-                        <option value="Nigde,TR">Nigde</option>
-                        <option value="Ordu,TR">Ordu</option>
-                        <option value="Osmaniye,TR">Osmaniye</option>
-                        <option value="Rize,TR">Rize</option>
-                        <option value="Sakarya,TR">Sakarya</option>
-                        <option value="Samsun,TR">Samsun</option>
-                        <option value="Sanliurfa,TR">Sanliurfa</option>
-                        <option value="Siirt,TR">Siirt</option>
-                        <option value="Sinop,TR">Sinop</option>
-                        <option value="Sirnak,TR">Sirnak</option>
-                        <option value="Sivas,TR">Sivas</option>
-                        <option value="Tekirdag,TR">Tekirdag</option>
-                        <option value="Tokat,TR">Tokat</option>
-                        <option value="Trabzon,TR">Trabzon</option>
-                        <option value="Tunceli,TR">Tunceli</option>
-                        <option value="Usak,TR">Usak</option>
-                        <option value="Van,TR">Van</option>
-                        <option value="Yalova,TR">Yalova</option>
-                        <option value="Yozgat,TR">Yozgat</option>
-                        <option value="Zonguldak,TR">Zonguldak</option>
-                    </optgroup>
-                    <optgroup label="Indonesia">
-                        <option value="Balikpapan,ID">Balikpapan</option>
-                        <option value="Bandar Lampung,ID">Bandar Lampung</option>
-                        <option value="Bandung,ID">Bandung</option>
-                        <option value="Banjarmasin,ID">Banjarmasin</option>
-                        <option value="Batam,ID">Batam</option>
-                        <option value="Bekasi,ID">Bekasi</option>
-                        <option value="Bogor,ID">Bogor</option>
-                        <option value="Cimahi,ID">Cimahi</option>
-                        <option value="Denpasar,ID">Denpasar</option>
-                        <option value="Depok,ID">Depok</option>
-                        <option value="Jakarta,ID">Jakarta</option>
-                        <option value="Jambi,ID">Jambi</option>
-                        <option value="Jayapura,ID">Jayapura</option>
-                        <option value="Kupang,ID">Kupang</option>
-                        <option value="Makassar,ID">Makassar</option>
-                        <option value="Malang,ID">Malang</option>
-                        <option value="Manado,ID">Manado</option>
-                        <option value="Medan,ID">Medan</option>
-                        <option value="Padang,ID">Padang</option>
-                        <option value="Palembang,ID">Palembang</option>
-                        <option value="Pekanbaru,ID">Pekanbaru</option>
-                        <option value="Pontianak,ID">Pontianak</option>
-                        <option value="Samarinda,ID">Samarinda</option>
-                        <option value="Semarang,ID">Semarang</option>
-                        <option value="Serang,ID">Serang</option>
-                        <option value="Surabaya,ID">Surabaya</option>
-                        <option value="Surakarta,ID">Surakarta</option>
-                        <option value="Tangerang,ID">Tangerang</option>
-                        <option value="Tasikmalaya,ID">Tasikmalaya</option>
-                    </optgroup>
-                    <optgroup label="Saudi Arabia">
-                        <option value="Abha,SA">Abha</option>
-                        <option value="Al-Hofuf,SA">Al-Hofuf</option>
-                        <option value="Al-Jubail,SA">Al-Jubail</option>
-                        <option value="Al-Khobar,SA">Al-Khobar</option>
-                        <option value="Buraidah,SA">Buraidah</option>
-                        <option value="Dammam,SA">Dammam</option>
-                        <option value="Ha'il,SA">Ha'il</option>
-                        <option value="Jeddah,SA">Jeddah</option>
-                        <option value="Jizan,SA">Jizan</option>
-                        <option value="Khamis Mushait,SA">Khamis Mushait</option>
-                        <option value="Mecca,SA">Mecca</option>
-                        <option value="Medina,SA">Medina</option>
-                        <option value="Najran,SA">Najran</option>
-                        <option value="Riyadh,SA">Riyadh</option>
-                        <option value="Tabuk,SA">Tabuk</option>
-                        <option value="Taif,SA">Taif</option>
-                        <option value="Yanbu,SA">Yanbu</option>
-                    </optgroup>
-                    <optgroup label="Egypt">
-                        <option value="Alexandria,EG">Alexandria</option>
-                        <option value="Asyut,EG">Asyut</option>
-                        <option value="Cairo,EG">Cairo</option>
-                        <option value="Giza,EG">Giza</option>
-                        <option value="Luxor,EG">Luxor</option>
-                        <option value="Mansoura,EG">Mansoura</option>
-                        <option value="Port Said,EG">Port Said</option>
-                        <option value="Shubra El Kheima,EG">Shubra El Kheima</option>
-                        <option value="Suez,EG">Suez</option>
-                        <option value="Tanta,EG">Tanta</option>
-                    </optgroup>
-                    <optgroup label="Qatar">
-                        <option value="Al Khor,QA">Al Khor</option>
-                        <option value="Al Rayyan,QA">Al Rayyan</option>
-                        <option value="Al Wakrah,QA">Al Wakrah</option>
-                        <option value="Doha,QA">Doha</option>
-                    </optgroup>
-                    <optgroup label="Kuwait">
-                        <option value="Farwaniya,KW">Farwaniya</option>
-                        <option value="Hawally,KW">Hawally</option>
-                        <option value="Kuwait City,KW">Kuwait City</option>
-                        <option value="Salmiya,KW">Salmiya</option>
-                    </optgroup>
-                    <optgroup label="Gulf">
-                        <option value="Abu Dhabi,AE">Abu Dhabi</option>
-                        <option value="Dubai,AE">Dubai</option>
-                        <option value="Manama,BH">Manama</option>
-                        <option value="Muscat,OM">Muscat</option>
-                        <option value="Sharjah,AE">Sharjah</option>
-                    </optgroup>
-                    <optgroup label="Europe & Others">
-                        <option value="Berlin,DE">Berlin</option>
-                        <option value="Brussels,BE">Brussels</option>
-                        <option value="Geneva,CH">Geneva</option>
-                        <option value="London,UK">London</option>
-                        <option value="Lyon,FR">Lyon</option>
-                        <option value="Marseille,FR">Marseille</option>
-                        <option value="New York,US">New York</option>
-                        <option value="Paris,FR">Paris</option>
-                        <option value="Sydney,AU">Sydney</option>
-                        <option value="Toronto,CA">Toronto</option>
-                    </optgroup>
-                    <optgroup label="North Africa">
-                        <option value="Algiers,DZ">Algiers</option>
-                        <option value="Casablanca,MA">Casablanca</option>
-                        <option value="Marrakech,MA">Marrakech</option>
-                        <option value="Oran,DZ">Oran</option>
-                        <option value="Tripoli,LY">Tripoli</option>
-                        <option value="Tunis,TN">Tunis</option>
-                    </optgroup>
+            <div class="selection-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="city-selector">
+                    <label style="font-weight: 600; font-size: 0.8rem; opacity:0.8; display: block; margin-bottom: 0.4rem;">Ülki seçin</label>
+                    <select id="countrySelect" onchange="populateCities()">
+                                                <option value="Egypt">Mısır</option>
+                        <option value="Europe & Others">Avrupa ve Diğerleri</option>
+                        <option value="Gulf">Körfez</option>
+                        <option value="Indonesia">Endonezya</option>
+                        <option value="Kuwait">Kuveyt</option>
+                        <option value="North Africa">Kuzey Afrika</option>
+                        <option value="Qatar">Katar</option>
+                        <option value="Saudi Arabia">Suudi Arabistan</option>
+                        <option value="Turkey">Türkiye</option>
 
-                </select>
+                    </select>
+                </div>
+                <div class="city-selector">
+                    <label style="font-weight: 600; font-size: 0.8rem; opacity:0.8; display: block; margin-bottom: 0.4rem;">Şehrinizi seçin</label>
+                    <select id="citySelect" onchange="updateTimes()">
+                        <option value="">Şehrinizi seçin</option>
+                    </select>
+                </div>
             </div>
  
             <div class="countdown-banner" id="countdown">
@@ -332,30 +165,54 @@
     </div>
 
     <script>
-        async function updateTimes() {
-            const select = document.getElementById('citySelect');
-            const cityCountry = select.value.split(',');
-            const city = cityCountry[0];
-            const country = cityCountry[1];
+        const CITIES_DATA = {"Turkey": [{"id": "Adana,TR", "name": "Adana"}, {"id": "Adiyaman,TR", "name": "Adiyaman"}, {"id": "Afyonkarahisar,TR", "name": "Afyonkarahisar"}, {"id": "Agri,TR", "name": "Agri"}, {"id": "Aksaray,TR", "name": "Aksaray"}, {"id": "Amasya,TR", "name": "Amasya"}, {"id": "Ankara,TR", "name": "Ankara"}, {"id": "Antalya,TR", "name": "Antalya"}, {"id": "Ardahan,TR", "name": "Ardahan"}, {"id": "Artvin,TR", "name": "Artvin"}, {"id": "Aydin,TR", "name": "Aydin"}, {"id": "Balikesir,TR", "name": "Balikesir"}, {"id": "Bartin,TR", "name": "Bartin"}, {"id": "Batman,TR", "name": "Batman"}, {"id": "Bayburt,TR", "name": "Bayburt"}, {"id": "Bilecik,TR", "name": "Bilecik"}, {"id": "Bingol,TR", "name": "Bingol"}, {"id": "Bitlis,TR", "name": "Bitlis"}, {"id": "Bolu,TR", "name": "Bolu"}, {"id": "Burdur,TR", "name": "Burdur"}, {"id": "Bursa,TR", "name": "Bursa"}, {"id": "Canakkale,TR", "name": "Canakkale"}, {"id": "Cankiri,TR", "name": "Cankiri"}, {"id": "Corum,TR", "name": "Corum"}, {"id": "Denizli,TR", "name": "Denizli"}, {"id": "Diyarbakir,TR", "name": "Diyarbakir"}, {"id": "Duzce,TR", "name": "Duzce"}, {"id": "Edirne,TR", "name": "Edirne"}, {"id": "Elazig,TR", "name": "Elazig"}, {"id": "Erzincan,TR", "name": "Erzincan"}, {"id": "Erzurum,TR", "name": "Erzurum"}, {"id": "Eskisehir,TR", "name": "Eskisehir"}, {"id": "Gaziantep,TR", "name": "Gaziantep"}, {"id": "Giresun,TR", "name": "Giresun"}, {"id": "Gumushane,TR", "name": "Gumushane"}, {"id": "Hakkari,TR", "name": "Hakkari"}, {"id": "Hatay,TR", "name": "Hatay"}, {"id": "Igdir,TR", "name": "Igdir"}, {"id": "Isparta,TR", "name": "Isparta"}, {"id": "Istanbul,TR", "name": "Istanbul"}, {"id": "Izmir,TR", "name": "Izmir"}, {"id": "Kahramanmaras,TR", "name": "Kahramanmaras"}, {"id": "Karabuk,TR", "name": "Karabuk"}, {"id": "Karaman,TR", "name": "Karaman"}, {"id": "Kars,TR", "name": "Kars"}, {"id": "Kastamonu,TR", "name": "Kastamonu"}, {"id": "Kayseri,TR", "name": "Kayseri"}, {"id": "Kilis,TR", "name": "Kilis"}, {"id": "Kirikkale,TR", "name": "Kirikkale"}, {"id": "Kirklareli,TR", "name": "Kirklareli"}, {"id": "Kirsehir,TR", "name": "Kirsehir"}, {"id": "Kocaeli,TR", "name": "Kocaeli"}, {"id": "Konya,TR", "name": "Konya"}, {"id": "Kutahya,TR", "name": "Kutahya"}, {"id": "Malatya,TR", "name": "Malatya"}, {"id": "Manisa,TR", "name": "Manisa"}, {"id": "Mardin,TR", "name": "Mardin"}, {"id": "Mersin,TR", "name": "Mersin"}, {"id": "Mugla,TR", "name": "Mugla"}, {"id": "Mus,TR", "name": "Mus"}, {"id": "Nevsehir,TR", "name": "Nevsehir"}, {"id": "Nigde,TR", "name": "Nigde"}, {"id": "Ordu,TR", "name": "Ordu"}, {"id": "Osmaniye,TR", "name": "Osmaniye"}, {"id": "Rize,TR", "name": "Rize"}, {"id": "Sakarya,TR", "name": "Sakarya"}, {"id": "Samsun,TR", "name": "Samsun"}, {"id": "Sanliurfa,TR", "name": "Sanliurfa"}, {"id": "Siirt,TR", "name": "Siirt"}, {"id": "Sinop,TR", "name": "Sinop"}, {"id": "Sirnak,TR", "name": "Sirnak"}, {"id": "Sivas,TR", "name": "Sivas"}, {"id": "Tekirdag,TR", "name": "Tekirdag"}, {"id": "Tokat,TR", "name": "Tokat"}, {"id": "Trabzon,TR", "name": "Trabzon"}, {"id": "Tunceli,TR", "name": "Tunceli"}, {"id": "Usak,TR", "name": "Usak"}, {"id": "Van,TR", "name": "Van"}, {"id": "Yalova,TR", "name": "Yalova"}, {"id": "Yozgat,TR", "name": "Yozgat"}, {"id": "Zonguldak,TR", "name": "Zonguldak"}], "Indonesia": [{"id": "Balikpapan,ID", "name": "Balikpapan"}, {"id": "Bandar Lampung,ID", "name": "Bandar Lampung"}, {"id": "Bandung,ID", "name": "Bandung"}, {"id": "Banjarmasin,ID", "name": "Banjarmasin"}, {"id": "Batam,ID", "name": "Batam"}, {"id": "Bekasi,ID", "name": "Bekasi"}, {"id": "Bogor,ID", "name": "Bogor"}, {"id": "Cimahi,ID", "name": "Cimahi"}, {"id": "Denpasar,ID", "name": "Denpasar"}, {"id": "Depok,ID", "name": "Depok"}, {"id": "Jakarta,ID", "name": "Jakarta"}, {"id": "Jambi,ID", "name": "Jambi"}, {"id": "Jayapura,ID", "name": "Jayapura"}, {"id": "Kupang,ID", "name": "Kupang"}, {"id": "Makassar,ID", "name": "Makassar"}, {"id": "Malang,ID", "name": "Malang"}, {"id": "Manado,ID", "name": "Manado"}, {"id": "Medan,ID", "name": "Medan"}, {"id": "Padang,ID", "name": "Padang"}, {"id": "Palembang,ID", "name": "Palembang"}, {"id": "Pekanbaru,ID", "name": "Pekanbaru"}, {"id": "Pontianak,ID", "name": "Pontianak"}, {"id": "Samarinda,ID", "name": "Samarinda"}, {"id": "Semarang,ID", "name": "Semarang"}, {"id": "Serang,ID", "name": "Serang"}, {"id": "Surabaya,ID", "name": "Surabaya"}, {"id": "Surakarta,ID", "name": "Surakarta"}, {"id": "Tangerang,ID", "name": "Tangerang"}, {"id": "Tasikmalaya,ID", "name": "Tasikmalaya"}], "Saudi Arabia": [{"id": "Abha,SA", "name": "Abha"}, {"id": "Al-Hofuf,SA", "name": "Al-Hofuf"}, {"id": "Al-Jubail,SA", "name": "Al-Jubail"}, {"id": "Al-Khobar,SA", "name": "Al-Khobar"}, {"id": "Buraidah,SA", "name": "Buraidah"}, {"id": "Dammam,SA", "name": "Dammam"}, {"id": "Ha'il,SA", "name": "Ha'il"}, {"id": "Jeddah,SA", "name": "Jeddah"}, {"id": "Jizan,SA", "name": "Jizan"}, {"id": "Khamis Mushait,SA", "name": "Khamis Mushait"}, {"id": "Mecca,SA", "name": "Mecca"}, {"id": "Medina,SA", "name": "Medina"}, {"id": "Najran,SA", "name": "Najran"}, {"id": "Riyadh,SA", "name": "Riyadh"}, {"id": "Tabuk,SA", "name": "Tabuk"}, {"id": "Taif,SA", "name": "Taif"}, {"id": "Yanbu,SA", "name": "Yanbu"}], "Egypt": [{"id": "Alexandria,EG", "name": "Alexandria"}, {"id": "Asyut,EG", "name": "Asyut"}, {"id": "Cairo,EG", "name": "Cairo"}, {"id": "Giza,EG", "name": "Giza"}, {"id": "Luxor,EG", "name": "Luxor"}, {"id": "Mansoura,EG", "name": "Mansoura"}, {"id": "Port Said,EG", "name": "Port Said"}, {"id": "Shubra El Kheima,EG", "name": "Shubra El Kheima"}, {"id": "Suez,EG", "name": "Suez"}, {"id": "Tanta,EG", "name": "Tanta"}], "Qatar": [{"id": "Al Khor,QA", "name": "Al Khor"}, {"id": "Al Rayyan,QA", "name": "Al Rayyan"}, {"id": "Al Wakrah,QA", "name": "Al Wakrah"}, {"id": "Doha,QA", "name": "Doha"}], "Kuwait": [{"id": "Farwaniya,KW", "name": "Farwaniya"}, {"id": "Hawally,KW", "name": "Hawally"}, {"id": "Kuwait City,KW", "name": "Kuwait City"}, {"id": "Salmiya,KW", "name": "Salmiya"}], "Gulf": [{"id": "Abu Dhabi,AE", "name": "Abu Dhabi"}, {"id": "Dubai,AE", "name": "Dubai"}, {"id": "Manama,BH", "name": "Manama"}, {"id": "Muscat,OM", "name": "Muscat"}, {"id": "Sharjah,AE", "name": "Sharjah"}], "Europe & Others": [{"id": "Berlin,DE", "name": "Berlin"}, {"id": "Brussels,BE", "name": "Brussels"}, {"id": "Geneva,CH", "name": "Geneva"}, {"id": "London,UK", "name": "London"}, {"id": "Lyon,FR", "name": "Lyon"}, {"id": "Marseille,FR", "name": "Marseille"}, {"id": "New York,US", "name": "New York"}, {"id": "Paris,FR", "name": "Paris"}, {"id": "Sydney,AU", "name": "Sydney"}, {"id": "Toronto,CA", "name": "Toronto"}], "North Africa": [{"id": "Algiers,DZ", "name": "Algiers"}, {"id": "Casablanca,MA", "name": "Casablanca"}, {"id": "Marrakech,MA", "name": "Marrakech"}, {"id": "Oran,DZ", "name": "Oran"}, {"id": "Tripoli,LY", "name": "Tripoli"}, {"id": "Tunis,TN", "name": "Tunis"}]};
+
+        function populateCities() {
+            const country = document.getElementById('countrySelect').value;
+            const citySelect = document.getElementById('citySelect');
+            citySelect.innerHTML = '<option value="">Şehrinizi seçin</option>';
             
-            try {
-                const url = `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=3`;
-                const response = await fetch(url);
-                const data = await response.json();
-                const timings = data.data.timings;
+            if (CITIES_DATA[country]) {
+                CITIES_DATA[country].forEach(city => {
+                    const opt = document.createElement('option');
+                    opt.value = city.id;
+                    opt.textContent = city.name;
+                    citySelect.appendChild(opt);
+                });
                 
-                document.getElementById('sahurTime').innerText = timings.Fajr;
-                document.getElementById('iftarTime').innerText = timings.Maghrib;
-                document.getElementById('dhuhrTime').innerText = timings.Dhuhr;
-                document.getElementById('asrTime').innerText = timings.Asr;
-                document.getElementById('ishaTime').innerText = timings.Isha;
-            } catch (e) {
-                console.error("Failed to fetch times", e);
+                // Select first city by default
+                if (CITIES_DATA[country].length > 0) {
+                    citySelect.value = CITIES_DATA[country][0].id;
+                    updateTimes();
+                }
             }
         }
-        
-        // Initial load
-        updateTimes();
+
+        async function updateTimes() {
+            const cityId = document.getElementById('citySelect').value;
+            if (!cityId) return;
+            
+            const country = document.getElementById('countrySelect').value;
+            const cityData = CITIES_DATA[country].find(c => c.id === cityId);
+            if (!cityData) return;
+
+            try {
+                const response = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${cityData.name}&country=${country}&method=3`);
+                const data = await response.json();
+                const timings = data.data.timings;
+
+                document.getElementById('sahurTime').textContent = timings.Fajr;
+                document.getElementById('iftarTime').textContent = timings.Maghrib;
+                document.getElementById('dhuhrTime').textContent = timings.Dhuhr;
+                document.getElementById('asrTime').textContent = timings.Asr;
+                document.getElementById('ishaTime').textContent = timings.Isha;
+            } catch (error) {
+                console.error('Error fetching prayer times:', error);
+            }
+        }
+
+        // Initial population
+        window.onload = populateCities;
     </script>
 
     <footer class="main-footer">
