@@ -1,0 +1,29 @@
+# Task List
+
+- [x] Analyze `ShopScreen.js` structure <!-- id: 1 -->
+- [x] Implement Location Detection in `ShopScreen` <!-- id: 2 -->
+    - [x] Used `expo-localization` for region code.
+- [x] Define Regional Product Data Logic <!-- id: 3 -->
+    - [x] Added check for `link_tr`, `link_us`, etc. columns.
+    - [x] Added automatic Amazon domain redirection mapping.
+- [x] Update UI to render based on detected region <!-- id: 4 -->
+- [x] Resolve Supabase Security Lints <!-- id: 5 -->
+    - [x] Fix function_search_path_mutable in `37_security_lints_hardening.sql`
+    - [x] Fix rls_policy_always_true in `37_security_lints_hardening.sql`
+    - [ ] Enable Leaked Password Protection (Dashboard Action)
+- [x] Resolve Supabase Performance Lints <!-- id: 7 -->
+    - [x] Add missing Foreign Key indexes
+    - [x] Clean up redundant indexes (Refined in `40_index_cleanup_refined.sql`)
+    - [x] Fix auth_rls_initplan (RLS Subquery Optimization)
+- [x] Final App Store / Play Store Audit <!-- id: 6 -->
+    - [x] Final App Readiness Audit
+    - [x] Verify AdMob production IDs
+    - [x] Check Production Translation completeness
+    - [x] Audit legal documentation placement (Privacy/Terms)
+    - [x] Verify Supabase RLS and Performance indexes
+    - [x] Confirm Daily Quote dynamic logic functionality
+    - [x] Review Mock vs Production services (Ads/Purchases)
+- [x] Supabase SQL Dosyalarını Düzenle (SQL Organization) <!-- id: 8 -->
+    - [x] Kök dizindeki ve supabase dizinindeki stray sql dosyalarını kategorize et.
+    - [x] `supabase/` altında alanlarına uygun klasör yapısı oluştur.
+    - [x] `README_SQL.md` ile yeni yapıyı dokümante et.

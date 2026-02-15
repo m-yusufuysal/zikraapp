@@ -8,6 +8,7 @@ import { I18nManager } from 'react-native';
 // Import translations
 import ar from './locales/ar.json';
 import en from './locales/en.json';
+import fr from './locales/fr.json';
 import id from './locales/id.json';
 import tr from './locales/tr.json';
 
@@ -18,10 +19,20 @@ const resources = {
     en: { translation: en },
     ar: { translation: ar },
     id: { translation: id },
+    fr: { translation: fr },
 };
 
 const LANGUAGE_KEY = 'user_language';
-const SUPPORTED_LANGUAGES = ['tr', 'en', 'ar', 'id'];
+const SUPPORTED_LANGUAGES = ['tr', 'en', 'ar', 'id', 'fr'];
+
+// Initialize i18n synchronously with default language to prevent "NO_I18NEXT_INSTANCE" warning
+i18n.use(initReactI18next).init({
+    resources,
+    lng: 'en', // Will be updated in initI18n()
+    fallbackLng: 'en',
+    interpolation: { escapeValue: false },
+    compatibilityJSON: 'v3',
+});
 
 // Detect language or fallback to 'en'
 const getLanguage = async () => {
@@ -76,17 +87,8 @@ export const initI18n = async () => {
         I18nManager.forceRTL(false);
     }
 
-    await i18n
-        .use(initReactI18next)
-        .init({
-            resources,
-            lng: language,
-            fallbackLng: 'en',
-            interpolation: {
-                escapeValue: false,
-            },
-            compatibilityJSON: 'v3',
-        });
+    // Change to detected language (i18n is already initialized synchronously)
+    await i18n.changeLanguage(language);
 };
 
 export default i18n;

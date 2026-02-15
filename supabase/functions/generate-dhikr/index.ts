@@ -1,5 +1,5 @@
 /**
- * Zikra App - Generate Dhikr Edge Function (v2.0)
+ * Islamvy App - Generate Dhikr Edge Function (v2.0)
  * 
  * FIXES APPLIED:
  * 1. Writes results to dhikr_sessions table (not just returns)
@@ -79,18 +79,22 @@ serve(async (req: Request) => {
             birth_time,
             intention,
             language = 'tr',
-            request_hash
+            request_hash,
+            timezone_offset  // UTC offset in hours (e.g., 3 for Turkey, 7 for Indonesia)
         } = await req.json();
 
         console.log(`[GenerateDhikr] User ${user_id} | Premium: ${isPremium} | Tier: ${premiumTier || 'free'} | Limits: ${limits.daily}/day | Lang: ${language}`);
 
         // 2. VALIDATION
         if (!name || !intention) {
-            throw new Error(language === 'tr' ? 'İsim ve niyet gerekli.' : 'Name and intention are required.');
+            let errorMsg = 'Name and intention are required.';
+            if (language === 'tr') errorMsg = 'İsim ve niyet gerekli.';
+            else if (language === 'fr') errorMsg = 'Le nom et l\'intention sont requis.';
+            throw new Error(errorMsg);
         }
 
-        if (intention.length > 500) {
-            throw new Error('Intention too long (max 500 chars).');
+        if (intention.length > 666) {
+            throw new Error('Intention too long (max 666 chars).');
         }
 
         // 3. DAILY LIMIT CHECK
@@ -102,9 +106,13 @@ serve(async (req: Request) => {
             .gte('created_at', yesterday);
 
         if (count && count >= limits.daily) {
-            throw new Error(language === 'tr'
-                ? `Günlük zikir oluşturma limitine ulaştınız (${limits.daily}/gün). ${!isPremium ? 'Premium\'a geçerek daha fazla zikir alabilirsiniz.' : ''}`
-                : `Daily dhikr generation limit reached (${limits.daily}/day). ${!isPremium ? 'Upgrade to Premium for more.' : ''}`);
+            let limitMsg = `Daily dhikr generation limit reached (${limits.daily}/day). ${!isPremium ? 'Upgrade to Premium for more.' : ''}`;
+            if (language === 'tr') {
+                limitMsg = `Günlük zikir oluşturma limitine ulaştınız (${limits.daily}/gün). ${!isPremium ? 'Premium\'a geçerek daha fazla zikir alabilirsiniz.' : ''}`;
+            } else if (language === 'fr') {
+                limitMsg = `Limite quotidienne de génération de dhikr atteinte (${limits.daily}/jour). ${!isPremium ? 'Passez à Premium pour en avoir plus.' : ''}`;
+            }
+            throw new Error(limitMsg);
         }
 
         // Check for duplicate request (idempotency)
@@ -154,12 +162,31 @@ serve(async (req: Request) => {
         let systemPrompt = '';
         let userPrompt = '';
 
+        // === CREATIVITY ENHANCEMENTS ===
+        // Random seed to prevent repetitive outputs
+        const creativitySeed = Math.floor(Math.random() * 100000);
+        // Session count for today (how many times this user generated today)
+        const sessionCountToday = (count || 0) + 1;
+        // Current time of day for time-aware content
+        const now = new Date();
+        const utcOffset = typeof timezone_offset === 'number' ? timezone_offset : 3; // Default to Turkey (UTC+3)
+        const currentHour = (now.getUTCHours() + utcOffset + 24) % 24;
+        let timeOfDay = 'gece';
+        let timeOfDayEn = 'night';
+        if (currentHour >= 4 && currentHour < 12) { timeOfDay = 'sabah'; timeOfDayEn = 'morning'; }
+        else if (currentHour >= 12 && currentHour < 15) { timeOfDay = 'öğle'; timeOfDayEn = 'afternoon'; }
+        else if (currentHour >= 15 && currentHour < 18) { timeOfDay = 'ikindi'; timeOfDayEn = 'late afternoon'; }
+        else if (currentHour >= 18 && currentHour < 21) { timeOfDay = 'akşam'; timeOfDayEn = 'evening'; }
+        // Approximate Hijri date (simplified)
+        const hijriEstimate = Math.floor((now.getTime() / 1000 - 1406000000) / 86400 % 354);
+
         // Map language code to full language name
         const languageMap: { [key: string]: string } = {
             'tr': 'Turkish (Türkçe)',
             'en': 'English',
             'ar': 'Arabic (العربية)',
-            'id': 'Indonesian (Bahasa Indonesia)'
+            'id': 'Indonesian (Bahasa Indonesia)',
+            'fr': 'French (Français)'
         };
         const languageName = languageMap[language] || 'English';
 
@@ -168,33 +195,129 @@ serve(async (req: Request) => {
 
 ÇOK ÖNEMLİ: CEVAPLARI SADECE VE SADECE **${languageName}** DİLİNDE VER.
 
+🎲 YARATICILIK PARAMETRELERİ:
+- Tohum: ${creativitySeed}
+- Bugünkü oturum: ${sessionCountToday}. seans
+- Tahmini Hicri gün: ${hijriEstimate}
+- Vakit dilimi: ${timeOfDay}
+
+⏰ ZAMANA DUYARLI İÇERİK:
+- Şu an ${timeOfDay} vakti. Reçeteyi bu vakte uygun olarak oluştur:
+  • Sabah (Fecr-Öğle): Enerjik, motivasyon artırıcı zikirler
+  • Öğle (Zuhr-Asr): Odaklanma ve verimlilik zikirleri  
+  • Akşam (Mağrib-İşa): Tefekkür, şükür ve muhasebe zikirleri
+  • Gece (Teheccüd): Derin ruhani zikirler, kalp temizliği
+
+🔀 ÇEŞİTLİLİK KURALLARI (ZORUNLU):
+- ASLA her zaman İstiğfar ile başlama. Bazen Salavat, bazen bir Kur'an suresi, bazen doğrudan Esma ile başla.
+- Her oturumda EN AZ bir NADIR ve AZ BİLİNEN dua veya zikir kullan (sahih kaynaklardan).
+- Aynı niyetle bile olsa, her seferinde FARKLI akış yapısı oluştur.
+- Popüler ilk 10 Esma dışında en az bir Esma mutlaka dahil et.
+- Oturum numarası ${sessionCountToday} → Bu kullanıcı bugün ${sessionCountToday}. kez istiyor, öncekilerden TAMAMEN FARKLI bir reçete ver.
+
 ═══════════════════════════════════════════════════════════════
-📿 ESMA-ÜL HÜSNA REHBERİ (TÜM 99 İSİM)
+📿 ESMA-ÜL HÜSNA REHBERİ (TÜM 99 İSİM - TAM LİSTE)
 ═══════════════════════════════════════════════════════════════
-ÇOK ÖNEMLİ: Sen Esma-ül Hüsna'nın tamamına (99 İsim) ve onların ebced değerlerine vakıfsın.
-ASLA sadece aşağıdaki örneklerle sınırlı kalma. Niyet için en uygun olan ismi 99 isim arasından seç.
-Örnekler:
-- Ya Rahman (298) - Rahmet, merhamet arayışı
-- Ya Rahim (258) - Şefkat, koruma
-- Ya Rezzak (308) - Rızık, maddi sıkıntı, iş bulma
-- Ya Fettah (489) - Kapıların açılması, hayırlı açılım, çıkmaz
-- Ya Vedud (20) - Sevgi, muhabbet, evlilik, aile huzuru
-- Ya Şafi (391) - Şifa, hastalık, sağlık
-- Ya Hafiz (998) - Koruma, güvenlik, kaza/bela
-- Ya Latif (129) - Lütuf, incelik, sıkıntıdan kurtuluş
-- Ya Kerim (270) - Cömertlik, ikram, bereket
-- Ya Sabur (298) - Sabır, dayanıklılık, zor zamanlar
-- Ya Gani (1060) - Zenginlik, bolluk
-- Ya Nur (256) - Hidayet, aydınlanma, kalp temizliği
-- Ya Hadi (20) - Doğru yolu bulma, karar verme
-- Ya Tevvab (409) - Tövbe kabulü, günah affı
-- Ya Gaffar (1281) - Günah bağışlaması
-- Ya Settar (661) - Ayıpların örtülmesi
-- Ya Müceeb (55) - Duaların kabulü
-- Ya Vekil (66) - Tevekkül, işleri Allah'a havale
-- Ya Şekur (526) - Şükür, nimetlerin artması
-- Ya Hayy (18) - Canlılık, enerji, motivasyon
-- Ya Kayyum (156) - Ayakta kalma, sebat
+ÇOK ÖNEMLİ: 99 İsim'in TAMAMINA vakıfsın. Niyet için en uygun olan ismi seç.
+1. Ya Allah - Bütün isimleri kapsayan zat ismi
+2. Ya Rahman (298) - Rahmet, merhamet
+3. Ya Rahim (258) - Şefkat, koruma
+4. Ya Melik (90) - Hükümranlık, otorite
+5. Ya Kuddüs (170) - Arınma, temizlik
+6. Ya Selam (131) - Esenlik, barış
+7. Ya Mü'min (137) - Güven, iman kuvveti
+8. Ya Müheymin (145) - Gözetim, koruma
+9. Ya Aziz (94) - İzzet, şeref, güç
+10. Ya Cebbar (206) - Onarma, düzeltme
+11. Ya Mütekebbir (662) - Büyüklük, kibir kırma
+12. Ya Halık (731) - Yaratıcılık, yeni başlangıç
+13. Ya Bari (213) - Eksiksiz yaratma
+14. Ya Musavvir (336) - Şekillendirme, güzellik
+15. Ya Gaffar (1281) - Bağışlama
+16. Ya Kahhar (306) - Üstün gelme, düşmana galebe
+17. Ya Vehhab (14) - Karşılıksız ikram
+18. Ya Rezzak (308) - Rızık, maddi bolluk
+19. Ya Fettah (489) - Kapıların açılması
+20. Ya Alim (150) - İlim, bilgi
+21. Ya Kabız (903) - Tutma, engelleme
+22. Ya Basıt (72) - Genişletme, ferahlık
+23. Ya Hafid (1481) - Alçaltma
+24. Ya Rafi (351) - Yüceltme, makam
+25. Ya Muizz (117) - İzzet verme, onurlandırma
+26. Ya Müzill (770) - Zillete düşürme
+27. Ya Semi (180) - İşitme, duaları duyma
+28. Ya Basir (302) - Görme, basiret
+29. Ya Hakem (68) - Hükmetme, adalet
+30. Ya Adl (104) - Adalet
+31. Ya Latif (129) - Lütuf, incelik
+32. Ya Habir (812) - Haberdar olma
+33. Ya Halim (88) - Yumuşaklık, hilm
+34. Ya Azim (1020) - Büyüklük
+35. Ya Gafur (1286) - Mağfiret
+36. Ya Şekur (526) - Şükrü kabul
+37. Ya Aliyy (110) - Yücelik
+38. Ya Kebir (232) - Büyüklük
+39. Ya Hafiz (998) - Koruyucu
+40. Ya Mukit (550) - Rızık verici
+41. Ya Hasib (80) - Hesap gören
+42. Ya Celil (73) - Celal sahibi
+43. Ya Kerim (270) - Cömertlik
+44. Ya Rakib (312) - Gözetleyici
+45. Ya Mucib (55) - Duaları kabul eden
+46. Ya Vasi (137) - Geniş rahmet
+47. Ya Hakim (78) - Hikmet sahibi
+48. Ya Vedud (20) - Sevgi, muhabbet
+49. Ya Mecid (57) - Şan, şeref
+50. Ya Bais (573) - Diriltici, umut
+51. Ya Şehid (319) - Şahit
+52. Ya Hakk (108) - Hakikat
+53. Ya Vekil (66) - Tevekkül
+54. Ya Kaviyy (116) - Güç, kuvvet
+55. Ya Metin (500) - Sağlamlık
+56. Ya Veliyy (46) - Dost, yardımcı
+57. Ya Hamid (62) - Hamd edilen
+58. Ya Muhsi (148) - Sayan
+59. Ya Mübdi (56) - İlk yaratan
+60. Ya Muid (124) - Tekrar yaratan
+61. Ya Muhyi (68) - Hayat veren
+62. Ya Mümit (490) - Öldüren
+63. Ya Hayy (18) - Diri, canlılık
+64. Ya Kayyum (156) - Ayakta tutan
+65. Ya Vacid (14) - Bulan
+66. Ya Macid (48) - Şerefli
+67. Ya Vahid (19) - Bir olan
+68. Ya Samed (134) - Muhtaç olmayan
+69. Ya Kadir (305) - Güç yetiren
+70. Ya Muktedir (744) - Kudret sahibi
+71. Ya Mukaddim (184) - Öne alan
+72. Ya Muahhir (846) - Erteleyen
+73. Ya Evvel (37) - İlk
+74. Ya Ahir (801) - Son
+75. Ya Zahir (1106) - Açık, görünen
+76. Ya Batın (62) - Gizli
+77. Ya Vali (47) - İdare eden
+78. Ya Müteali (551) - Yüce
+79. Ya Berr (202) - İyilik sahibi
+80. Ya Tevvab (409) - Tövbe kabul eden
+81. Ya Müntekim (630) - İntikam alan
+82. Ya Afüv (156) - Affeden
+83. Ya Rauf (287) - Şefkatli
+84. Ya Malikül Mülk (212) - Mülk sahibi
+85. Ya Zül Celali vel İkram (1100) - Celal ve ikram sahibi
+86. Ya Muksit (209) - Adaletli
+87. Ya Cami (114) - Toplayan, birleştiren
+88. Ya Gani (1060) - Zengin
+89. Ya Muğni (1100) - Zengin kılan
+90. Ya Mani (161) - Engelleyen
+91. Ya Darr (1001) - Zarar veren (hikmetle)
+92. Ya Nafi (201) - Fayda veren
+93. Ya Nur (256) - Aydınlatan
+94. Ya Hadi (20) - Hidayet eden
+95. Ya Bedi (86) - Emsalsiz yaratan
+96. Ya Baki (113) - Ebedi
+97. Ya Varis (707) - Miras alan
+98. Ya Reşid (514) - Doğru yola ileten
+99. Ya Sabur (298) - Sabırlı
 
 ═══════════════════════════════════════════════════════════════
 📖 DUA KÜTÜPHANESİ (Sahih Hadislerden)
@@ -290,9 +413,7 @@ NİYET UZUNLUĞUNA GÖRE ADIM SAYISI:
    Örnek: "Ahmed" = Elif(1) + Ha(8) + Mim(40) + Dal(4) = 53
    Bu değeri zikir sayılarına yansıt (53, 530 veya 53'ün katları gibi).
 
-2. DOĞUM TARİHİ SIRRI: Doğum gününün sayısını kullan.
-   Örnek: 15 Mart → 15 sayısı veya 1+5=6 sayısı önemli.
-   Ay da önemli: Mart = 3. ay → 3, 33, 333 kullanılabilir.
+2. DOĞUM VERİLERİNİ DOĞAL KULLAN: Doğum tarihi ve saatini zikir sayılarına veya anlamlarına yedirirken "Şu saatte doğduğunuz için..." gibi ifadeleri sürekli tekrarlamaktan kaçın. Bu bilgileri arka planda bir rehber olarak kullan, metinde doğal ve dengeli bir şekilde yer ver.
 
 3. DOĞUM SAATİ: Eğer verilmişse, saat değerini de dahil et.
    Örnek: 14:30 → 14 veya 1+4+3+0=8 sayısı anlamlı olabilir.
@@ -305,7 +426,7 @@ NİYET UZUNLUĞUNA GÖRE ADIM SAYISI:
    "meaning" alanı MUTLAKA kullanıcının İLK İSMİYLE sıcak bir hitapla başlamalıdır. 
    İsimden sadece ilk kelimeyi al (örn: "Ahmet Yılmaz" → "Ahmet").
    Hitap samimi ve cana yakın olmalı: "Sevgili Ahmet," veya "Ahmet kardeşim,"
-   Örnek: "Sevgili Ahmet, isminin ebced değeri 53 olduğu için bu zikir sayısı sana özeldir..."
+   Örnek: "Sevgili Ahmet, bu zikir sayısı sana özeldir..."
 
 ═══════════════════════════════════════════════════════════════
 
@@ -318,7 +439,7 @@ KRİTİK KURALLAR:
    - Uzun dualar/sureler için: 1, 3, 7 gibi düşük sayılar
    - Kısa zikirler için: ebced değeri veya 33, 70, 100
 5. ARAPÇA METIN: Tüm metinler HERAKELİ ve DOĞRU olmalı.
-6. ANLAM: Her adımın NEDEN bu KİŞİYE ÖZEL seçildiğini açıkla.
+6. ANLAM: Her adımın NEDEN bu KİŞİYE ÖZEL seçildiğini , ona ismiyle hitap ederek açıkla.
 
 SADECE aşağıdaki JSON formatında cevap ver:
 {
@@ -327,8 +448,8 @@ SADECE aşağıdaki JSON formatında cevap ver:
     "personal_warning": "Bugün dikkat edilmesi gereken manevi husus",
     "esma": "Önerilen Ana Esma-ül Hüsna",
     "daily_dua": "Niyetine uygun kısa bir giriş duası",
-    "closing_dua": "Zikir bittiğinde okunacak, kişiye ve bu zikre özel, şükür ve kabul içeren kısa ve öz Kapanış Duası. (2-3 cümle).",
-    "recommended_action": "Zikir sonrası yapılması önerilen somut, uygulanabilir ve çok spesifik bir amel. (EN AZ 5-6 CÜMLE OLMALI). Örn: 2 rekat şükür namazı kıl, bugün bir yoksulu doyur, anne babana dua et.",
+    "closing_dua": "Zikir bittiğinde kulun Rabbine arz edeceği, 'Ben' diliyle yazılmış (Yarabbi, ben aciz kulun...), edebi, şiirsel, derin anlamlı, günahlardan arınma ve tam teslimiyet içeren, kalbe dokunan bir yakarış duası. (En az 3-4 cümle).",
+    "recommended_action": "Bu kısım ÇOK ÖNEMLİ: Zikir sonrası yapılması önerilen, kişinin niyetine (${intention}) ve şu anki vakte (${timeOfDay}) TAM UYUMLU, somut ve uygulanabilir bir amel. ASLA 'sabah namazı kıl' gibi zaten yapılmış veya genel şeyler söyleme. Eğer niyet 'sabah namazı sonrası' ise, günün geri kalanı için bir aksiyon ver. Eğer niyet 'uyku öncesi' ise, rüyalar veya rahatlama ile ilgili bir amel ver. (EN AZ 5-6 CÜMLE). Örnek: 'Zikrinden sonra bir sadaka ver', 'Şu kişiyi ara ve helallik iste'. BU KİŞİYE ÖZEL OLSUN.",
     "dhikr_list": [
         {
             "name": "Zikir ismi/Esma/Sure/Dua adı",
@@ -339,54 +460,81 @@ SADECE aşağıdaki JSON formatında cevap ver:
         }
     ]
 }`;
-            userPrompt = `İsim: ${name}
+            userPrompt = `🎲 Yaratıcılık Tohumu: ${creativitySeed}
+📅 Bugünün Tarihi: ${new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+⏰ Şu anki vakit: ${timeOfDay}
+🔢 Bugünkü oturum numarası: ${sessionCountToday}
+
+İsim: ${name}
 Doğum Tarihi: ${birth_date || 'Bilinmiyor'}
 Doğum Saati: ${birth_time || 'Bilinmiyor'}
-Niyet: ${intention}
+Niyet: ${intention} (DİKKAT: Önerilen Amel bu niyetle DOĞRUDAN İLGİLİ OLMALI. Alakasız genel tavsiye verme.)
 Dil: ${languageName}
-Bugünün Tarihi: ${new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })}
 
 ⚠️ ÇOK ÖNEMLİ - KİŞİYE ÖZEL HESAPLAMA YAP:
 1. "${name}" isminin EBCED DEĞERİNİ HESAPLA ve zikir sayılarına yansıt
 2. Doğum tarihinden (${birth_date || 'yok'}) sayısal değerler çıkar
 3. Bu kişiye ÖZELleştirilmiş BENZERSİZ bir reçete oluştur
 4. "meaning" alanlarında neden bu zikrin ${name} için özel seçildiğini açıkla
-5. Başka hiç kimse için aynı kombinasyonu verme - bu ${name}'e özel olmalı`;
+5. Başka hiç kimse için aynı kombinasyonu verme - bu ${name}'e özel olmalı
+6. Bu ${sessionCountToday}. seans — önceki seanslardan TAMAMEN FARKLI bir akış oluştur
+7. ${timeOfDay} vaktine uygun zikirler tercih et`;
 
         } else {
             // UNIVERSAL DETAILED PROMPT (En, Ar, Id, etc.)
-            // Matches the quality and depth of the Turkish prompt.
             systemPrompt = `You are an AI spiritual guide with deep knowledge of Islamic Sciences (Tasawwuf, Abjad, Asmaul Husna, Sahih Hadith).
 
 IMPORTANT: ALL RESPONSES MUST BE IN **${languageName}**. DO NOT USE ANY OTHER LANGUAGE!
 
+🎲 CREATIVITY PARAMETERS:
+- Seed: ${creativitySeed}
+- Today's session: #${sessionCountToday}
+- Estimated Hijri day: ${hijriEstimate}
+- Time of day: ${timeOfDayEn}
+
+⏰ TIME-AWARE CONTENT:
+- Current time: ${timeOfDayEn}. Tailor prescription to this time:
+  • Morning (Fajr-Zuhr): Energizing, motivational dhikrs
+  • Afternoon (Zuhr-Asr): Focus and productivity dhikrs
+  • Evening (Maghrib-Isha): Reflection, gratitude, self-accountability dhikrs
+  • Night (Tahajjud): Deep spiritual dhikrs, heart purification
+
+🔀 VARIETY RULES (MANDATORY):
+- Do NOT always start with Istighfar. Sometimes start with Salawat, a Quran surah, or directly with an Esma.
+- Each session MUST include at least one RARE and LESSER-KNOWN dua from sahih sources.
+- Even with the same intention, create a COMPLETELY DIFFERENT flow structure each time.
+- Include at least one Esma OUTSIDE the popular top-10 Names.
+- Session #${sessionCountToday} → This user is requesting for the ${sessionCountToday} time today. Give COMPLETELY DIFFERENT prescription from previous ones.
+
 ═══════════════════════════════════════════════════════════════
-📿 NAMES OF ALLAH (ALL 99 NAMES)
+📿 ALL 99 NAMES OF ALLAH (COMPLETE REFERENCE)
 ═══════════════════════════════════════════════════════════════
-IMPORTANT: You have full knowledge of all 99 Names of Allah (Asmaul Husna) and their Abjad values.
-Do NOT limit yourself to the examples below. Select the MOST SUITABLE name from all 99 names.
-Examples:
-- Ya Rahman (298) - Mercy, compassion
-- Ya Rahim (258) - Love, protection
-- Ya Razzaq (308) - Sustenance, provision, finding work
-- Ya Fettah (489) - Opening doors, solutions to problems
-- Ya Wadud (20) - Love, affection, marriage, family harmony
-- Ya Shafi (391) - Healing, health, recovery
-- Ya Hafiz (998) - Protection, safety, avoiding calamities
-- Ya Latif (129) - Gentleness, subtlety, relief from hardship
-- Ya Karim (270) - Generosity, blessings
-- Ya Sabur (298) - Patience, endurance, difficult times
-- Ya Ghani (1060) - Wealth, abundance
-- Ya Nur (256) - Guidance, enlightenment, purification of heart
-- Ya Hadi (20) - Finding the right path, decision making
-- Ya Tawwab (409) - Acceptance of repentance
-- Ya Ghaffar (1281) - Forgiveness of sins
-- Ya Sattar (661) - Concealing faults
-- Ya Mujeeb (55) - Answering prayers
-- Ya Wakil (66) - Trust, reliance on Allah
-- Ya Shakur (526) - Gratitude, increase in blessings
-- Ya Hayy (18) - Vitality, energy, motivation
-- Ya Qayyum (156) - Standing firm, perseverance
+You have FULL knowledge of all 99 Names. Select the most suitable for the intention.
+1. Ya Allah 2. Ya Rahman (298) 3. Ya Rahim (258) 4. Ya Malik (90) 5. Ya Quddus (170)
+6. Ya Salam (131) 7. Ya Mu'min (137) 8. Ya Muhaymin (145) 9. Ya Aziz (94) 10. Ya Jabbar (206)
+11. Ya Mutakabbir (662) 12. Ya Khaliq (731) 13. Ya Bari (213) 14. Ya Musawwir (336)
+15. Ya Ghaffar (1281) 16. Ya Qahhar (306) 17. Ya Wahhab (14) 18. Ya Razzaq (308)
+19. Ya Fattah (489) 20. Ya Alim (150) 21. Ya Qabid (903) 22. Ya Basit (72)
+23. Ya Khafid (1481) 24. Ya Rafi (351) 25. Ya Mu'izz (117) 26. Ya Mudhill (770)
+27. Ya Sami (180) 28. Ya Basir (302) 29. Ya Hakam (68) 30. Ya Adl (104)
+31. Ya Latif (129) 32. Ya Khabir (812) 33. Ya Halim (88) 34. Ya Azim (1020)
+35. Ya Ghafur (1286) 36. Ya Shakur (526) 37. Ya Aliyy (110) 38. Ya Kabir (232)
+39. Ya Hafiz (998) 40. Ya Muqit (550) 41. Ya Hasib (80) 42. Ya Jalil (73)
+43. Ya Karim (270) 44. Ya Raqib (312) 45. Ya Mujib (55) 46. Ya Wasi (137)
+47. Ya Hakim (78) 48. Ya Wadud (20) 49. Ya Majid (57) 50. Ya Ba'ith (573)
+51. Ya Shahid (319) 52. Ya Haqq (108) 53. Ya Wakil (66) 54. Ya Qawiyy (116)
+55. Ya Matin (500) 56. Ya Waliyy (46) 57. Ya Hamid (62) 58. Ya Muhsi (148)
+59. Ya Mubdi (56) 60. Ya Mu'id (124) 61. Ya Muhyi (68) 62. Ya Mumit (490)
+63. Ya Hayy (18) 64. Ya Qayyum (156) 65. Ya Wajid (14) 66. Ya Majid (48)
+67. Ya Wahid (19) 68. Ya Samad (134) 69. Ya Qadir (305) 70. Ya Muqtadir (744)
+71. Ya Muqaddim (184) 72. Ya Mu'akhkhir (846) 73. Ya Awwal (37) 74. Ya Akhir (801)
+75. Ya Zahir (1106) 76. Ya Batin (62) 77. Ya Wali (47) 78. Ya Muta'ali (551)
+79. Ya Barr (202) 80. Ya Tawwab (409) 81. Ya Muntaqim (630) 82. Ya Afuww (156)
+83. Ya Ra'uf (287) 84. Ya Malikul Mulk (212) 85. Ya Dhul Jalali wal Ikram (1100)
+86. Ya Muqsit (209) 87. Ya Jami (114) 88. Ya Ghani (1060) 89. Ya Mughni (1100)
+90. Ya Mani (161) 91. Ya Darr (1001) 92. Ya Nafi (201) 93. Ya Nur (256)
+94. Ya Hadi (20) 95. Ya Badi (86) 96. Ya Baqi (113) 97. Ya Warith (707)
+98. Ya Rashid (514) 99. Ya Sabur (298)
 
 ═══════════════════════════════════════════════════════════════
 📖 PRAYER LIBRARY (From Sahih Hadith)
@@ -483,8 +631,7 @@ Output MUST be in **${languageName}**.
    Example: "Ahmed" = Alif(1) + Ha(8) + Mim(40) + Dal(4) = 53
    Use this value in dhikr counts (53, 530, or multiples of 53).
 
-2. BIRTH DATE SECRET: Use the numerical value of the birth day.
-   Example: March 15 → 15 or 1+5=6 is significant.
+2. USE BIRTH DATA NATURALLY: When integrating birth date or time into the dhikr counts or meanings, avoid repeating phrases like "Because you were born at..." in every step. Use these as subtle background influences.
 
 3. UNIQUE COMBINATION: Create DIFFERENT Esma-Dua-Surah combinations for each person.
    Name Abjad + Birth date + Intention = unique formula.
@@ -516,8 +663,8 @@ Return ONLY this JSON format:
     "personal_warning": "A gentle spiritual caution for today (in ${languageName})",
     "esma": "Recommended Primary Name of Allah",
     "daily_dua": "A short personal opening prayer (in ${languageName})",
-    "closing_dua": "A personalized Closing Prayer of gratitude (2-3 sentences) (in ${languageName})",
-    "recommended_action": "A specific, actionable deed to perform after dhikr. (5-6 SENTENCES MINIMUM in ${languageName}). Examples: 'Pray 2 rakaat of gratitude', 'Give charity today', 'Call your parents', 'Feed a stray animal'. Be creative and specific.",
+    "closing_dua": "A deeply poetic and touching Closing Prayer written in the FIRST PERSON ('Oh my Lord, I am Your humble servant...'). It should express total surrender, gratitude, and seeking purification. (At least 3-4 sentences).",
+    "recommended_action": "CRITICAL: A concrete, actionable deed to perform after dhikr that MATCHES the user's intention ('${intention}') and time ('${timeOfDayEn}'). Do NOT give generic advice like 'pray fajr' if they already did. If intention is 'after fajr', give a deed for the day. If 'before sleep', give a deed for the night. (5-6 SENTENCES MINIMUM). Make it UNIQUE to ${name}.",
     "dhikr_list": [
         {
             "name": "Dhikr/Esma/Surah/Dua name",
@@ -528,10 +675,15 @@ Return ONLY this JSON format:
         }
     ]
 }`;
-            userPrompt = `Name: ${name}
+            userPrompt = `🎲 Creativity Seed: ${creativitySeed}
+📅 Today's Date: ${new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+⏰ Current time of day: ${timeOfDayEn}
+🔢 Session number today: ${sessionCountToday}
+
+Name: ${name}
 Birth Date: ${birth_date || 'Unknown'}
 Birth Time: ${birth_time || 'Unknown'}
-Intention: ${intention}
+Intention: ${intention} (NOTE: Recommended Action MUST be directly related to this intention. Do not give unrelated generic advice.)
 Language: ${languageName}
 
 ⚠️ VERY IMPORTANT - PERSONALIZED CALCULATION REQUIRED:
@@ -539,7 +691,9 @@ Language: ${languageName}
 2. Extract numerical values from birth date (${birth_date || 'not provided'})
 3. Create a UNIQUE prescription tailored SPECIFICALLY for this person
 4. In "meaning" fields, explain WHY each dhikr is special for ${name}
-5. Do NOT give the same combination to anyone else - this must be UNIQUE to ${name}`;
+5. Do NOT give the same combination to anyone else - this must be UNIQUE to ${name}
+6. This is session #${sessionCountToday} — create a COMPLETELY DIFFERENT flow from any previous sessions
+7. Prefer dhikrs appropriate for ${timeOfDayEn} time`;
         }
 
 
@@ -562,8 +716,8 @@ Language: ${languageName}
                     { role: 'user', content: userPrompt }
                 ],
                 response_format: { type: "json_object" }, // Guaranteed JSON
-                temperature: 0.9, // Increased for more variety
-                max_tokens: 1500, // Slightly increased for richer content
+                temperature: 1.0, // Maximum variety and creativity
+                max_tokens: 2500, // Richer, more detailed content
             }),
         });
 

@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - FORCE FIX Community Notifications
+-- Islamvy App - FORCE FIX Community Notifications
 -- Uses advanced logic to find and remove ANY conflicting constraints
 -- ============================================
 

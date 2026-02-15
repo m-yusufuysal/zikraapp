@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Profiles Permission & Location Fix
+-- Islamvy App - Profiles Permission & Location Fix
 -- 1. Unlocks Profiles Data (so notifications show Names, not "Someone")
 -- 2. Adds Location Support (City/Country)
 -- ============================================

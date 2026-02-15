@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Collective Dhikr Pledges & Completion
+-- Islamvy App - Collective Dhikr Pledges & Completion
 -- 1. Support specific amounts in interactions
 -- 2. Auto-complete community dhikrs
 -- 3. Notify all participants on target reach

@@ -5,14 +5,24 @@ import { InteractionManager } from 'react-native';
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-    const [ramadanModeEnabled, setRamadanModeEnabled] = useState(false);
+    const [nightModeEnabled, setNightModeEnabled] = useState(false);
     const [isThemeLoading, setIsThemeLoading] = useState(true);
 
     useEffect(() => {
         const loadTheme = async () => {
             try {
-                const val = await AsyncStorage.getItem('ramadan_mode_enabled');
-                setRamadanModeEnabled(val === 'true');
+                let val = await AsyncStorage.getItem('night_mode_enabled');
+
+                // Backward compatibility: check for old key if new key doesn't exist
+                if (val === null) {
+                    val = await AsyncStorage.getItem('ramadan_mode_enabled');
+                    if (val !== null) {
+                        // Migrate to new key
+                        await AsyncStorage.setItem('night_mode_enabled', val);
+                    }
+                }
+
+                setNightModeEnabled(val === 'true');
             } catch (e) {
                 console.error('ThemeContext: Error loading theme', e);
             } finally {
@@ -23,13 +33,13 @@ export const ThemeProvider = ({ children }) => {
     }, []);
 
     // Memoized toggle function to prevent re-renders
-    const toggleRamadanMode = useCallback(async (enabled) => {
+    const toggleNightMode = useCallback(async (enabled) => {
         try {
             // Use InteractionManager to defer state change until animations complete
             InteractionManager.runAfterInteractions(() => {
-                setRamadanModeEnabled(enabled);
+                setNightModeEnabled(enabled);
             });
-            await AsyncStorage.setItem('ramadan_mode_enabled', String(enabled));
+            await AsyncStorage.setItem('night_mode_enabled', String(enabled));
         } catch (e) {
             console.error('ThemeContext: Error toggling theme', e);
         }
@@ -37,10 +47,10 @@ export const ThemeProvider = ({ children }) => {
 
     // Memoize context value to prevent unnecessary re-renders
     const contextValue = useMemo(() => ({
-        ramadanModeEnabled,
-        toggleRamadanMode,
+        nightModeEnabled,
+        toggleNightMode,
         isThemeLoading
-    }), [ramadanModeEnabled, toggleRamadanMode, isThemeLoading]);
+    }), [nightModeEnabled, toggleNightMode, isThemeLoading]);
 
     return (
         <ThemeContext.Provider value={contextValue}>

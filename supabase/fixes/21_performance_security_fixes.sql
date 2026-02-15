@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Performance & Security RLS Fixes
+-- Islamvy App - Performance & Security RLS Fixes
 -- Version 1.0
 -- Addresses: auth_rls_initplan & multiple_permissive_policies
 -- ============================================

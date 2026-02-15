@@ -19,12 +19,31 @@ import { COLORS } from '../utils/theme';
 const MyCommunityPostsScreen = ({ navigation }) => {
     const { t } = useTranslation();
     const [posts, setPosts] = useState([]);
-    const [stats, setStats] = useState({ prayers: 0, dhikrs: 0, hatims: 0 });
+    const [stats, setStats] = useState({
+        prayers: 0,
+        dhikrsJoined: 0,
+        dhikrsRecited: 0,
+        hatimsJoined: 0,
+        hatimsRead: 0
+    });
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
 
     useEffect(() => {
         fetchMyPosts();
+
+        // Listen for updates from Detail Screen
+        const subscription = require('react-native').DeviceEventEmitter.addListener('communityPostUpdate', ({ postId, increment }) => {
+            setPosts(prev => prev.map(p =>
+                String(p.id) === String(postId)
+                    ? { ...p, current_count: (parseInt(p.current_count) || 0) + increment }
+                    : p
+            ));
+        });
+
+        return () => {
+            subscription.remove();
+        };
     }, []);
 
     const fetchMyPosts = async () => {
@@ -88,15 +107,17 @@ const MyCommunityPostsScreen = ({ navigation }) => {
                     <Text style={styles.statVal}>{stats.prayers}</Text>
                     <Text style={styles.statLab}>{t('community.prayers')}</Text>
                 </View>
-                <View style={styles.statBox}>
+                <View style={[styles.statBox, { borderLeftWidth: 1, borderRightWidth: 1, borderColor: 'rgba(255,255,255,0.1)', paddingHorizontal: 15 }]}>
                     <History size={20} color="#f1c40f" />
-                    <Text style={styles.statVal}>{stats.dhikrs}</Text>
+                    <Text style={styles.statVal}>{stats.dhikrsJoined}</Text>
                     <Text style={styles.statLab}>{t('community.dhikrs')}</Text>
+                    <Text style={styles.statSub}>{stats.dhikrsRecited} {t('community.count_unit')}</Text>
                 </View>
                 <View style={styles.statBox}>
                     <BookOpen size={20} color={COLORS.primary} />
-                    <Text style={styles.statVal}>{stats.hatims}</Text>
+                    <Text style={styles.statVal}>{stats.hatimsJoined}</Text>
                     <Text style={styles.statLab}>{t('community.hatims')}</Text>
+                    <Text style={styles.statSub}>{stats.hatimsRead} {t('common.juz')}</Text>
                 </View>
             </View>
 
@@ -118,8 +139,25 @@ const MyCommunityPostsScreen = ({ navigation }) => {
         </View>
     );
 
+    const handlePress = (item) => {
+        if (item.type === 'hatim') {
+            navigation.navigate('HatimDetail', {
+                hatimId: item.id,
+                title: item.title,
+                city: item.city,
+                location: item.location
+            });
+        } else {
+            navigation.navigate('PostDetail', { postId: item.id });
+        }
+    };
+
     const renderItem = ({ item }) => (
-        <View style={styles.postCard}>
+        <TouchableOpacity
+            style={styles.postCard}
+            onPress={() => handlePress(item)}
+            activeOpacity={0.7}
+        >
             <View style={styles.postHeader}>
                 <View style={[styles.typeBadge, { backgroundColor: item.type === 'dua' ? '#3498db20' : (item.type === 'hatim' ? COLORS.primary + '20' : '#f1c40f20') }]}>
                     <Text style={[styles.typeBadgeText, { color: item.type === 'dua' ? '#3498db' : (item.type === 'hatim' ? COLORS.primary : '#f39c12') }]}>
@@ -146,7 +184,7 @@ const MyCommunityPostsScreen = ({ navigation }) => {
                     <Text style={styles.statText}>{item.current_count}</Text>
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 
     return (
@@ -233,6 +271,7 @@ const styles = StyleSheet.create({
     statBox: { alignItems: 'center' },
     statVal: { color: '#FFF', fontSize: 18, fontWeight: 'bold', marginTop: 8 },
     statLab: { color: 'rgba(255,255,255,0.6)', fontSize: 10, fontWeight: '700', marginTop: 2, textTransform: 'uppercase' },
+    statSub: { color: COLORS.primary, fontSize: 11, fontWeight: '600', marginTop: 4 },
     sectionTitle: { fontSize: 16, fontWeight: 'bold', color: COLORS.primary, marginLeft: 5, marginBottom: 10, marginTop: 20 },
     tabBar: { flexDirection: 'row', gap: 10, marginBottom: 20 },
     tab: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 15, backgroundColor: 'rgba(0,0,0,0.05)' },

@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Schema Migration
+-- Islamvy App - Schema Migration
 -- Add premium status columns to profiles table
 -- ============================================
 

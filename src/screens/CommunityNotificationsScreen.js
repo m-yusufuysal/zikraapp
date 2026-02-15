@@ -58,7 +58,7 @@ const CommunityNotificationsScreen = ({ navigation }) => {
         if (notification.type === 'new_product') {
             navigation.navigate('Shop');
         } else if (notification.post_id) {
-            navigation.navigate('Community', { highlightPostId: notification.post_id });
+            navigation.navigate('PostDetail', { postId: notification.post_id });
         } else if (notification.hatim_id) {
             navigation.navigate('HatimDetail', { hatimId: notification.hatim_id });
         }

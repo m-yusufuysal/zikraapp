@@ -18,23 +18,33 @@ import { getInfluencerDashboardData } from '../services/ReferralService';
 import { supabase } from '../services/supabase';
 import { COLORS } from '../utils/theme';
 
-const InfluencerDashboard = ({ navigation }) => {
+const InfluencerDashboard = ({ navigation, route }) => {
     const { t, i18n } = useTranslation();
     const insets = useSafeAreaInsets();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState(null);
 
+    // Params for Admin View
+    const { userId } = route.params || {};
+
     useEffect(() => {
         loadData();
-    }, []);
+    }, [userId]);
 
     const loadData = async () => {
         setLoading(true);
         try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                const data = await getInfluencerDashboardData(user.id);
+            let targetUserId = userId;
+
+            // If no userId passed, get current logged in user
+            if (!targetUserId) {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) targetUserId = user.id;
+            }
+
+            if (targetUserId) {
+                const data = await getInfluencerDashboardData(targetUserId);
                 setStats(data);
             }
         } catch (error) {
@@ -46,7 +56,7 @@ const InfluencerDashboard = ({ navigation }) => {
 
     const copyToClipboard = () => {
         if (!stats?.referral_code) return;
-        const link = `zikra://refer?code=${stats.referral_code}`;
+        const link = `islamvy://refer?code=${stats.referral_code}`;
         Clipboard.setString(link);
         Alert.alert(t('thanks'), t('referral.link_copied'));
     };
@@ -90,7 +100,7 @@ const InfluencerDashboard = ({ navigation }) => {
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
                         <ChevronLeft size={28} color={COLORS.primary} />
                     </TouchableOpacity>
-                    <Text style={[styles.title, ramadanModeEnabled && { color: '#FFF' }]}>{t('referral.title')}</Text>
+                    <Text style={[styles.title, nightModeEnabled && { color: '#FFF' }]}>{t('referral.title')}</Text>
                     <View style={{ width: 40 }} />
                 </View>
                 <View style={styles.headerSub}>
@@ -130,7 +140,7 @@ const InfluencerDashboard = ({ navigation }) => {
                     <Text style={styles.cardLabel}>{t('referral.share_link')}</Text>
                     <View style={styles.linkWrapper}>
                         <Text style={styles.linkText} numberOfLines={1}>
-                            zikra://refer?code={stats.referral_code}
+                            islamvy://refer?code={stats.referral_code}
                         </Text>
                         <TouchableOpacity style={styles.copyBtn} onPress={copyToClipboard}>
                             <Copy size={20} color={COLORS.primary} />

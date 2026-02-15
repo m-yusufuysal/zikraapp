@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Completion Notifications Fix
+-- Islamvy App - Completion Notifications Fix
 -- 1. Support new notification types
 -- 2. Auto-complete Hatims when all slots are taken
 -- 3. Notify ALL participants on Hatim completion

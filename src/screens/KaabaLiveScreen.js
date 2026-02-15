@@ -11,11 +11,11 @@ import { COLORS, FONTS } from '../utils/theme';
 // Backup Live Stream IDs (Makkah Live 24/7)
 // We rotate through these if one fails or ends
 const LIVE_STREAMS = [
-    'hJXdc9MRC2A', // Channel: Makkah Live (User Requested)
-    '21X5lGlDOfg', // Channel: Makkah Live
-    'v84S6wA7lQM', // Channel: Haramain Support
-    'q_074X2tK5Q', // Channel: Makkah Live HD
-    'J5jS3NfqP90', // Backup
+    '7-Qf3g-0xEI', // Makkah Live 1
+    'Lq1r-JEko9s', // Makkah Live 2
+    'Cm1v4bteXbI', // Makkah Live 3
+    'hJXdc9MRC2A', // Backup 1
+    '21X5lGlDOfg', // Backup 2
 ];
 
 const KaabaLiveScreen = ({ navigation }) => {

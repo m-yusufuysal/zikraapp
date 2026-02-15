@@ -1,8 +1,9 @@
 import { FlashList } from '@shopify/flash-list';
 import { ChevronLeft, Pause, Play } from 'lucide-react-native';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Animated, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useKeepAwake } from 'expo-keep-awake';
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
 import AdBanner from '../components/AdBanner';
@@ -20,9 +21,10 @@ import { SURAH_NAMES } from '../data/surahNames';
 import { getJuzDetails, getSurahDetails, getSurahs } from '../services/quranService';
 
 const QuranScreen = ({ navigation, route }) => {
+    useKeepAwake(); // Keep screen on while reading
     const insets = useSafeAreaInsets();
     const { t, i18n } = useTranslation();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
     const [surahs, setSurahs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('surah');
@@ -234,6 +236,17 @@ const QuranScreen = ({ navigation, route }) => {
         }
     };
 
+    const renderAyahItem = useCallback(({ item }) => (
+        <AyahItem
+            item={item}
+            isActive={currentAyah?.number === item.number}
+            isPlaying={isPlaying && currentAyah?.number === item.number}
+            onPlayPause={handlePlayPause}
+            theme={i18n.language}
+            nightModeEnabled={nightModeEnabled}
+        />
+    ), [currentAyah, isPlaying, handlePlayPause, i18n.language, nightModeEnabled]);
+
     return (
         <RamadanBackground>
             <View style={[styles.content, { paddingTop: insets.top }]}>
@@ -247,14 +260,14 @@ const QuranScreen = ({ navigation, route }) => {
                                 onPress={closeDetail}
                                 style={[
                                     styles.roundButtonSmall,
-                                    ramadanModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.05)', shadowOpacity: 0, elevation: 0 }
+                                    nightModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.05)', shadowOpacity: 0, elevation: 0 }
                                 ]}
                             >
-                                <ChevronLeft color={ramadanModeEnabled ? '#FFF' : COLORS.matteBlack} size={24} />
+                                <ChevronLeft color={nightModeEnabled ? '#FFF' : COLORS.matteBlack} size={24} />
                             </TouchableOpacity>
 
                             <View style={styles.headerTitleContainer}>
-                                <Animated.Text style={[styles.headerTitleSticky, { opacity: headerTitleOpacity, position: 'absolute' }, ramadanModeEnabled && { color: '#FFF' }]}>
+                                <Animated.Text style={[styles.headerTitleSticky, { opacity: headerTitleOpacity, position: 'absolute' }, nightModeEnabled && { color: '#FFF' }]}>
                                     {selectedContext.title}
                                 </Animated.Text>
                             </View>
@@ -278,24 +291,15 @@ const QuranScreen = ({ navigation, route }) => {
                                     { useNativeDriver: true }
                                 )}
                                 scrollEventThrottle={16}
-                                renderItem={({ item }) => (
-                                    <AyahItem
-                                        item={item}
-                                        isActive={currentAyah?.number === item.number}
-                                        isPlaying={isPlaying && currentAyah?.number === item.number}
-                                        onPlayPause={handlePlayPause}
-                                        theme={i18n.language}
-                                        ramadanModeEnabled={ramadanModeEnabled}
-                                    />
-                                )}
+                                renderItem={renderAyahItem}
                                 contentContainerStyle={[styles.listContent, { paddingTop: insets.top + 50 }]}
                                 ListHeaderComponent={
                                     <View style={styles.detailHeader}>
-                                        <Animated.Text style={[styles.detailTitle, { opacity: topHeaderOpacity }, ramadanModeEnabled && { color: '#FFF' }]}>
+                                        <Animated.Text style={[styles.detailTitle, { opacity: topHeaderOpacity }, nightModeEnabled && { color: '#FFF' }]}>
                                             {selectedContext.title}
                                         </Animated.Text>
                                         {selectedContext.subtitle && selectedContext.title !== selectedContext.subtitle && i18n.language.split('-')[0] !== 'ar' && (
-                                            <Animated.Text style={[styles.detailSubtitle, { opacity: topHeaderOpacity }, ramadanModeEnabled && { color: 'rgba(255,255,255,0.7)' }]}>
+                                            <Animated.Text style={[styles.detailSubtitle, { opacity: topHeaderOpacity }, nightModeEnabled && { color: 'rgba(255,255,255,0.7)' }]}>
                                                 {selectedContext.subtitle}
                                             </Animated.Text>
                                         )}
@@ -313,20 +317,25 @@ const QuranScreen = ({ navigation, route }) => {
                     </View>
                 ) : (
                     <>
-                        <Text style={[COMMON_STYLES.headerTitle, { marginHorizontal: 24, marginTop: 10, alignSelf: isTablet ? 'center' : 'flex-start' }, ramadanModeEnabled && { color: '#FFF' }]}>{t('quran.title')}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginHorizontal: 24, marginTop: 10, alignSelf: isTablet ? 'center' : 'stretch', minHeight: 44 }}>
+                            <TouchableOpacity onPress={() => navigation.goBack()} style={{ position: 'absolute', left: 0, zIndex: 10 }}>
+                                <ChevronLeft size={28} color={nightModeEnabled ? '#FFD700' : COLORS.matteGreen} strokeWidth={2.5} />
+                            </TouchableOpacity>
+                            <Text style={[COMMON_STYLES.headerTitle, nightModeEnabled && { color: '#FFF' }, { textAlign: 'center' }]}>{t('quran.title')}</Text>
+                        </View>
 
-                        <View style={[styles.tabContainer, isTablet && { width: TABLET_MAX_WIDTH, alignSelf: 'center' }, ramadanModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.1)', borderWidth: 1 }]}>
+                        <View style={[styles.tabContainer, isTablet && { width: TABLET_MAX_WIDTH, alignSelf: 'center' }, nightModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.1)', borderWidth: 1 }]}>
                             <TouchableOpacity
-                                style={[styles.tab, activeTab === 'surah' && styles.activeTab, ramadanModeEnabled && activeTab === 'surah' && { backgroundColor: '#FFD700', borderColor: '#FFD700' }]}
+                                style={[styles.tab, activeTab === 'surah' && styles.activeTab, nightModeEnabled && activeTab === 'surah' && { backgroundColor: '#FFD700', borderColor: '#FFD700' }]}
                                 onPress={() => setActiveTab('surah')}
                             >
-                                <Text style={[styles.tabText, activeTab === 'surah' && styles.activeTabText, ramadanModeEnabled && activeTab !== 'surah' && { color: 'rgba(255, 255, 255, 0.6)' }, ramadanModeEnabled && activeTab === 'surah' && { color: '#000' }]}>{t('quran.surahs')}</Text>
+                                <Text style={[styles.tabText, activeTab === 'surah' && styles.activeTabText, nightModeEnabled && activeTab !== 'surah' && { color: 'rgba(255, 255, 255, 0.6)' }, nightModeEnabled && activeTab === 'surah' && { color: '#000' }]}>{t('quran.surahs')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                style={[styles.tab, activeTab === 'juz' && styles.activeTab, ramadanModeEnabled && activeTab === 'juz' && { backgroundColor: '#FFD700', borderColor: '#FFD700' }]}
+                                style={[styles.tab, activeTab === 'juz' && styles.activeTab, nightModeEnabled && activeTab === 'juz' && { backgroundColor: '#FFD700', borderColor: '#FFD700' }]}
                                 onPress={() => setActiveTab('juz')}
                             >
-                                <Text style={[styles.tabText, activeTab === 'juz' && styles.activeTabText, ramadanModeEnabled && activeTab !== 'juz' && { color: 'rgba(255, 255, 255, 0.6)' }, ramadanModeEnabled && activeTab === 'juz' && { color: '#000' }]}>{t('quran.juzs')}</Text>
+                                <Text style={[styles.tabText, activeTab === 'juz' && styles.activeTabText, nightModeEnabled && activeTab !== 'juz' && { color: 'rgba(255, 255, 255, 0.6)' }, nightModeEnabled && activeTab === 'juz' && { color: '#000' }]}>{t('quran.juzs')}</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -335,9 +344,9 @@ const QuranScreen = ({ navigation, route }) => {
                         ) : (
                             <View style={{ flex: 1 }}>
                                 {activeTab === 'surah' ? (
-                                    <SurahList data={surahs} onSurahPress={openSurah} ramadanModeEnabled={ramadanModeEnabled} />
+                                    <SurahList data={surahs} onSurahPress={openSurah} nightModeEnabled={nightModeEnabled} />
                                 ) : (
-                                    <JuzList onJuzPress={openJuz} ramadanModeEnabled={ramadanModeEnabled} />
+                                    <JuzList onJuzPress={openJuz} nightModeEnabled={nightModeEnabled} />
                                 )}
                             </View>
                         )}
@@ -427,6 +436,7 @@ const styles = StyleSheet.create({
     tabContainer: {
         flexDirection: 'row',
         marginHorizontal: 24,
+        marginTop: 20,
         marginBottom: 16,
         backgroundColor: 'rgba(255,255,255,0.2)',
         borderRadius: 12,

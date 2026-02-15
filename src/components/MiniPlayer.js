@@ -12,27 +12,35 @@ import { COLORS } from '../utils/theme';
 const MiniPlayer = ({ currentRouteName }) => {
     const { t } = useTranslation();
     const { isPlaying, currentAyah, playAyah, pause, resume, stop, isLoading, playlistPosition, playbackContext } = useAudio();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
     const { position, duration } = useProgress(200);
     const navigation = useNavigation();
 
     // Conditional Bottom Positioning
     // Default: 85 (Above TabBar)
     // Screens with no TabBar: 30 (Bottom of screen)
-    const screensWithNoTabBar = ['Shop', 'QiblaCompass', 'KaabaLive', 'ZakatCalculator', 'Community', 'HatimDetail', 'InfluencerDashboard', 'ReferralList', 'Premium', 'Auth'];
+    // List of screens where the MiniPlayer should be hidden entirely
+    const screensToHidePlayer = ['HatimDetail', 'PostDetail', 'MyCommunityPosts', 'CommunityNotifications'];
+
+    // Visibility Logic: 
+    // 1. Hide if current screen is in the hide list
+    // 2. Hide if there's no current ayah 
+    // 3. Hide if it's stopped/reset
+    if (screensToHidePlayer.includes(currentRouteName) || !currentAyah || (!isPlaying && !isLoading && position === 0)) return null;
+
+    // Conditional Bottom Positioning
+    // Default: 85 (Above TabBar)
+    // Screens with no TabBar: 30 (Bottom of screen)
+    const screensWithNoTabBar = ['Quran', 'Shop', 'QiblaCompass', 'KaabaLive', 'ZakatCalculator', 'InfluencerDashboard', 'ReferralList', 'Premium', 'Auth'];
     const bottomPosition = screensWithNoTabBar.includes(currentRouteName) ? 30 : 85;
-    // Note: 'Shop' logic already handled but made explicit for clarity.
 
     const widthStyle = isTablet ? 450 : '94%';
-
-    if (!currentAyah) return null;
-
     // Theme values
-    const bgColor = ramadanModeEnabled ? 'rgba(15, 12, 41, 0.98)' : 'rgba(255, 255, 255, 0.85)';
-    const borderColor = ramadanModeEnabled ? 'rgba(255, 215, 0, 0.3)' : 'rgba(0,0,0,0.05)';
-    const primaryColor = ramadanModeEnabled ? '#FFD700' : COLORS.primary;
-    const textColor = ramadanModeEnabled ? '#FFFFFF' : COLORS.textPrimary;
-    const subTextColor = ramadanModeEnabled ? 'rgba(255,255,255,0.6)' : COLORS.textSecondary;
+    const bgColor = nightModeEnabled ? 'rgba(15, 12, 41, 0.98)' : 'rgba(255, 255, 255, 0.85)';
+    const borderColor = nightModeEnabled ? 'rgba(255, 215, 0, 0.3)' : 'rgba(0,0,0,0.05)';
+    const primaryColor = nightModeEnabled ? '#FFD700' : COLORS.primary;
+    const textColor = nightModeEnabled ? '#FFFFFF' : COLORS.textPrimary;
+    const subTextColor = nightModeEnabled ? 'rgba(255,255,255,0.6)' : COLORS.textSecondary;
 
     // Calculate time-based progress percentage (Net Verse Progress)
     const timeProgressPercent = (duration > 0 && position >= 0)
@@ -86,12 +94,12 @@ const MiniPlayer = ({ currentRouteName }) => {
             activeOpacity={0.9}
         >
             {/* Time-based Progress Bar */}
-            <View style={[styles.progressBar, ramadanModeEnabled && { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
+            <View style={[styles.progressBar, nightModeEnabled && { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
                 <View style={[styles.progressIndicator, { width: `${timeProgressPercent}%`, backgroundColor: primaryColor }]} />
             </View>
 
             <View style={styles.content}>
-                <View style={[styles.iconBox, ramadanModeEnabled && { backgroundColor: 'rgba(255, 215, 0, 0.1)' }]}>
+                <View style={[styles.iconBox, nightModeEnabled && { backgroundColor: 'rgba(255, 215, 0, 0.1)' }]}>
                     <Book color={primaryColor} size={20} />
                 </View>
 

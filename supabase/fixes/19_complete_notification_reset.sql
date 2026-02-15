@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - MASTER RESET & FIX for Notifications
+-- Islamvy App - MASTER RESET & FIX for Notifications
 -- Version: FINAL
 -- Run this script to completely repair the notification system.
 -- ============================================

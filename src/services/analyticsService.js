@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
- * Zikra Analytics Service
+ * Islamvy Analytics Service
  * 
  * Provides tracking for user behavior to identify churn points and improve engagement.
  * Designed to be easily swappable with Mixpanel, Amplitude, or Google Analytics.

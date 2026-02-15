@@ -10,7 +10,8 @@ import { SURAH_NAMES } from '../data/surahNames';
  * - Uses text_uthmani for authentic Mushaf text with full Tajweed marks
  * - Includes Waqf (stop) signs: ۚ ۖ ۗ ۘ ۙ
  * - Proper Madd (elongation) marks and special Uthmani characters
- * - Official Quran.com translations (Diyanet, Saheeh International, etc.)
+ * - Local caching for offline access
+ * - Official Quran.com translations (Elmalılı, Clear Quran, etc.)
  */
 
 const BASE_URL = 'https://api.quran.com/api/v4';
@@ -59,11 +60,13 @@ const fetchAllPages = async (endpoint, params = {}) => {
 };
 
 // Quran.com Translation Resource IDs
+// UPDATED to strict verse-by-verse sources to prevent grouping duplications
 const TRANSLATION_IDS = {
     ar: null, // No translation needed for Arabic
-    tr: 77,   // Turkish Translation(Diyanet)
-    en: 20,   // Saheeh International (Verified stable)
-    id: 33,   // Indonesian Ministry of Religious Affairs (Kemenag)
+    tr: 112,  // Şaban Piri (Strict verse-by-verse, no grouping)
+    en: 20,   // Saheeh International (Reliable & Verse-by-Verse)
+    id: 33,   // Indonesian Ministry of Religious Affairs
+    fr: 31,   // French (Hamidullah)
 };
 
 // Audio Reciter ID (Mishary Alafasy)
@@ -71,9 +74,16 @@ const RECITER_ID = 7;
 
 // Map language code to translation ID
 const getTranslationId = (language) => {
-    if (!language) return 77;
-    const langCode = language.split('-')[0];
-    if (langCode === 'tr') return 77;
+    if (!language) return 112; // Default TR ID (Şaban Piri)
+    const langCode = String(language).toLowerCase().split(/[-_]/)[0];
+
+    // Explicit mappings
+    if (langCode === 'tr') return 112;
+    if (langCode === 'fr') return 31;
+    if (langCode === 'id') return 33;
+    if (langCode === 'en') return 20;
+    if (langCode === 'ar') return null;
+
     return TRANSLATION_IDS[langCode] ?? 20;
 };
 
@@ -85,10 +95,9 @@ const cleanTranslation = (text) => {
     if (!text) return null;
     // Remove HTML tags first
     let cleaned = text.replace(/<[^>]*>/g, '');
-    // Remove footnote numbers that appear after words/punctuation (e.g., "Allāh,1" -> "Allāh,")
-    // Pattern: digit(s) that follow a letter or punctuation and are followed by space, punctuation, or end
+    // Remove footnote numbers that appear after words/punctuation
     cleaned = cleaned.replace(/([a-zA-ZāīūĀĪŪ.,;:!?'"\-])\d+/g, '$1');
-    // Clean up any trailing punctuation followed by nothing (like "word, " -> "word, ")
+    // Clean up any trailing punctuation followed by nothing
     cleaned = cleaned.replace(/\s+/g, ' ').trim();
     return cleaned;
 };
@@ -101,6 +110,7 @@ export const clearQuranCache = async () => {
         const allKeys = await AsyncStorage.getAllKeys();
         const quranKeys = allKeys.filter(key =>
             key.startsWith('surah_meta') ||
+            key.startsWith('surah_full_') ||
             key.startsWith('quran_')
         );
         if (quranKeys.length > 0) {
@@ -116,8 +126,8 @@ export const clearQuranCache = async () => {
 export const getSurahs = async (language) => {
     try {
         const langCode = (language || 'tr').split('-')[0];
-        // Cache key for surah list meta - v5_uthmani uses authentic Mushaf text
-        const cacheKey = `surah_meta_v5_uthmani_${langCode}`;
+        // Cache key for surah list meta - v6_uthmani uses authentic Mushaf text
+        const cacheKey = `surah_meta_v6_uthmani_${langCode}`;
         const cached = await AsyncStorage.getItem(cacheKey);
 
         // If we have valid cached data, return it
@@ -157,12 +167,24 @@ export const getSurahDetails = async (surahNumber, language) => {
         const langCode = (language || 'tr').split('-')[0];
         const translationId = getTranslationId(language);
 
+        // Cache Key for full Surah text
+        // v4 forces new cache structure
+        const cacheKey = `surah_full_${surahNumber}_${langCode}_v4`;
+        const cached = await AsyncStorage.getItem(cacheKey);
+
+        if (cached) {
+            try {
+                return JSON.parse(cached);
+            } catch (e) {
+                // corrupted cache, proceed to fetch
+            }
+        }
+
         // 1. Fetch all verses using paginated helper
         const params = {
             language: langCode,
             words: 'false',
             fields: 'text_uthmani,verse_key,verse_number,page_number',
-            v: 'v4_saheeh'
         };
 
         if (translationId && langCode !== 'ar') {
@@ -245,7 +267,26 @@ export const getSurahDetails = async (surahNumber, language) => {
             };
         });
 
-        return {
+        // DEDUPLICATION & CLEANUP LOGIC
+        // Some APIs returns the same text for multiple verses if they are grouped.
+        // We iterate and check if current translation == previous translation.
+        ayahs.forEach((ayah, index) => {
+            if (index > 0) {
+                const prevAyah = ayahs[index - 1];
+                if (ayah.translation && prevAyah.translation && ayah.translation === prevAyah.translation) {
+                    // DUPLICATE DETECTED
+                    if (__DEV__) console.log(`[QuranService] Duplicate translation detected for ${ayah.verseKey}`);
+
+                    if (langCode === 'tr') {
+                        ayah.translation = `(Bkz: ${prevAyah.numberInSurah}. Ayet Açıklaması)`;
+                    } else {
+                        ayah.translation = `(See Verse ${prevAyah.numberInSurah})`;
+                    }
+                }
+            }
+        });
+
+        const result = {
             number: surahNumber,
             name: chapterData.chapter?.name_arabic || '',
             englishName: chapterData.chapter?.name_simple || '',
@@ -254,6 +295,13 @@ export const getSurahDetails = async (surahNumber, language) => {
             revelationType: chapterData.chapter?.revelation_place === 'makkah' ? 'Meccan' : 'Medinan',
             ayahs: ayahs
         };
+
+        // Cache the successful result
+        if (result.ayahs.length > 0) {
+            AsyncStorage.setItem(cacheKey, JSON.stringify(result)).catch(e => console.warn('Cache save failed', e));
+        }
+
+        return result;
 
     } catch (error) {
         console.error(`Error fetching surah ${surahNumber}:`, error);
@@ -271,7 +319,6 @@ export const getJuzDetails = async (juzNumber, language) => {
             language: langCode,
             words: 'false',
             fields: 'text_uthmani,verse_key,verse_number,page_number',
-            v: 'v4_saheeh'
         };
 
         if (translationId && langCode !== 'ar') {
@@ -368,7 +415,7 @@ export const getVerseByKey = async (verseKey, language) => {
         const langCode = (language || 'tr').split('-')[0];
         const translationId = getTranslationId(language);
 
-        let url = `${BASE_URL}/verses/by_key/${verseKey}?language=${langCode}&words=false&fields=text_uthmani,verse_key,verse_number&v=v4_saheeh`;
+        let url = `${BASE_URL}/verses/by_key/${verseKey}?language=${langCode}&words=false&fields=text_uthmani,verse_key,verse_number`;
 
         if (translationId && langCode !== 'ar') {
             url += `&translations=${translationId}`;

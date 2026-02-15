@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS } from '../utils/theme';
 
-const AyahItem = React.memo(function AyahItem({ item, isActive, isPlaying, onPlayPause, onShare, theme = 'tr', ramadanModeEnabled }) {
+const AyahItem = React.memo(function AyahItem({ item, isActive, isPlaying, onPlayPause, onShare, theme = 'tr', nightModeEnabled }) {
     // Determine if we should show translation
     const isArabicMode = theme.startsWith('ar');
     const showTranslation = !isArabicMode && item.translation;
@@ -15,8 +15,13 @@ const AyahItem = React.memo(function AyahItem({ item, isActive, isPlaying, onPla
     return (
         <View style={[
             styles.container,
-            ramadanModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.02)', borderColor: 'rgba(255, 255, 255, 0.08)' },
-            isActive && (ramadanModeEnabled ? { backgroundColor: 'rgba(255, 215, 0, 0.08)', borderColor: '#FFD700', borderWidth: 1.5 } : styles.activeContainer)
+            nightModeEnabled && {
+                backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                borderColor: 'rgba(255, 255, 255, 0.08)',
+                shadowOpacity: 0, // Disable shadows in night mode for performance
+                elevation: 0      // Disable elevation in night mode
+            },
+            isActive && (nightModeEnabled ? { backgroundColor: 'rgba(255, 215, 0, 0.08)', borderColor: '#FFD700', borderWidth: 1 } : styles.activeContainer)
         ]}>
             {/* Bismillah Header */}
             {showBismillah && (
@@ -27,27 +32,27 @@ const AyahItem = React.memo(function AyahItem({ item, isActive, isPlaying, onPla
 
             {/* Header: Number & Actions */}
             <View style={styles.header}>
-                <View style={[styles.numberBadge, ramadanModeEnabled && { backgroundColor: 'rgba(255, 215, 0, 0.1)' }]}>
-                    <Text style={[styles.numberText, ramadanModeEnabled && { color: '#FFD700' }]}>{item.numberInSurah}</Text>
+                <View style={[styles.numberBadge, nightModeEnabled && { backgroundColor: 'rgba(255, 215, 0, 0.1)' }]}>
+                    <Text style={[styles.numberText, nightModeEnabled && { color: '#FFD700' }]}>{item.numberInSurah}</Text>
                 </View>
 
                 <View style={styles.actions}>
                     <TouchableOpacity onPress={() => onPlayPause(item)} style={styles.actionButton}>
                         {isActive && isPlaying ? (
-                            <Pause size={20} color={ramadanModeEnabled ? '#FFD700' : COLORS.primary} />
+                            <Pause size={20} color={nightModeEnabled ? '#FFD700' : COLORS.primary} />
                         ) : (
-                            <Play size={20} color={ramadanModeEnabled ? '#FFD700' : COLORS.primary} />
+                            <Play size={20} color={nightModeEnabled ? '#FFD700' : COLORS.primary} />
                         )}
                     </TouchableOpacity>
                 </View>
             </View>
 
             {/* Arabic Text */}
-            <Text style={[styles.arabicText, ramadanModeEnabled && { color: '#FFF' }]}>{item.text}</Text>
+            <Text style={[styles.arabicText, nightModeEnabled && { color: '#FFF' }]}>{item.text}</Text>
 
             {/* Translation (Conditional) */}
             {showTranslation && item.translation && (
-                <Text style={[styles.translationText, ramadanModeEnabled && { color: 'rgba(255, 255, 255, 0.85)' }]}>
+                <Text style={[styles.translationText, nightModeEnabled && { color: 'rgba(255, 255, 255, 0.85)' }]}>
                     {item.translation
                         .replace(/&quot;/g, '"')
                         .replace(/&apos;/g, "'")
@@ -72,9 +77,9 @@ const styles = StyleSheet.create({
         borderColor: COLORS.cardBorder,
         shadowColor: COLORS.shadow,
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-        elevation: 2,
+        shadowOpacity: 0, // Removed for performance
+        shadowRadius: 0,
+        elevation: 0,
     },
     activeContainer: {
         borderColor: COLORS.primary,
@@ -108,19 +113,19 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
     arabicText: {
-        fontSize: 28, // Increased from 26
+        fontSize: 32, // Increased from 28
         color: COLORS.primaryDark,
         textAlign: 'right',
         marginBottom: 12,
         fontFamily: 'Amiri-Regular', // Use specialized font for correct Quranic rendering
-        lineHeight: 52, // Increased line height
+        lineHeight: 60, // Increased from 52
         writingDirection: 'rtl',
         paddingVertical: 2,
     },
     translationText: {
-        fontSize: 20, // Adjusted for balance
+        fontSize: 18, // Decreased from 20 for better hierarchy
         color: COLORS.textPrimary,
-        lineHeight: 30,
+        lineHeight: 26, // Decreased from 30
         textAlign: 'left',
         marginBottom: 8,
     },

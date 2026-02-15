@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from './supabase';
 
 /**
@@ -5,34 +6,34 @@ import { supabase } from './supabase';
  * Handles prayer requests, collective dhikrs, and Hatim groups.
  */
 
-export const getCommunityPosts = async (type = null) => {
+export const getCommunityPosts = async (type = null, before = null, limit = 20) => {
     try {
-        let query = supabase
-            .from('community_posts')
-            .select(`
-                *,
-                profiles:user_id (
-                    full_name,
-                    avatar_url
-                )
-            `)
-            .eq('status', 'active')
-            .order('created_at', { ascending: false });
+        const blockedUsers = JSON.parse(await AsyncStorage.getItem('blocked_users') || '[]');
 
-        if (type && type !== 'all') {
-            query = query.eq('type', type);
-        }
+        // Call the optimized SQL function (RPC)
+        const { data, error } = await supabase.rpc('get_optimized_community_feed', {
+            p_type: type || 'all',
+            p_before: before,
+            p_limit: limit,
+            p_blocked_users: blockedUsers
+        });
 
-        const { data, error } = await query;
         if (error) throw error;
 
-        return data.map(post => ({
+        // Map the flat result back to the format the app expects
+        const realPosts = data.map(post => ({
             ...post,
-            userName: post.show_full_name && post.profiles?.full_name
-                ? post.profiles.full_name
-                : (post.profiles?.full_name ? maskName(post.profiles.full_name) : 'Zikra Kullanıcısı')
+            avatar_url: post.user_avatar_url,
+            city: post.city || post.user_city,
+            userName: post.user_full_name || 'Islamvy Kullanıcısı',
+            badge_emoji: post.user_badge_emoji || '🌱'
         }));
+
+        // Return only real posts (User requested to remove mocks)
+        return realPosts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     } catch (error) {
+        console.error('getCommunityPosts Error:', error);
+        return [];
     }
 };
 
@@ -42,9 +43,12 @@ export const getPostById = async (postId) => {
             .from('community_posts')
             .select(`
                 *,
-                profiles:user_id (
+                public_profiles:user_id (
                     full_name,
-                    avatar_url
+                    avatar_url,
+                    city,
+                    location,
+                    show_full_name
                 )
             `)
             .eq('id', postId)
@@ -54,9 +58,9 @@ export const getPostById = async (postId) => {
 
         return {
             ...data,
-            userName: data.show_full_name && data.profiles?.full_name
-                ? data.profiles.full_name
-                : (data.profiles?.full_name ? maskName(data.profiles.full_name) : 'Zikra Kullanıcısı')
+            avatar_url: data.public_profiles?.avatar_url,
+            city: data.city || data.public_profiles?.city,
+            userName: data.public_profiles?.full_name || 'Islamvy Kullanıcısı'
         };
     } catch (error) {
         console.error('getPostById Error:', error);
@@ -71,9 +75,12 @@ export const getUserCommunityPosts = async (userId) => {
             .from('community_posts')
             .select(`
                 *,
-                profiles:user_id (
+                public_profiles:user_id (
                     full_name,
-                    avatar_url
+                    avatar_url,
+                    city,
+                    location,
+                    show_full_name
                 )
             `)
             .eq('user_id', userId)
@@ -94,7 +101,9 @@ export const getUserCommunityPosts = async (userId) => {
 
         const regularPosts = postsData.map(post => ({
             ...post,
-            userName: post.profiles?.full_name || 'Sen'
+            avatar_url: post.public_profiles?.avatar_url,
+            city: post.city || post.public_profiles?.city,
+            userName: post.public_profiles?.full_name || 'Sen'
         }));
 
         const hatimPosts = hatimsData.map(h => ({
@@ -144,33 +153,41 @@ export const getUserParticipationStats = async (userId) => {
             .eq('user_id', userId)
             .eq('type', 'amen');
 
-        // 2. Dhikr participation count
-        const { count: dhikrCount, error: dhikrError } = await supabase
+        // 2. Dhikr participation count & Amount Sum
+        const { data: dhikrData, error: dhikrError } = await supabase
             .from('community_interactions')
-            .select('*', { count: 'exact', head: true })
+            .select('amount')
             .eq('user_id', userId)
             .eq('type', 'prayed');
 
+        const dhikrsJoined = dhikrData?.length || 0;
+        const dhikrsRecited = dhikrData?.reduce((sum, item) => sum + (item.amount || 1), 0) || 0;
+
         // 3. Hatim slots taken
-        const { count: hatimCount, error: hatimError } = await supabase
+        const { data: hatimData, error: hatimError } = await supabase
             .from('hatim_slots')
-            .select('*', { count: 'exact', head: true })
+            .select('hatim_id')
             .eq('user_id', userId);
+
+        const hatimRead = hatimData?.length || 0;
+        const hatimsJoined = new Set(hatimData?.map(h => h.hatim_id)).size || 0;
 
         if (amenError || dhikrError || hatimError) throw (amenError || dhikrError || hatimError);
 
         return {
             prayers: amenCount || 0,
-            dhikrs: dhikrCount || 0,
-            hatims: hatimCount || 0
+            dhikrsJoined,
+            dhikrsRecited,
+            hatimsJoined,
+            hatimsRead: hatimRead
         };
     } catch (error) {
         console.error('getUserParticipationStats Error:', error);
-        return { prayers: 0, dhikrs: 0, hatims: 0 };
+        return { prayers: 0, dhikrsJoined: 0, dhikrsRecited: 0, hatimsJoined: 0, hatimsRead: 0 };
     }
 };
 
-export const createCommunityPost = async ({ user_id, title, content, type, target_count, current_count, language_code, city, show_full_name = false }) => {
+export const createCommunityPost = async ({ user_id, title, content, type, target_count, current_count, language_code, city, show_full_name = true }) => {
     try {
         const { data, error } = await supabase
             .from('community_posts')
@@ -202,7 +219,7 @@ export const createCommunityPost = async ({ user_id, title, content, type, targe
     }
 };
 
-export const createCommunityHatim = async (title, description, created_by, selectedSlots = [], language_code, city, show_full_name = false) => {
+export const createCommunityHatim = async (title, description, created_by, selectedSlots = [], language_code, city, show_full_name = true) => {
     try {
         // 1. Create Hatim Group
         const { data: group, error: groupError } = await supabase
@@ -260,11 +277,14 @@ export const interactWithPost = async (postId, userId, type = 'amen', amount = 1
             });
 
         if (error && error.code !== '23505') { // Ignore duplicate entries if they try to pledge again? 
-            // Actually, maybe we want to allow multiple pledges? 
             // Currently UNIQUE(post_id, user_id, type) prevents that.
             // Let's stick to unique for now to prevent spam.
             throw error;
         }
+
+        // 2. The post's current_count is automatically incremented by the DB trigger "on_community_interaction"
+        // which calls "handle_community_interaction()". No manual update needed here to avoid race conditions.
+
         return true;
     } catch (error) {
         console.error('interactWithPost Error:', error);
@@ -272,21 +292,34 @@ export const interactWithPost = async (postId, userId, type = 'amen', amount = 1
     }
 };
 
-export const getHatimGroups = async () => {
+export const getHatimGroups = async (before = null, limit = 20) => {
     try {
-        const { data, error } = await supabase
-            .from('hatim_groups')
-            .select('*')
-            .in('status', ['open', 'completed'])
-            .order('created_at', { ascending: false });
+        const blockedUsers = JSON.parse(await AsyncStorage.getItem('blocked_users') || '[]');
+
+        const { data, error } = await supabase.rpc('get_optimized_hatim_feed', {
+            p_before: before,
+            p_limit: limit,
+            p_blocked_users: blockedUsers
+        });
 
         if (error) throw error;
-        return data;
+
+        const realGroups = data.map(group => ({
+            ...group,
+            avatar_url: group.user_avatar_url,
+            city: group.city || group.user_city,
+            userName: group.user_full_name || 'Islamvy Kullanıcısı'
+        }));
+
+        // Return only real groups (User requested to remove mocks)
+        return realGroups.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     } catch (error) {
         console.error('getHatimGroups Error:', error);
         return [];
     }
 };
+
+
 
 export const getHatimSlots = async (hatimId) => {
     try {
@@ -294,15 +327,27 @@ export const getHatimSlots = async (hatimId) => {
             .from('hatim_slots')
             .select(`
                 *,
-                profiles:user_id (
-                    full_name
+                public_profiles:user_id (
+                    full_name,
+                    avatar_url,
+                    city,
+                    location,
+                    show_full_name
                 )
             `)
             .eq('hatim_id', hatimId)
             .order('slot_number', { ascending: true });
 
         if (error) throw error;
-        return data;
+
+        return data.map(slot => ({
+            ...slot,
+            userName: slot.public_profiles?.full_name || 'Islamvy Kullanıcısı',
+            avatar_url: slot.public_profiles?.avatar_url,
+            city: slot.public_profiles?.city,
+            location: slot.public_profiles?.location,
+            taken_at: slot.taken_at
+        }));
     } catch (error) {
         console.error('getHatimSlots Error:', error);
         return [];
@@ -330,18 +375,11 @@ export const takeHatimSlot = async (hatimId, slotNumber, userId) => {
     }
 };
 
-// Internal Name Masking
-const maskName = (name) => {
-    if (!name) return '***';
-    const parts = name.split(' ');
-    return parts.map(p => {
-        if (p.length <= 2) return p;
-        return p.substring(0, 2) + '*'.repeat(p.length - 2);
-    }).join(' ');
-};
+// Name Masking is no longer used
 
 export const reportPost = async (postId, userId, reason) => {
     try {
+        // 1. Insert the report
         const { error } = await supabase
             .from('community_reports')
             .insert({
@@ -351,11 +389,87 @@ export const reportPost = async (postId, userId, reason) => {
             });
 
         if (error) throw error;
+
+        // 2. Check report count for this post
+        const { count, error: countError } = await supabase
+            .from('community_reports')
+            .select('*', { count: 'exact', head: true })
+            .eq('post_id', postId);
+
+        if (!countError && count >= 33) {
+            // 3. Auto-hide post if reports exceed threshold
+            console.log(`Post ${postId} has ${count} reports. Auto-hiding...`);
+
+            // Try hiding from community_posts
+            await supabase
+                .from('community_posts')
+                .update({ status: 'hidden' })
+                .eq('id', postId);
+
+            // Try hiding from hatim_groups (if it's a hatim)
+            // Note: Efficient way would be to check type first, but blindly trying update is safe if ID doesn't exist
+            await supabase
+                .from('hatim_groups')
+                .update({ status: 'hidden' })
+                .eq('id', postId);
+        }
+
         return true;
     } catch (error) {
         console.error('reportPost Error:', error);
         return false;
     }
+};
+
+export const blockUser = async (userId) => {
+    try {
+        const blockedUsers = JSON.parse(await AsyncStorage.getItem('blocked_users') || '[]');
+        if (!blockedUsers.includes(userId)) {
+            blockedUsers.push(userId);
+            await AsyncStorage.setItem('blocked_users', JSON.stringify(blockedUsers));
+        }
+        return true;
+    } catch (error) {
+        console.error('blockUser Error:', error);
+        return false;
+    }
+};
+
+/**
+ * Get weekly leaderboard data from Supabase RPC
+ */
+export const getWeeklyLeaderboard = async (limit = 20) => {
+    try {
+        const { data, error } = await supabase.rpc('get_weekly_leaderboard', {
+            p_limit: limit
+        });
+
+        if (error) throw error;
+
+        return (data || []).map((user, index) => ({
+            ...user,
+            // Map RPC keys to frontend keys if they differ
+            full_name: user.user_full_name || user.full_name || 'Islamvy Kullanıcısı',
+            city: user.city || user.user_city,
+            avatar_url: user.user_avatar_url || user.avatar_url,
+            rank: index + 1,
+            badge_emoji: getBadgeEmoji(user.total_amens || 0)
+        }));
+    } catch (error) {
+        console.error('getWeeklyLeaderboard Error:', error);
+        return [];
+    }
+};
+
+/**
+ * Helper: Get badge emoji based on total amens
+ */
+export const getBadgeEmoji = (totalAmens) => {
+    if (totalAmens >= 500) return '👑';
+    if (totalAmens >= 100) return '💎';
+    if (totalAmens >= 50) return '🌟';
+    if (totalAmens >= 10) return '⭐';
+    return '🌱';
 };
 
 /**

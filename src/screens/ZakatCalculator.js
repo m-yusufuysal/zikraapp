@@ -85,7 +85,7 @@ const SectionHeader = ({ icon: Icon, title, color }) => (
 const ZakatCalculator = ({ navigation }) => {
     const { t, i18n } = useTranslation();
     const insets = useSafeAreaInsets();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
     const isTr = i18n.language.startsWith('tr');
 
     // --- STATE MANAGEMENT ---
@@ -235,7 +235,7 @@ const ZakatCalculator = ({ navigation }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <ArrowLeft size={24} color={COLORS.matteBlack} />
                 </TouchableOpacity>
-                <Text style={[styles.headerTitle, ramadanModeEnabled && { color: '#FFF' }]}>{t('zakat.pro_title')}</Text>
+                <Text style={[styles.headerTitle, nightModeEnabled && { color: '#FFF' }]}>{t('zakat.pro_title')}</Text>
 
                 <View style={{ flexDirection: 'row', gap: 10 }}>
                     <TouchableOpacity onPress={handleShare} style={styles.actionButton}>
@@ -253,7 +253,7 @@ const ZakatCalculator = ({ navigation }) => {
                     {/* Result Card */}
                     <View style={styles.resultCard}>
                         <LinearGradient
-                            colors={ramadanModeEnabled ? ['#1a1a1a', '#333'] : [COLORS.matteGreen, '#1a4d3e']}
+                            colors={nightModeEnabled ? ['#1a1a1a', '#333'] : [COLORS.matteGreen, '#1a4d3e']}
                             style={StyleSheet.absoluteFill}
                             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
                         />

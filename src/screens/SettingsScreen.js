@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import TrackPlayer from 'react-native-track-player';
 import { useFocusEffect } from '@react-navigation/native';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
@@ -10,13 +11,14 @@ import {
     ChevronRight,
     Crown,
     Download,
+    FileText,
     Globe,
     LayoutDashboard,
+    LifeBuoy,
     LogOut,
-    Mail,
     MapPin,
     Monitor,
-    Moon,
+    MoonStar,
     Shield,
     Star,
     Trash2,
@@ -29,8 +31,9 @@ import { Alert, Dimensions, I18nManager, Image, Linking, Modal, Platform, Scroll
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import RamadanBackground from '../components/RamadanBackground';
 import { useTheme } from '../contexts/ThemeContext';
+import { moderateImage } from '../services/ModerationService';
 import { supabase } from '../services/supabase';
-import { getUserProfile } from '../services/userService';
+import { getCurrentProfile } from '../services/userService';
 import { isTablet, TABLET_MAX_WIDTH } from '../utils/responsive';
 import { setLanguage as saveLanguage } from '../utils/storage';
 import { COLORS } from '../utils/theme';
@@ -47,17 +50,17 @@ const SettingsScreen = ({ navigation }) => {
     const insets = useSafeAreaInsets();
     const { t, i18n } = useTranslation();
     const isTr = i18n.language.startsWith('tr');
+    const queryClient = useQueryClient();
 
     const [session, setSession] = useState(null);
     const [isPremium, setIsPremium] = useState(false);
     const [premiumTier, setPremiumTier] = useState(null);
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [hapticEnabled, setHapticEnabled] = useState(true);
-    const { ramadanModeEnabled, toggleRamadanMode } = useTheme();
+    const { nightModeEnabled, toggleNightMode } = useTheme();
     const [isExporting, setIsExporting] = useState(false);
-    const [showIconSelector, setShowIconSelector] = useState(false);
-    const [selectedIcon, setSelectedIcon] = useState(null);
     const [isInfluencer, setIsInfluencer] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [uploading, setUploading] = useState(false);
 
     // 1. Session Management (Still Auth Listener)
@@ -76,7 +79,7 @@ const SettingsScreen = ({ navigation }) => {
     // 2. React Query for Profile (Caches data!)
     const { data: profile, refetch: refetchProfile } = useQuery({
         queryKey: ['profile', session?.user?.id],
-        queryFn: () => getUserProfile(session.user.id),
+        queryFn: getCurrentProfile,
         enabled: !!session?.user?.id,
         staleTime: 1000 * 60 * 60, // 1 hour (Profile rarely changes)
     });
@@ -86,8 +89,32 @@ const SettingsScreen = ({ navigation }) => {
             checkPremium();
             loadSettings();
             checkInfluencerStatus();
+            checkAdminStatus();
         }, [])
     );
+
+    const checkAdminStatus = async () => {
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                // Check if user is in 'admins' table
+                const { data, error } = await supabase
+                    .from('admins')
+                    .select('role')
+                    .eq('email', user.email)
+                    .single();
+
+                if (data && !error) {
+                    setIsAdmin(true);
+                } else {
+                    setIsAdmin(false);
+                }
+            }
+        } catch (error) {
+            console.log("Admin check error:", error);
+            setIsAdmin(false);
+        }
+    };
 
     const checkInfluencerStatus = async () => {
         try {
@@ -125,8 +152,8 @@ const SettingsScreen = ({ navigation }) => {
     };
 
     const toggleSwitch = async (value, setter, key) => {
-        if (key === 'ramadan_mode_enabled') {
-            toggleRamadanMode(value);
+        if (key === 'night_mode_enabled') {
+            toggleNightMode(value);
             return;
         }
 
@@ -149,6 +176,7 @@ const SettingsScreen = ({ navigation }) => {
 
     const handleSignOut = async () => {
         try {
+            await TrackPlayer.reset(); // Stop Audio immediately
             await AsyncStorage.clear(); // Clear all local data on logout for safety
             const { error } = await supabase.auth.signOut();
             if (error) throw error;
@@ -173,10 +201,21 @@ const SettingsScreen = ({ navigation }) => {
                         try {
                             const { data: { user } } = await supabase.auth.getUser();
                             if (user) {
-                                // Delete user data from database
+                                // 1. Delete avatars from storage (Privacy)
+                                try {
+                                    const { data: files } = await supabase.storage.from('avatars').list(user.id);
+                                    if (files && files.length > 0) {
+                                        const paths = files.map(f => `${user.id}/${f.name}`);
+                                        await supabase.storage.from('avatars').remove(paths);
+                                    }
+                                } catch (storageError) {
+                                    console.error("Storage cleanup failed:", storageError);
+                                }
+
+                                // 2. Delete user data from database (Cascades handle posts, likes, etc.)
                                 await supabase.from('profiles').delete().eq('id', user.id);
-                                await supabase.from('dhikr_sessions').delete().eq('user_id', user.id);
-                                await supabase.from('dream_interpretations').delete().eq('user_id', user.id);
+
+                                // Note: Other data like dhikr_sessions and dreams are deleted via ON DELETE CASCADE
                             }
                             // Clear local storage
                             await AsyncStorage.clear();
@@ -239,13 +278,17 @@ const SettingsScreen = ({ navigation }) => {
                 }
             }
 
-            const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            const options = {
+                mediaTypes: 'images',
                 allowsEditing: true,
                 aspect: [1, 1],
                 quality: 0.5,
-                base64: true, // using base64 for direct upload if needed, or uri
-            });
+                base64: true,
+            };
+
+            const result = useCamera
+                ? await ImagePicker.launchCameraAsync(options)
+                : await ImagePicker.launchImageLibraryAsync(options);
 
             if (!result.canceled && result.assets[0]) {
                 uploadAvatar(result.assets[0]);
@@ -258,31 +301,45 @@ const SettingsScreen = ({ navigation }) => {
     const uploadAvatar = async (image) => {
         try {
             setUploading(true);
+            if (__DEV__) console.log("[SettingsScreen] Starting avatar upload. Base64 present:", !!image.base64);
+
+            // AI Moderation Check
+            // We MUST have base64 to moderate. If missing, we block for safety.
+            if (!image.base64) {
+                console.error("[SettingsScreen] Critical: Image base64 data missing!");
+                Alert.alert(t('error'), "Görüntü işlenemedi. Lütfen tekrar deneyin.");
+                setUploading(false);
+                return;
+            }
+
+            const moderation = await moderateImage(image.base64, i18n.language);
+            if (__DEV__) console.log("[SettingsScreen] Moderation result in screen:", moderation);
+
+            if (!moderation.isSafe) {
+                const reasonStr = moderation.reason ? (moderation.reason.startsWith('community.') || moderation.reason.startsWith('settings.') ? t(moderation.reason) : moderation.reason) : t('settings.moderation_failed');
+                Alert.alert(
+                    t('settings.moderation_failed'),
+                    reasonStr
+                );
+                setUploading(false);
+                return;
+            }
+
+            if (__DEV__) console.log("[SettingsScreen] Moderation passed. Proceeding to upload...");
+
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error("No user");
 
-            const ext = image.uri.substring(image.uri.lastIndexOf('.') + 1);
+            const ext = image.uri.substring(image.uri.lastIndexOf('.') + 1) || 'jpg';
             const fileName = `${user.id}/${Date.now()}.${ext}`;
-            const formData = new FormData();
 
-            // React Native specific form data for file upload
-            formData.append('files', {
-                uri: image.uri,
-                name: fileName,
-                type: image.mimeType || `image/${ext}`
-            });
-
-            // Using Supabase Storage API direct upload via standard fetch if wrapper fails, 
-            // but here we assume standard supabase-js usage:
-            // For React Native, we need to pass the file object carefully.
-            // Simplified approach: Upload base64 if supported or handle via file system.
-            // Best React Native Supabase storage practice:
+            // Convert to arrayBuffer for Supabase Storage
             const arrayBuffer = await fetch(image.uri).then(res => res.arrayBuffer());
 
             const { data, error } = await supabase.storage
                 .from('avatars')
                 .upload(fileName, arrayBuffer, {
-                    contentType: image.mimeType || 'image/jpeg',
+                    contentType: image.mimeType || `image/${ext}`,
                     upsert: true
                 });
 
@@ -301,7 +358,12 @@ const SettingsScreen = ({ navigation }) => {
 
             if (updateError) throw updateError;
 
+            // CLEAR INTERNAL CACHE
+            await AsyncStorage.removeItem(`profile_${user.id}`);
+
+            // Wait for the data to be fresh before alerting
             await refetchProfile();
+
             Alert.alert(t('success'), t('settings.photo_updated'));
 
         } catch (error) {
@@ -315,16 +377,28 @@ const SettingsScreen = ({ navigation }) => {
         try {
             setUploading(true);
             const { data: { user } } = await supabase.auth.getUser();
-            if (!user) return;
+            if (user) {
+                // Delete existing files in storage
+                const { data: files } = await supabase.storage.from('avatars').list(user.id);
+                if (files && files.length > 0) {
+                    const paths = files.map(f => `${user.id}/${f.name}`);
+                    await supabase.storage.from('avatars').remove(paths);
+                }
 
-            const { error } = await supabase
-                .from('profiles')
-                .update({ avatar_url: null })
-                .eq('id', user.id);
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({ avatar_url: null })
+                    .eq('id', user.id);
 
-            if (error) throw error;
+                if (error) throw error;
 
+                // CLEAR INTERNAL CACHE
+                await AsyncStorage.removeItem(`profile_${user.id}`);
+            }
+
+            // Wait for the data to be fresh before alerting
             await refetchProfile();
+
             Alert.alert(t('success'), t('settings.photo_removed'));
         } catch (error) {
             Alert.alert(t('error'), error.message);
@@ -374,7 +448,7 @@ ${t('settings.data_export_info')}`;
                     {
                         text: t('settings.request_export'),
                         onPress: () => {
-                            Linking.openURL('mailto:privacy@zikraapp.com?subject=Veri%20Dışa%20Aktarma%20Talebi&body=Kullanıcı%20ID:%20' + user.id);
+                            Linking.openURL('mailto:privacy@islamvy.com?subject=Veri%20Dışa%20Aktarma%20Talebi&body=Kullanıcı%20ID:%20' + user.id);
                             setIsExporting(false);
                         }
                     }
@@ -389,14 +463,15 @@ ${t('settings.data_export_info')}`;
     const handlePrivacyPolicy = () => {
         // Language-specific privacy policy URLs
         const privacyUrls = {
-            tr: 'https://zikraapp.com/privacy',
-            en: 'https://zikraapp.com/privacy/en',
-            ar: 'https://zikraapp.com/privacy/ar',
-            id: 'https://zikraapp.com/privacy/id'
+            tr: 'https://islamvy.com/?modal=privacy',
+            en: 'https://islamvy.com/?modal=privacy',
+            ar: 'https://islamvy.com/?modal=privacy',
+            id: 'https://islamvy.com/?modal=privacy',
+            fr: 'https://islamvy.com/?modal=privacy'
         };
 
         const lang = (i18n.language || 'en').split('-')[0];
-        const privacyUrl = privacyUrls[lang] || privacyUrls.en;
+        const privacyUrl = (privacyUrls[lang] || privacyUrls.en) + `&lang=${lang}`;
 
         Alert.alert(
             t('settings.privacy_title'),
@@ -411,6 +486,30 @@ ${t('settings.data_export_info')}`;
         );
     };
 
+    const handleTermsOfService = () => {
+        const termsUrls = {
+            tr: 'https://islamvy.com/?modal=terms',
+            en: 'https://islamvy.com/?modal=terms',
+            ar: 'https://islamvy.com/?modal=terms',
+            id: 'https://islamvy.com/?modal=terms'
+        };
+
+        const lang = (i18n.language || 'en').split('-')[0];
+        const termsUrl = (termsUrls[lang] || termsUrls.en) + `&lang=${lang}`;
+
+        Alert.alert(
+            t('settings.terms_title'),
+            t('settings.terms_summary'),
+            [
+                { text: t('common.ok'), style: 'default' },
+                {
+                    text: t('settings.full_terms'),
+                    onPress: () => Linking.openURL(termsUrl)
+                }
+            ]
+        );
+    };
+
     const handleLanguageChange = () => {
         Alert.alert(
             t('settings.language_select'),
@@ -418,6 +517,7 @@ ${t('settings.data_export_info')}`;
             [
                 { text: 'Türkçe', onPress: () => changeLanguage('tr') },
                 { text: 'English', onPress: () => changeLanguage('en') },
+                { text: 'Français', onPress: () => changeLanguage('fr') },
                 { text: 'العربية', onPress: () => changeLanguage('ar') },
                 { text: 'Indonesia', onPress: () => changeLanguage('id') },
                 { text: t('cancel'), style: 'cancel' }
@@ -489,6 +589,7 @@ ${t('settings.data_export_info')}`;
             case 'en': return 'English';
             case 'ar': return 'العربية';
             case 'id': return 'Indonesia';
+            case 'fr': return 'Français';
             default: return code.toLocaleUpperCase();
         }
     };
@@ -500,16 +601,16 @@ ${t('settings.data_export_info')}`;
             activeOpacity={onPress ? 0.7 : 1}
         >
             <View style={styles.itemLeft}>
-                <View style={[styles.iconContainer, isDestructive && styles.destructiveIcon, ramadanModeEnabled && !isDestructive && { backgroundColor: 'rgba(255, 215, 0, 0.15)' }]}>
-                    <Icon size={20} color={isDestructive ? '#FF453A' : (ramadanModeEnabled ? '#FFD700' : COLORS.primary)} />
+                <View style={[styles.iconContainer, isDestructive && styles.destructiveIcon, nightModeEnabled && !isDestructive && { backgroundColor: 'rgba(255, 215, 0, 0.15)' }]}>
+                    <Icon size={20} color={isDestructive ? '#FF453A' : (nightModeEnabled ? '#FFD700' : COLORS.primary)} />
                 </View>
-                <Text style={[styles.itemLabel, isDestructive && styles.destructiveText, ramadanModeEnabled && !isDestructive && { color: '#FFF' }]}>{label}</Text>
+                <Text style={[styles.itemLabel, isDestructive && styles.destructiveText, nightModeEnabled && !isDestructive && { color: '#FFF' }]}>{label}</Text>
             </View>
             <View style={styles.itemRight}>
                 {rightElement ? rightElement : (
                     <>
-                        {value && <Text style={[styles.itemValue, ramadanModeEnabled && { color: 'rgba(255,255,255,0.6)' }]}>{value}</Text>}
-                        {onPress && <ChevronRight size={20} color={ramadanModeEnabled ? '#FFD700' : COLORS.textSecondary} />}
+                        {value && <Text style={[styles.itemValue, nightModeEnabled && { color: 'rgba(255,255,255,0.6)' }]}>{value}</Text>}
+                        {onPress && <ChevronRight size={20} color={nightModeEnabled ? '#FFD700' : COLORS.textSecondary} />}
                     </>
                 )}
             </View>
@@ -529,11 +630,19 @@ ${t('settings.data_export_info')}`;
                     <TouchableOpacity onPress={handleAvatarPress} activeOpacity={0.8}>
                         <View style={styles.avatarContainer}>
                             {profile?.avatar_url ? (
-                                <Image source={{ uri: profile.avatar_url }} style={styles.avatarImage} />
+                                <Image
+                                    key={profile.avatar_url}
+                                    source={{ uri: profile.avatar_url }}
+                                    style={styles.avatarImage}
+                                />
                             ) : (
-                                <Text style={styles.avatarText}>
-                                    {profile?.full_name ? profile.full_name.charAt(0).toLocaleUpperCase(i18n.language) : (session?.user?.email?.charAt(0).toLocaleUpperCase(i18n.language) || 'Z')}
-                                </Text>
+                                <View style={[styles.avatarImage, { backgroundColor: COLORS.primary, justifyContent: 'center', alignItems: 'center' }]}>
+                                    <Text style={styles.avatarText}>
+                                        {(profile?.full_name && profile.full_name.trim().length > 0)
+                                            ? profile.full_name.trim().charAt(0).toLocaleUpperCase(i18n.language)
+                                            : (session?.user?.email?.charAt(0).toLocaleUpperCase(i18n.language) || 'I')}
+                                    </Text>
+                                </View>
                             )}
                             <View style={styles.cameraBadge}>
                                 <Camera size={12} color="#FFF" />
@@ -541,7 +650,7 @@ ${t('settings.data_export_info')}`;
                         </View>
                     </TouchableOpacity>
                     <View style={styles.profileInfo}>
-                        <Text style={[styles.profileName, ramadanModeEnabled && { color: '#FFF' }]}>
+                        <Text style={[styles.profileName, nightModeEnabled && { color: '#FFF' }]}>
                             {profile?.full_name || session?.user?.email?.split('@')[0] || t('settings.guest_user')}
                         </Text>
                         <View style={[styles.badgeContainer, isPremium ? styles.premiumBadgeBg : styles.freeBadgeBg]}>
@@ -555,6 +664,26 @@ ${t('settings.data_export_info')}`;
                         </View>
                     </View>
                 </View>
+
+                {/* PROMINENT ADMIN DASHBOARD - REFERENCE PANEL */}
+                {isAdmin && (
+                    <TouchableOpacity
+                        style={[styles.premiumBanner, { backgroundColor: COLORS.matteBlack, borderColor: '#333' }]}
+                        onPress={() => navigation.navigate('AdminDashboard')}
+                        activeOpacity={0.95}
+                    >
+                        <View style={styles.premiumBannerContent}>
+                            <View style={[styles.premiumIconCircle, { backgroundColor: 'rgba(255, 255, 255, 0.1)' }]}>
+                                <Crown size={24} color="#FFF" />
+                            </View>
+                            <View style={styles.premiumTextContainer}>
+                                <Text style={[styles.premiumTitle, { color: '#FFF' }]}>Yönetici Paneli</Text>
+                                <Text style={styles.premiumSubtitle}>Mağaza, Analitik ve Kullanıcı Yönetimi</Text>
+                            </View>
+                            <ChevronRight size={24} color="#FFF" />
+                        </View>
+                    </TouchableOpacity>
+                )}
 
                 {/* Premium Banner (Only if not premium) */}
                 {!isPremium && (
@@ -580,8 +709,8 @@ ${t('settings.data_export_info')}`;
                 {/* App Sections */}
                 {isInfluencer && (
                     <View style={styles.section}>
-                        <Text style={[styles.sectionHeader, ramadanModeEnabled && { color: '#FFD700' }]}>{t('settings.referral_tools')}</Text>
-                        <View style={[styles.card, ramadanModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.1)' }]}>
+                        <Text style={[styles.sectionHeader, nightModeEnabled && { color: '#FFD700' }]}>{t('settings.referral_tools')}</Text>
+                        <View style={[styles.card, nightModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.1)' }]}>
                             {renderSettingItem({
                                 icon: LayoutDashboard,
                                 label: t('settings.referral_panel'),
@@ -592,8 +721,8 @@ ${t('settings.data_export_info')}`;
                 )}
 
                 <View style={styles.section}>
-                    <Text style={[styles.sectionHeader, ramadanModeEnabled && { color: '#FFD700' }]}>{t('settings.title')}</Text>
-                    <View style={[styles.card, ramadanModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.1)' }]}>
+                    <Text style={[styles.sectionHeader, nightModeEnabled && { color: '#FFD700' }]}>{t('settings.title')}</Text>
+                    <View style={[styles.card, nightModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.1)' }]}>
                         {renderSettingItem({
                             icon: Globe,
                             label: t('settings.language'),
@@ -640,204 +769,6 @@ ${t('settings.data_export_info')}`;
                         })}
                         <View style={styles.divider} />
 
-                        {/* App Icon Changer */}
-                        {/* App Icon Changer Item */}
-                        {renderSettingItem({
-                            icon: Star,
-                            label: t('settings.app_icon'),
-                            onPress: () => {
-                                // Reset selection to current state or default when opening
-                                setSelectedIcon(null);
-                                setShowIconSelector(true);
-                            },
-                            rightElement: (
-                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={[styles.itemValue, ramadanModeEnabled && { color: 'rgba(255,255,255,0.6)' }]}>
-                                        {t('settings.change')}
-                                    </Text>
-                                    <ChevronRight size={20} color={ramadanModeEnabled ? '#FFD700' : COLORS.textSecondary} />
-                                </View>
-                            )
-                        })}
-
-                        {/* Icon Selection Bottom Sheet Modal */}
-                        <Modal
-                            visible={showIconSelector}
-                            transparent={true}
-                            animationType="slide"
-                            onRequestClose={() => setShowIconSelector(false)}
-                        >
-                            <TouchableOpacity
-                                style={styles.modalOverlayBottom}
-                                activeOpacity={1}
-                                onPress={() => setShowIconSelector(false)}
-                            >
-                                <View style={[styles.modalContentBottom, ramadanModeEnabled && { backgroundColor: '#1a1a1a', borderColor: '#333', borderWidth: 1 }]}>
-                                    <View style={styles.modalHeaderBottom}>
-                                        <Text style={[styles.modalTitle, ramadanModeEnabled && { color: '#FFD700' }]}>
-                                            {t('settings.choose_app_icon')}
-                                        </Text>
-                                        <TouchableOpacity onPress={() => setShowIconSelector(false)} style={styles.closeButton}>
-                                            <X size={24} color={ramadanModeEnabled ? '#FFF' : COLORS.textSecondary} />
-                                        </TouchableOpacity>
-                                    </View>
-
-                                    <View style={styles.iconGrid}>
-                                        {/* Row 1 */}
-                                        <View style={styles.iconRow}>
-                                            <TouchableOpacity
-                                                style={styles.iconOption}
-                                                onPress={() => setSelectedIcon('default')}
-                                            >
-                                                <Image
-                                                    source={require('../../assets/images/icon.png')}
-                                                    fadeDuration={0}
-                                                    style={[
-                                                        styles.iconPreview,
-                                                        selectedIcon === 'default' && styles.iconPreviewSelected
-                                                    ]}
-                                                />
-                                                <Text style={[styles.iconLabel, ramadanModeEnabled && { color: '#CCC' }]}>{t('settings.icon_default')}</Text>
-                                            </TouchableOpacity>
-
-                                            <TouchableOpacity
-                                                style={styles.iconOption}
-                                                onPress={() => setSelectedIcon('light')}
-                                            >
-                                                <Image
-                                                    source={require('../../assets/images/icon_light.png')}
-                                                    fadeDuration={0}
-                                                    style={[
-                                                        styles.iconPreview,
-                                                        selectedIcon === 'light' && styles.iconPreviewSelected
-                                                    ]}
-                                                />
-                                                <Text style={[styles.iconLabel, ramadanModeEnabled && { color: '#CCC' }]}>{t('settings.icon_cream_gold')}</Text>
-                                            </TouchableOpacity>
-
-                                            <TouchableOpacity
-                                                style={styles.iconOption}
-                                                onPress={() => setSelectedIcon('dark')}
-                                            >
-                                                <Image
-                                                    source={require('../../assets/images/icon_dark.png')}
-                                                    fadeDuration={0}
-                                                    style={[
-                                                        styles.iconPreview,
-                                                        selectedIcon === 'dark' && styles.iconPreviewSelected
-                                                    ]}
-                                                />
-                                                <Text style={[styles.iconLabel, ramadanModeEnabled && { color: '#CCC' }]}>{t('settings.icon_midnight_blue')}</Text>
-                                            </TouchableOpacity>
-                                        </View>
-
-                                        {/* Row 2 */}
-                                        <View style={[styles.iconRow, { marginTop: 12 }]}>
-                                            <TouchableOpacity
-                                                style={styles.iconOption}
-                                                onPress={() => setSelectedIcon('blue_gold')}
-                                            >
-                                                <Image
-                                                    source={require('../../assets/images/icon_blue_gold.png')}
-                                                    fadeDuration={0}
-                                                    style={[
-                                                        styles.iconPreview,
-                                                        selectedIcon === 'blue_gold' && styles.iconPreviewSelected
-                                                    ]}
-                                                />
-                                                <Text style={[styles.iconLabel, ramadanModeEnabled && { color: '#CCC' }]}>{t('settings.icon_gold_navy')}</Text>
-                                            </TouchableOpacity>
-
-                                            <TouchableOpacity
-                                                style={styles.iconOption}
-                                                onPress={() => setSelectedIcon('sage')}
-                                            >
-                                                <Image
-                                                    source={require('../../assets/images/icon_sage.png')}
-                                                    fadeDuration={0}
-                                                    style={[
-                                                        styles.iconPreview,
-                                                        selectedIcon === 'sage' && styles.iconPreviewSelected
-                                                    ]}
-                                                />
-                                                <Text style={[styles.iconLabel, ramadanModeEnabled && { color: '#CCC' }]}>{t('settings.icon_sage')}</Text>
-                                            </TouchableOpacity>
-
-                                            <TouchableOpacity
-                                                style={styles.iconOption}
-                                                onPress={() => setSelectedIcon('silver')}
-                                            >
-                                                <Image
-                                                    source={require('../../assets/images/icon_silver.png')}
-                                                    fadeDuration={0}
-                                                    style={[
-                                                        styles.iconPreview,
-                                                        selectedIcon === 'silver' && styles.iconPreviewSelected
-                                                    ]}
-                                                />
-                                                <Text style={[styles.iconLabel, ramadanModeEnabled && { color: '#CCC' }]}>{t('settings.icon_silver')}</Text>
-                                            </TouchableOpacity>
-                                        </View>
-
-                                        {/* Row 3 */}
-                                        <View style={[styles.iconRow, { marginTop: 12 }]}>
-                                            <TouchableOpacity
-                                                style={styles.iconOption}
-                                                onPress={() => setSelectedIcon('burgundy')}
-                                            >
-                                                <Image
-                                                    source={require('../../assets/images/icon_burgundy.png')}
-                                                    fadeDuration={0}
-                                                    style={[
-                                                        styles.iconPreview,
-                                                        selectedIcon === 'burgundy' && styles.iconPreviewSelected
-                                                    ]}
-                                                />
-                                                <Text style={[styles.iconLabel, ramadanModeEnabled && { color: '#CCC' }]}>{t('settings.icon_burgundy')}</Text>
-                                            </TouchableOpacity>
-
-                                            <TouchableOpacity
-                                                style={styles.iconOption}
-                                                onPress={() => setSelectedIcon('navy_red')}
-                                            >
-                                                <Image
-                                                    source={require('../../assets/images/icon_navy_red.png')}
-                                                    fadeDuration={0}
-                                                    style={[
-                                                        styles.iconPreview,
-                                                        selectedIcon === 'navy_red' && styles.iconPreviewSelected
-                                                    ]}
-                                                />
-                                                <Text style={[styles.iconLabel, ramadanModeEnabled && { color: '#CCC' }]}>{t('settings.icon_navy_red')}</Text>
-                                            </TouchableOpacity>
-                                            <View style={styles.iconOption} />
-                                        </View>
-                                    </View>
-
-                                    {/* Action Button */}
-                                    <TouchableOpacity
-                                        style={[
-                                            styles.applyButton,
-                                            !selectedIcon && styles.applyButtonDisabled
-                                        ]}
-                                        disabled={!selectedIcon}
-                                        onPress={async () => {
-                                            try {
-                                                const { setAppIcon } = require('expo-dynamic-app-icon');
-                                                const iconName = selectedIcon === 'default' ? null : selectedIcon;
-                                                await setAppIcon(iconName);
-                                                Alert.alert(t('settings.location_success_title'), t('settings.icon_updated'));
-                                                setShowIconSelector(false);
-                                            } catch (e) {
-                                                Alert.alert('Info', t('settings.production_only'));
-                                            }
-                                        }}
-                                    >
-                                        <Text style={styles.applyButtonText}>{t('settings.apply')}</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        </Modal>
                         <View style={styles.divider} />
 
                         {renderSettingItem({
@@ -847,12 +778,12 @@ ${t('settings.data_export_info')}`;
                         })}
                         <View style={styles.divider} />
                         {renderSettingItem({
-                            icon: Moon,
-                            label: t('settings.ramadan_mode'),
+                            icon: MoonStar,
+                            label: t('settings.night_mode'),
                             rightElement: (
                                 <Switch
-                                    value={ramadanModeEnabled}
-                                    onValueChange={(val) => toggleSwitch(val, null, 'ramadan_mode_enabled')}
+                                    value={nightModeEnabled}
+                                    onValueChange={(val) => toggleSwitch(val, null, 'night_mode_enabled')}
                                     trackColor={{ false: '#e0e0e0', true: COLORS.primary }}
                                     thumbColor={'#fff'}
                                 />
@@ -863,12 +794,24 @@ ${t('settings.data_export_info')}`;
 
                 {/* Support Section */}
                 <View style={styles.section}>
-                    <Text style={[styles.sectionHeader, ramadanModeEnabled && { color: '#FFD700' }]}>{t('settings.about')}</Text>
-                    <View style={[styles.card, ramadanModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.1)' }]}>
+                    <Text style={[styles.sectionHeader, nightModeEnabled && { color: '#FFD700' }]}>{t('settings.about')}</Text>
+                    <View style={[styles.card, nightModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.1)' }]}>
+                        {renderSettingItem({
+                            icon: LifeBuoy,
+                            label: t('settings.support_faq'),
+                            onPress: () => navigation.navigate('Support')
+                        })}
+                        <View style={styles.divider} />
                         {renderSettingItem({
                             icon: Shield,
                             label: t('settings.privacy'),
                             onPress: handlePrivacyPolicy
+                        })}
+                        <View style={styles.divider} />
+                        {renderSettingItem({
+                            icon: FileText,
+                            label: t('settings.terms'),
+                            onPress: handleTermsOfService
                         })}
                         <View style={styles.divider} />
                         {renderSettingItem({
@@ -878,18 +821,12 @@ ${t('settings.data_export_info')}`;
                         })}
                         <View style={styles.divider} />
                         {renderSettingItem({
-                            icon: Mail,
-                            label: t('settings.contact'),
-                            onPress: () => Linking.openURL('mailto:support@zikraapp.com')
-                        })}
-                        <View style={styles.divider} />
-                        {renderSettingItem({
                             icon: Star,
                             label: t('settings.rate_app'),
                             onPress: () => {
                                 const storeUrl = Platform.OS === 'ios'
-                                    ? 'https://apps.apple.com/app/zikra/id123456789'
-                                    : 'https://play.google.com/store/apps/details?id=com.yusuf.zikraapp';
+                                    ? 'https://apps.apple.com/app/islamvy/id123456789'
+                                    : 'https://play.google.com/store/apps/details?id=com.yusuf.islamvy';
                                 Linking.openURL(storeUrl);
                             }
                         })}
@@ -897,8 +834,8 @@ ${t('settings.data_export_info')}`;
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={[styles.sectionHeader, ramadanModeEnabled && { color: '#FFD700' }]}>{t('settings.account')}</Text>
-                    <View style={[styles.card, ramadanModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.1)' }]}>
+                    <Text style={[styles.sectionHeader, nightModeEnabled && { color: '#FFD700' }]}>{t('settings.account')}</Text>
+                    <View style={[styles.card, nightModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.1)' }]}>
                         {renderSettingItem({
                             icon: LogOut,
                             label: t('settings.logout'),
@@ -927,6 +864,8 @@ ${t('settings.data_export_info')}`;
                         })}
                     </View>
                 </View>
+
+
 
             </ScrollView>
         </RamadanBackground>

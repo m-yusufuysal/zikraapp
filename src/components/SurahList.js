@@ -9,7 +9,7 @@ import { COLORS } from '../utils/theme';
 import { SURAH_NAMES } from '../data/surahNames';
 import { SURAH_MEANINGS } from '../utils/surahData';
 
-const SurahItem = memo(({ item, onPress, t, i18n, ramadanModeEnabled }) => {
+const SurahItem = memo(({ item, onPress, t, i18n, nightModeEnabled }) => {
     // Get language code (e.g. 'tr-TR' -> 'tr')
     const lang = (i18n.language || 'en').split('-')[0];
     const localizedMeaning = SURAH_MEANINGS[item.number]?.[lang] || item.englishNameTranslation;
@@ -17,27 +17,36 @@ const SurahItem = memo(({ item, onPress, t, i18n, ramadanModeEnabled }) => {
 
     return (
         <TouchableOpacity
-            style={[styles.itemContainer, isTablet && { width: TABLET_MAX_WIDTH, alignSelf: 'center' }, ramadanModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.02)', borderColor: 'rgba(255, 255, 255, 0.08)' }]}
+            style={[
+                styles.itemContainer,
+                isTablet && { width: TABLET_MAX_WIDTH, alignSelf: 'center' },
+                nightModeEnabled && {
+                    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    shadowOpacity: 0,
+                    elevation: 0
+                }
+            ]}
             onPress={() => onPress(item)}
         >
-            <View style={[styles.numberBadge, ramadanModeEnabled && { backgroundColor: 'rgba(255, 215, 0, 0.1)' }]}>
-                <Text style={[styles.numberText, ramadanModeEnabled && { color: '#FFD700' }]}>{item.number}</Text>
+            <View style={[styles.numberBadge, nightModeEnabled && { backgroundColor: 'rgba(255, 215, 0, 0.1)' }]}>
+                <Text style={[styles.numberText, nightModeEnabled && { color: '#FFD700' }]}>{item.number}</Text>
             </View>
             {lang !== 'ar' && (
                 <View style={styles.info}>
-                    <Text style={[styles.englishName, ramadanModeEnabled && { color: '#FFF' }]}>{localizedName}</Text>
-                    <Text style={[styles.translationName, ramadanModeEnabled && { color: 'rgba(255, 255, 255, 0.6)' }]}>{localizedMeaning}</Text>
+                    <Text style={[styles.englishName, nightModeEnabled && { color: '#FFF' }]}>{localizedName}</Text>
+                    <Text style={[styles.translationName, nightModeEnabled && { color: 'rgba(255, 255, 255, 0.6)' }]}>{localizedMeaning}</Text>
                 </View>
             )}
             <View style={[styles.arabicContainer, lang === 'ar' && { flex: 1, alignItems: 'flex-start', marginLeft: 0 }]}>
-                <Text style={[styles.arabicName, ramadanModeEnabled && { color: '#FFD700' }]}>{item.name}</Text>
-                <Text style={[styles.verseCount, ramadanModeEnabled && { color: 'rgba(255, 255, 255, 0.4)' }]}>{item.numberOfAyahs} {t('quran.verses')}</Text>
+                <Text style={[styles.arabicName, nightModeEnabled && { color: '#FFD700' }]}>{item.name}</Text>
+                <Text style={[styles.verseCount, nightModeEnabled && { color: 'rgba(255, 255, 255, 0.4)' }]}>{item.numberOfAyahs} {t('quran.verses')}</Text>
             </View>
         </TouchableOpacity>
     )
 });
 
-const SurahList = React.memo(({ data, onSurahPress, ramadanModeEnabled }) => {
+const SurahList = React.memo(({ data, onSurahPress, nightModeEnabled }) => {
     const { t, i18n } = useTranslation();
     const [searchQuery, setSearchQuery] = useState('');
     const lang = (i18n.language || 'en').split('-')[0];
@@ -75,6 +84,16 @@ const SurahList = React.memo(({ data, onSurahPress, ramadanModeEnabled }) => {
         setSearchQuery('');
     }, []);
 
+    const renderSurahItem = useCallback(({ item }) => (
+        <SurahItem
+            item={item}
+            onPress={onSurahPress}
+            t={t}
+            i18n={i18n}
+            nightModeEnabled={nightModeEnabled}
+        />
+    ), [onSurahPress, t, i18n, nightModeEnabled]);
+
     return (
         <View style={{ flex: 1 }}>
             {/* Search Bar */}
@@ -101,7 +120,7 @@ const SurahList = React.memo(({ data, onSurahPress, ramadanModeEnabled }) => {
 
             <FlashList
                 data={filteredData}
-                renderItem={({ item }) => <SurahItem item={item} onPress={onSurahPress} t={t} i18n={i18n} ramadanModeEnabled={ramadanModeEnabled} />}
+                renderItem={renderSurahItem}
                 estimatedItemSize={80}
                 contentContainerStyle={styles.listContent}
                 keyExtractor={item => item.number.toString()}
@@ -166,10 +185,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.cardBorder,
         shadowColor: COLORS.shadow,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 1,
+        shadowOpacity: 0, // Removed for performance
+        shadowRadius: 0,
+        elevation: 0,
     },
     numberBadge: {
         width: 36,

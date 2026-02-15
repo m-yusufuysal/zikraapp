@@ -19,11 +19,19 @@ export const invokeEdgeFunction = async (functionName, options = {}) => {
             const { data, error } = await supabase.functions.invoke(functionName, options);
 
             if (error) {
+                // Supabase puts status in context for FunctionsHttpError
+                const statusCode = error.status || (error.context && error.context.status);
+
+                console.error(`[apiClient] Edge Function ${functionName} error:`, {
+                    status: statusCode,
+                    message: error.message
+                });
+
                 // Check for rate limiting (429) or server errors (5xx)
-                if (error.status === 429 || (error.status >= 500 && error.status < 600)) {
+                if (statusCode === 429 || (statusCode >= 500 && statusCode < 600)) {
                     throw error; // Throw to trigger retry
                 }
-                // For other errors (4xx), throw immediately without retry
+                // For other errors (4xx / 404), throw immediately without retry
                 throw error;
             }
 
@@ -31,9 +39,10 @@ export const invokeEdgeFunction = async (functionName, options = {}) => {
 
         } catch (error) {
             attempt++;
+            const statusCode = error.status || (error.context && error.context.status);
 
             // Don't retry client errors (except 429)
-            if (error.status >= 400 && error.status < 500 && error.status !== 429) {
+            if (statusCode >= 400 && statusCode < 500 && statusCode !== 429) {
                 throw error;
             }
 

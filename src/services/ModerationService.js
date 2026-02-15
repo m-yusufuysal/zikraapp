@@ -1,15 +1,6 @@
-const PROHIBITED_KEYWORDS = [
-    // Betting & Gambling (Extended)
-    'bahis', 'kumar', 'bet', 'casino', 'slot', 'iddaa', 'canlı bahis', 'poker', 'rulet', 'black jack', 'bonus ver', 'çekim garantili', 'yatırım şartsız',
-    // Adult Content (Expanded)
-    'sex', 'seks', 'porn', 'porno', 'azgın', 'dul', 'escort', 'eskort', 'jigolo', 'travesti', 'fantezi', 'çıplak', 'video izle', 'şizofren', 'sapık', 'abaza',
-    // Slang & Toxicity (Comprehensive)
-    'küfür', 'aptal', 'salak', 'şerefsiz', 'piç', 'oç', 'aq', 'amk', 'sik', 'yarrak', 'göt', 'ibne', 'yavşak', 'gerizekalı', 'amına', 'koduğum', 'pic', 'it', 'köpek', 'it oğlu it', 'hayvan', 'öküz', 'ayı', 'manyak', 'o.ç.', 's.iktir', 'siktir', 'f*ck', 'p*rn',
-    // Scam/Money/Begging
-    'para kazan', 'nakit', 'kazanç', 'yatırım tavsiyesi', 'borç ver', 'iban at', 'hesabıma para', 'para lazım', 'fatura öde', 'para iste', 'dilenci', 'para yardımı',
-    // Politics & Sensitive (General safety)
-    'siyaset', 'terör', 'parti', 'seçim', 'oy ver'
-];
+import { invokeEdgeFunction } from "../utils/apiClient";
+
+
 
 /**
  * Checks text for prohibited content, links, and sensitive information.
@@ -19,24 +10,15 @@ const PROHIBITED_KEYWORDS = [
 export const moderateContent = (text) => {
     if (!text) return { isSafe: true };
 
-    const lowerText = text.toLowerCase();
+    // 1. Pattern Checks (Safety first)
 
-    // 1. Keyword Check
-    for (const word of PROHIBITED_KEYWORDS) {
-        if (lowerText.includes(word)) {
-            return {
-                isSafe: false,
-                reason: `Lütfen topluluk adabına uygun ve nezaketli bir dil kullanalım.`
-            };
-        }
-    }
 
     // 2. IBAN Check (TR IBAN format)
     const ibanRegex = /TR\d{2}\s?(\d{4}\s?){5}\d{2}/gi;
     if (ibanRegex.test(text)) {
         return {
             isSafe: false,
-            reason: 'Güvenliğiniz için hesap bilgisi paylaşımına izin veremiyoruz.'
+            reason: 'community.moderation_iban'
         };
     }
 
@@ -45,7 +27,7 @@ export const moderateContent = (text) => {
     if (emailRegex.test(text)) {
         return {
             isSafe: false,
-            reason: 'Güvenliğiniz adına iletişim bilgilerini gizli tutmanızı öneriyoruz.'
+            reason: 'community.moderation_email'
         };
     }
 
@@ -54,7 +36,7 @@ export const moderateContent = (text) => {
     if (phoneRegex.test(text)) {
         return {
             isSafe: false,
-            reason: 'Mahremiyetinizi korumak için telefon numarası paylaşımı kısıtlanmıştır.'
+            reason: 'community.moderation_phone'
         };
     }
 
@@ -63,7 +45,7 @@ export const moderateContent = (text) => {
     if (urlRegex.test(text)) {
         return {
             isSafe: false,
-            reason: 'Bağlantı paylaşımı topluluk güvenliği için devre dışı bırakılmıştır.'
+            reason: 'community.moderation_link'
         };
     }
 
@@ -72,9 +54,69 @@ export const moderateContent = (text) => {
     if (idRegex.test(text)) {
         return {
             isSafe: false,
-            reason: 'Kişisel verilerinizin güvenliği için bu bilgiyi paylaşamazsınız.'
+            reason: 'community.moderation_id'
         };
     }
 
     return { isSafe: true };
+};
+
+/**
+ * Server-side Image Moderation (Supabase Edge Function)
+ * Securely calls AI on the server to avoid exposing API keys.
+ */
+export const moderateImage = async (base64Data, lang = 'tr') => {
+    if (!base64Data) {
+        console.warn("[ModerationService] No base64 data provided for moderation");
+        return { isSafe: false, reason: "community.moderation_error" };
+    }
+
+    try {
+        if (__DEV__) console.log(`[ModerationService] Requesting image moderation. Language: "${lang}"`);
+        const data = await invokeEdgeFunction('moderate-image', {
+            body: { image: base64Data, lang }
+        });
+
+        if (__DEV__) console.log("[ModerationService] Image Moderation Result:", data);
+        return data || { isSafe: false, reason: "community.moderation_error" };
+    } catch (error) {
+        console.error("[ModerationService] Image Moderation Exception:", error);
+        return {
+            isSafe: false,
+            error: true,
+            reason: "community.moderation_error"
+        };
+    }
+};
+/**
+ * Server-side Text Moderation (Supabase Edge Function)
+ * Strict AI moderation for community posts (Sexual, Profanity, Gambling, Islamic Suitability).
+ */
+export const moderateTextAI = async (text, type = 'post', lang = 'tr') => {
+    if (!text) return { isSafe: true };
+
+    try {
+        const fetchLang = lang || 'tr';
+        if (__DEV__) console.log(`[ModerationService] Requesting AI moderation. Language: "${fetchLang}", Type: "${type}"`);
+
+        const data = await invokeEdgeFunction('moderate-text', {
+            body: { text, type, lang: fetchLang }
+        });
+
+        if (__DEV__) console.log("[ModerationService] Text Moderation Result:", data);
+        return data || { isSafe: false, reason: "community.moderation_error" };
+    } catch (error) {
+        console.error("[ModerationService] Text Moderation Exception:", error);
+        return {
+            isSafe: false,
+            error: true,
+            reason: "community.moderation_error"
+        };
+    }
+};
+
+export default {
+    moderateContent,
+    moderateImage,
+    moderateTextAI
 };

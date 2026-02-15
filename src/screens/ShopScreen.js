@@ -1,8 +1,11 @@
 import { useScrollToTop } from '@react-navigation/native';
+
+import * as Localization from 'expo-localization';
 import { Book, ChevronLeft, ExternalLink, Heart, ShoppingBag, Star, User, Users } from 'lucide-react-native';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Animated, Image, Linking, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Animated, Linking, Platform, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import RamadanBackground from '../components/RamadanBackground';
 import { useTheme } from '../contexts/ThemeContext';
@@ -25,37 +28,75 @@ const SUB_CATEGORIES = {
     ]
 };
 
-const getRegionalAmazonUrl = (url, language) => {
-    if (!url || !url.includes('amazon.')) return url;
-
-    const lang = language?.split('-')[0] || 'en';
-    let domain = 'amazon.com'; // Default
-
-    // Domain Mapping
-    if (lang === 'tr') domain = 'amazon.com.tr';
-    else if (lang === 'ar') domain = 'amazon.sa'; // Could also be .ae, let's use .sa as main
-    else if (lang === 'en') domain = 'amazon.com';
-    else if (lang === 'id') domain = 'amazon.com'; // Amazon doesn't have ID store, use Global
-
-    // Extract ASIN (Amazon Product ID)
-    const asinMatch = url.match(/\/dp\/([A-Z0-9]{10})/i) || url.match(/\/gp\/product\/([A-Z0-9]{10})/i);
-    const asin = asinMatch ? asinMatch[1] : null;
-
-    if (asin) {
-        // Build regional affiliate link
-        // Note: For multi-region affiliate, ideally you'd have different TAGS for each,
-        // but for now we keep the structure and user can replace tags if needed.
-        return `https://www.${domain}/dp/${asin}?tag=YOUR_TAG_HERE`;
-    }
-
-    // Fallback if not an ASIN link (like a search link)
+// Helper to get region safely
+const getRegion = () => {
     try {
-        const urlObj = new URL(url);
-        urlObj.hostname = `www.${domain}`;
-        return urlObj.toString();
+        const locales = Localization.getLocales();
+        return locales && locales[0] ? locales[0].regionCode : 'US';
     } catch (e) {
-        return url.replace(/amazon\.[a-z\.]+/i, domain);
+        return 'US';
     }
+};
+
+const getRegionalUrl = (item, language) => {
+    const region = getRegion();
+    const langCode = language?.split('-')[0] || 'en';
+
+    // 0. SEARCH LINK LOGIC (New Feature)
+    // If item has 'search_keyword', generate a localized Amazon Search URL directly
+    if (item.search_keyword) {
+        let domain = 'amazon.com';
+        switch (region) {
+            case 'TR': domain = 'amazon.com.tr'; break;
+            case 'AE': domain = 'amazon.ae'; break;
+            case 'SA': domain = 'amazon.sa'; break;
+            case 'DE': domain = 'amazon.de'; break;
+            case 'GB': domain = 'amazon.co.uk'; break;
+            case 'FR': domain = 'amazon.fr'; break;
+            case 'ES': domain = 'amazon.es'; break;
+            case 'IT': domain = 'amazon.it'; break;
+            case 'NL': domain = 'amazon.nl'; break;
+            case 'JP': domain = 'amazon.co.jp'; break;
+            case 'CA': domain = 'amazon.ca'; break;
+            default: domain = 'amazon.com'; break;
+        }
+        // Encode the keyword
+        const query = encodeURIComponent(item.search_keyword);
+        return `https://www.${domain}/s?k=${query}&tag=islamvy-20`;
+    }
+
+    // 1. Check for database column overrides (e.g. link_tr, link_us)
+    if (region === 'TR' && item.link_tr) return item.link_tr;
+    if (region === 'US' && item.link_us) return item.link_us;
+
+    // 2. Fallback to generic link parsing
+    let url = item.product_url || item.link;
+    if (!url) return '';
+
+    if (url.includes('amazon.')) {
+        let domain = 'amazon.com'; // Default
+
+        // Region-based domain mapping
+        switch (region) {
+            case 'TR': domain = 'amazon.com.tr'; break;
+            case 'AE': domain = 'amazon.ae'; break;
+            case 'SA': domain = 'amazon.sa'; break;
+            case 'DE': domain = 'amazon.de'; break;
+            case 'GB': domain = 'amazon.co.uk'; break;
+            default:
+                if (langCode === 'tr') domain = 'amazon.com.tr';
+                break;
+        }
+
+        const asinMatch = url.match(/\/dp\/([A-Z0-9]{10})/i) || url.match(/\/gp\/product\/([A-Z0-9]{10})/i);
+        const asin = asinMatch ? asinMatch[1] : null;
+
+        if (asin) {
+            return `https://www.${domain}/dp/${asin}?tag=islamvy-20`;
+        }
+    }
+
+    return url;
 };
 
 const getLocalizedName = (item, t, language) => {
@@ -65,18 +106,20 @@ const getLocalizedName = (item, t, language) => {
     return item[`name_${lang}`] || item.name_tr || item.name_en || item.name;
 };
 
-const ProductCard = memo(({ item, ramadanModeEnabled, language, handlePress, t }) => (
+const ProductCard = memo(({ item, nightModeEnabled, language, handlePress, t }) => (
     <TouchableOpacity
-        style={[styles.card, ramadanModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)' }]}
+        style={[styles.card, nightModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)' }]}
         activeOpacity={0.9}
-        onPress={() => handlePress(getRegionalAmazonUrl(item.product_url || item.link, language))}
+        onPress={() => handlePress(item)}
     >
         <View style={styles.imageContainer}>
             <Image
-                source={{ uri: item.image_url || item.image }}
+                source={item.image_url || item.image}
                 style={styles.image}
-                resizeMode="contain"
-                fadeDuration={0}
+                contentFit="contain"
+                transition={500}
+                onError={(e) => console.log("Image Load Error:", item.id, e.error)}
+                onLoad={() => console.log("Image Loaded Success:", item.id)}
             />
             <View style={styles.ratingBadge}>
                 <Star size={10} color="#FFD700" fill="#FFD700" />
@@ -86,14 +129,14 @@ const ProductCard = memo(({ item, ramadanModeEnabled, language, handlePress, t }
                 <ExternalLink size={14} color="#FFF" />
             </View>
         </View>
-        <View style={[styles.cardContent, ramadanModeEnabled && { backgroundColor: 'transparent' }]}>
+        <View style={[styles.cardContent, nightModeEnabled && { backgroundColor: 'transparent' }]}>
             <Text style={styles.category}>{t(CATEGORIES.find(c => c.id === item.category)?.name || '').toUpperCase()}</Text>
-            <Text style={[styles.productName, ramadanModeEnabled && { color: '#FFF' }]} numberOfLines={2}>
+            <Text style={[styles.productName, nightModeEnabled && { color: '#FFF' }]} numberOfLines={2}>
                 {getLocalizedName(item, t, language)}
             </Text>
             <View style={styles.priceRow}>
-                <View style={[styles.shopBtn, { flex: 1 }, ramadanModeEnabled && { backgroundColor: '#E67E22' }]}>
-                    <Text style={[styles.shopBtnText, { textAlign: 'center' }, ramadanModeEnabled && { color: '#FFF' }]}>{t('shop.buy_now')}</Text>
+                <View style={[styles.shopBtn, { flex: 1 }, nightModeEnabled && { backgroundColor: '#E67E22' }]}>
+                    <Text style={[styles.shopBtnText, { textAlign: 'center' }, nightModeEnabled && { color: '#FFF' }]}>{t('shop.buy_now')}</Text>
                 </View>
             </View>
         </View>
@@ -103,11 +146,12 @@ const ProductCard = memo(({ item, ramadanModeEnabled, language, handlePress, t }
 const ShopScreen = ({ navigation }) => {
     const insets = useSafeAreaInsets();
     const { t, i18n } = useTranslation();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
     const [selectedCategory, setSelectedCategory] = useState('books');
     const [selectedSubCategory, setSelectedSubCategory] = useState(null);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
     const isTr = i18n.language.startsWith('tr');
     const buyNowText = t('shop.buy_now') || (isTr ? 'Satın Al' : 'Buy Now');
@@ -121,8 +165,11 @@ const ShopScreen = ({ navigation }) => {
         fetchProducts();
     }, []);
 
-    const fetchProducts = async () => {
+    const fetchProducts = async (isRefreshing = false) => {
         try {
+            if (isRefreshing) setRefreshing(true);
+            else setLoading(true);
+
             const { data, error } = await supabase
                 .from('products')
                 .select('*')
@@ -134,8 +181,13 @@ const ShopScreen = ({ navigation }) => {
             console.error('fetchProducts Error:', error);
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
     };
+
+    const onRefresh = useCallback(() => {
+        fetchProducts(true);
+    }, []);
 
     const headerTitleOpacity = scrollY.interpolate({
         inputRange: [40, 100],
@@ -157,32 +209,53 @@ const ShopScreen = ({ navigation }) => {
         }),
         [products, selectedCategory, selectedSubCategory]);
 
-    const handlePress = useCallback(async (url) => {
+    const handlePress = useCallback(async (item) => {
         try {
-            // Standard affiliate links automatically trigger Universal Links / App Links
-            // which open the Amazon app if it's installed.
+            const url = getRegionalUrl(item, i18n.language);
+            if (!url) return;
+
+            // TRACKING ANALYTICS
+            // Fire and forget - don't await to keep UI snappy
+            const region = getRegion();
+            supabase.from('shop_analytics').insert({
+                product_id: item.id,
+                product_name: getLocalizedName(item, t, i18n.language),
+                destination_url: url,
+                region_code: region,
+                click_type: item.search_keyword ? 'search' : 'product'
+            }).then(({ error }) => {
+                if (error) if (__DEV__) console.log("Analytics Error:", error);
+            });
+
             await Linking.openURL(url);
         } catch (err) {
             console.error("Couldn't load page", err);
-            // Fallback for simple cases
-            Linking.openURL(url).catch(e => console.warn("Final fallback failed", e));
         }
-    }, []);
+    }, [i18n.language, t]);
 
     const handleCategorySelect = useCallback((id) => {
         setSelectedCategory(id);
         setSelectedSubCategory(null);
     }, []);
 
-    const renderItem = useCallback(({ item }) => (
-        <ProductCard
-            item={item}
-            ramadanModeEnabled={ramadanModeEnabled}
-            language={i18n.language}
-            handlePress={handlePress}
-            t={t}
-        />
-    ), [ramadanModeEnabled, i18n.language, handlePress, t]);
+    const renderItem = useCallback(({ item }) => {
+        // Debugging ShopScreen Image
+        if (item.id === '24ba9dbf-9a90-4602-a22a-4b7717bec276') {
+            console.log("ShopScreen Render - Tested Product:", item.id);
+            console.log("   image_url:", item.image_url);
+            console.log("   image:", item.image);
+        }
+
+        return (
+            <ProductCard
+                item={item}
+                nightModeEnabled={nightModeEnabled}
+                language={i18n.language}
+                handlePress={handlePress}
+                t={t}
+            />
+        );
+    }, [nightModeEnabled, i18n.language, handlePress, t]);
 
     return (
         <RamadanBackground>
@@ -198,11 +271,11 @@ const ShopScreen = ({ navigation }) => {
                 }
             ]}>
                 <View style={styles.headerContent}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backButton, ramadanModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.1)' }]}>
-                        <ChevronLeft size={28} color={ramadanModeEnabled ? '#FFF' : COLORS.matteBlack} />
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backButton, nightModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.1)' }]}>
+                        <ChevronLeft size={28} color={nightModeEnabled ? '#FFF' : COLORS.matteBlack} />
                     </TouchableOpacity>
-                    <Animated.Text style={[styles.headerTitle, { opacity: headerTitleOpacity }, ramadanModeEnabled && { color: '#FFF' }]}>
-                        {t('shop.zikra_shop')}
+                    <Animated.Text style={[styles.headerTitle, { opacity: headerTitleOpacity }, nightModeEnabled && { color: '#FFF' }]}>
+                        {t('shop.islamvy_shop')}
                     </Animated.Text>
                     <View style={[styles.backButton, { opacity: 0 }]} />
                 </View>
@@ -217,11 +290,11 @@ const ShopScreen = ({ navigation }) => {
                 paddingTop: insets.top + 10,
             }]}>
                 <View style={styles.headerContent}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backButton, ramadanModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.1)' }]}>
-                        <ChevronLeft size={28} color={ramadanModeEnabled ? '#FFF' : COLORS.matteBlack} />
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backButton, nightModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.1)' }]}>
+                        <ChevronLeft size={28} color={nightModeEnabled ? '#FFF' : COLORS.matteBlack} />
                     </TouchableOpacity>
-                    <Animated.Text style={[styles.headerTitle, { opacity: topTitleOpacity }, ramadanModeEnabled && { color: '#FFF' }]}>
-                        {t('shop.zikra_shop')}
+                    <Animated.Text style={[styles.headerTitle, { opacity: topTitleOpacity }, nightModeEnabled && { color: '#FFF' }]}>
+                        {t('shop.islamvy_shop')}
                     </Animated.Text>
                     <View style={[styles.backButton, { opacity: 0 }]} />
                 </View>
@@ -250,6 +323,8 @@ const ShopScreen = ({ navigation }) => {
                     maxToRenderPerBatch={10}
                     windowSize={5}
                     removeClippedSubviews={Platform.OS === 'android'}
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
                     ListHeaderComponent={
                         <View style={styles.banner}>
                             <View style={styles.elegantLabelContainer}>
@@ -257,7 +332,7 @@ const ShopScreen = ({ navigation }) => {
                                 <Text style={styles.elegantLabel}>{t('shop.quality_elegance')}</Text>
                                 <View style={styles.elegantLine} />
                             </View>
-                            <Text style={[styles.bannerTitle, ramadanModeEnabled && { color: '#E67E22' }]}>{t('shop.exclusive_lifestyle')}</Text>
+                            <Text style={[styles.bannerTitle, nightModeEnabled && { color: '#E67E22' }]}>{t('shop.exclusive_lifestyle')}</Text>
 
                             <ScrollView
                                 horizontal
@@ -271,20 +346,20 @@ const ShopScreen = ({ navigation }) => {
                                         style={[
                                             styles.categoryItem,
                                             selectedCategory === cat.id && styles.categoryItemActive,
-                                            ramadanModeEnabled && selectedCategory !== cat.id && { backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)' },
-                                            ramadanModeEnabled && selectedCategory === cat.id && { backgroundColor: '#E67E22', borderColor: '#E67E22' }
+                                            nightModeEnabled && selectedCategory !== cat.id && { backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)' },
+                                            nightModeEnabled && selectedCategory === cat.id && { backgroundColor: '#E67E22', borderColor: '#E67E22' }
                                         ]}
                                         onPress={() => handleCategorySelect(cat.id)}
                                     >
                                         <cat.icon
                                             size={16}
-                                            color={selectedCategory === cat.id ? (ramadanModeEnabled ? '#FFF' : '#FFF') : (ramadanModeEnabled ? 'rgba(255,255,255,0.6)' : COLORS.textSecondary)}
+                                            color={selectedCategory === cat.id ? (nightModeEnabled ? '#FFF' : '#FFF') : (nightModeEnabled ? 'rgba(255,255,255,0.6)' : COLORS.textSecondary)}
                                         />
                                         <Text style={[
                                             styles.categoryItemText,
                                             selectedCategory === cat.id && styles.categoryItemTextActive,
-                                            ramadanModeEnabled && selectedCategory !== cat.id && { color: 'rgba(255, 255, 255, 0.6)' },
-                                            ramadanModeEnabled && selectedCategory === cat.id && { color: '#FFF' }
+                                            nightModeEnabled && selectedCategory !== cat.id && { color: 'rgba(255, 255, 255, 0.6)' },
+                                            nightModeEnabled && selectedCategory === cat.id && { color: '#FFF' }
                                         ]}>
                                             {t(cat.name)}
                                         </Text>
@@ -300,20 +375,20 @@ const ShopScreen = ({ navigation }) => {
                                             style={[
                                                 styles.subCategoryItem,
                                                 selectedSubCategory === sub.id && styles.subCategoryItemActive,
-                                                ramadanModeEnabled && selectedSubCategory !== sub.id && { backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.1)' },
-                                                ramadanModeEnabled && selectedSubCategory === sub.id && { backgroundColor: 'rgba(230, 126, 34, 0.2)', borderColor: '#E67E22' }
+                                                nightModeEnabled && selectedSubCategory !== sub.id && { backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.1)' },
+                                                nightModeEnabled && selectedSubCategory === sub.id && { backgroundColor: 'rgba(230, 126, 34, 0.2)', borderColor: '#E67E22' }
                                             ]}
                                             onPress={() => setSelectedSubCategory(selectedSubCategory === sub.id ? null : sub.id)}
                                         >
                                             <sub.icon
                                                 size={14}
-                                                color={selectedSubCategory === sub.id ? (ramadanModeEnabled ? '#E67E22' : COLORS.warning) : (ramadanModeEnabled ? 'rgba(255,255,255,0.4)' : COLORS.textSecondary)}
+                                                color={selectedSubCategory === sub.id ? (nightModeEnabled ? '#E67E22' : COLORS.warning) : (nightModeEnabled ? 'rgba(255,255,255,0.4)' : COLORS.textSecondary)}
                                             />
                                             <Text style={[
                                                 styles.subCategoryItemText,
                                                 selectedSubCategory === sub.id && styles.subCategoryItemTextActive,
-                                                ramadanModeEnabled && selectedSubCategory !== sub.id && { color: 'rgba(255, 255, 255, 0.4)' },
-                                                ramadanModeEnabled && selectedSubCategory === sub.id && { color: '#E67E22' }
+                                                nightModeEnabled && selectedSubCategory !== sub.id && { color: 'rgba(255, 255, 255, 0.4)' },
+                                                nightModeEnabled && selectedSubCategory === sub.id && { color: '#E67E22' }
                                             ]}>
                                                 {t(sub.name)}
                                             </Text>
@@ -354,7 +429,7 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         ...FONTS.h3,
-        color: '#E67E22', // Orange for Zikra Shop
+        color: '#E67E22', // Orange for Islamvy Shop
         fontSize: 20,
         fontWeight: '700',
     },

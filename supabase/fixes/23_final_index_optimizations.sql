@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Final Index Optimizations
+-- Islamvy App - Final Index Optimizations
 -- Version 1.0
 -- Addresses: Remaining unindexed_foreign_keys
 -- ============================================

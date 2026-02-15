@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { AppState } from 'react-native';
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
@@ -9,10 +9,22 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
     console.error('CRITICAL: Supabase credentials not found in environment variables!');
 }
 
-// Use AsyncStorage for persistence in React Native
+// SecureStore Adapter for Supabase Auth
+const ExpoSecureStoreAdapter = {
+    getItem: (key) => {
+        return SecureStore.getItemAsync(key);
+    },
+    setItem: (key, value) => {
+        return SecureStore.setItemAsync(key, value);
+    },
+    removeItem: (key) => {
+        return SecureStore.deleteItemAsync(key);
+    },
+};
+
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: {
-        storage: AsyncStorage,
+        storage: ExpoSecureStoreAdapter,
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: false,

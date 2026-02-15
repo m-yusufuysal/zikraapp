@@ -31,7 +31,7 @@ const DREAM_STEPS = (t, name) => [
 const DeepProcessingModal = ({ visible, type = 'dhikr', userName }) => {
     const { t } = useTranslation();
     const displayName = userName || t('common.someone');
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
     const [stepIndex, setStepIndex] = useState(0);
     const animation = useRef(null);
 
@@ -62,7 +62,7 @@ const DeepProcessingModal = ({ visible, type = 'dhikr', userName }) => {
     const isDreamType = type === 'dream';
     let theme;
 
-    if (ramadanModeEnabled || isDreamType) {
+    if (nightModeEnabled || isDreamType) {
         theme = {
             blurIntensity: 20,
             blurTint: "systemMaterialDark",
@@ -103,7 +103,7 @@ const DeepProcessingModal = ({ visible, type = 'dhikr', userName }) => {
                 {/* 1. Large Lottie Animation */}
                 <LottieView
                     ref={animation}
-                    source={require('../assets/animations/spiritual-loader.json')}
+                    source={require('../../assets/animations/spiritual-loader.json')}
                     autoPlay
                     loop
                     style={styles.lottie}

@@ -1,9 +1,9 @@
-import { ArrowRight, MapPin, Users } from 'lucide-react-native';
+import { ArrowRight, MapPin, Users, Compass, BookOpen, ShoppingBag, Scroll, Sparkles, HandCoins } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Animated, Dimensions, Image, PanResponder, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Circle, Defs, G, Path, Stop, LinearGradient as SvgLinearGradient } from 'react-native-svg';
+import Svg, { Circle, Defs, G, Path, Rect, Stop, LinearGradient as SvgLinearGradient } from 'react-native-svg';
 import RamadanBackground from '../components/RamadanBackground';
 import { useTheme } from '../contexts/ThemeContext';
 import { COLORS } from '../utils/theme';
@@ -30,17 +30,97 @@ const AISparkleIcon = ({ size = 100, color = COLORS.accent }) => (
                 d="M75 15 L77 22 L84 24 L77 26 L75 33 L73 26 L66 24 L73 22 Z"
                 fill={color}
             />
+            {/* Added more stars as requested */}
+            <Path
+                d="M15 75 L17 82 L24 84 L17 86 L15 93 L13 86 L6 84 L13 82 Z"
+                fill={color}
+                opacity="0.7"
+            />
+            <Path
+                d="M85 75 L86 78 L89 79 L86 80 L85 83 L84 80 L81 79 L84 78 Z"
+                fill={color}
+                opacity="0.6"
+            />
             <Circle cx="25" cy="20" r="3" fill={color} opacity="0.6" />
             <Circle cx="30" cy="75" r="2" fill={color} opacity="0.5" />
+            <Circle cx="80" cy="30" r="1.5" fill={color} opacity="0.4" />
+            <Circle cx="10" cy="50" r="1" fill={color} opacity="0.3" />
         </G>
         {/* Central glow */}
         <Circle cx="50" cy="50" r="8" fill={color} opacity="0.15" />
     </Svg>
 );
 
+// Scalable 3-Person Community Icon from App.js
+const CommunityIcon = ({ size = 120, color = COLORS.accent }) => {
+    const scale = size / 28; // Base size in App.js is 28
+    return (
+        <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ position: 'relative', width: size, height: size }}>
+                {/* Left Person (Background) */}
+                <View style={{
+                    position: 'absolute', top: 6 * scale, left: 0,
+                    width: 7 * scale, height: 7 * scale, borderRadius: 3.5 * scale,
+                    borderWidth: 1.5 * scale, borderColor: color, opacity: 0.6,
+                    backgroundColor: 'transparent'
+                }} />
+                <View style={{
+                    position: 'absolute', top: 14 * scale, left: -3 * scale,
+                    width: 12 * scale, height: 7 * scale,
+                    borderTopLeftRadius: 7 * scale, borderTopRightRadius: 7 * scale,
+                    borderLeftWidth: 1.5 * scale, borderRightWidth: 1.5 * scale, borderTopWidth: 1.5 * scale,
+                    borderColor: color, opacity: 0.6,
+                    backgroundColor: 'transparent'
+                }} />
+
+                {/* Right Person (Background) */}
+                <View style={{
+                    position: 'absolute', top: 6 * scale, left: 20 * scale,
+                    width: 7 * scale, height: 7 * scale, borderRadius: 3.5 * scale,
+                    borderWidth: 1.5 * scale, borderColor: color, opacity: 0.6,
+                    backgroundColor: 'transparent'
+                }} />
+                <View style={{
+                    position: 'absolute', top: 14 * scale, left: 18 * scale,
+                    width: 12 * scale, height: 7 * scale,
+                    borderTopLeftRadius: 7 * scale, borderTopRightRadius: 7 * scale,
+                    borderLeftWidth: 1.5 * scale, borderRightWidth: 1.5 * scale, borderTopWidth: 1.5 * scale,
+                    borderColor: color, opacity: 0.6,
+                    backgroundColor: 'transparent'
+                }} />
+
+                {/* Center Person (Foreground) */}
+                <View style={{
+                    position: 'absolute', top: 2 * scale, left: 9 * scale,
+                    width: 9 * scale, height: 9 * scale, borderRadius: 4.5 * scale,
+                    borderWidth: 1.8 * scale, borderColor: color,
+                    backgroundColor: '#FFF' // Always white background for center person in onboarding
+                }} />
+                <View style={{
+                    position: 'absolute', top: 12 * scale, left: 4 * scale,
+                    width: 20 * scale, height: 10 * scale,
+                    borderTopLeftRadius: 10 * scale, borderTopRightRadius: 10 * scale,
+                    borderLeftWidth: 1.8 * scale, borderRightWidth: 1.8 * scale, borderTopWidth: 1.8 * scale,
+                    borderColor: color,
+                    backgroundColor: '#FFF' // Always white background for center person in onboarding
+                }} />
+            </View>
+        </View>
+    );
+};
+
+// Dhikr & Dua Icon - Final Image Asset from User
+const DhikrDuaIcon = ({ size = 120 }) => (
+    <Image
+        source={require('../../assets/images/dhikr_dua_icon.png')}
+        style={{ width: size, height: size }}
+        resizeMode="contain"
+    />
+);
+
 const WelcomeScreen = ({ navigation, onFinish }) => {
     const { t } = useTranslation();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
     const insets = useSafeAreaInsets();
     const [currentSlide, setCurrentSlide] = useState(0);
     const scrollX = useRef(new Animated.Value(0)).current;
@@ -51,28 +131,67 @@ const WelcomeScreen = ({ navigation, onFinish }) => {
             titleKey: 'onboarding.slide1_title',
             descKey: 'onboarding.slide1_desc',
             icon: <Image
-                source={ramadanModeEnabled ? require('../../assets/images/ramadan-icon.png') : require('../../assets/images/icon.png')}
-                style={{ width: 150, height: 150, borderRadius: 30 }}
+                source={require('../../assets/images/onboardslogo.png')}
+                style={{ width: 288, height: 288 }}
                 resizeMode="contain"
             />
         },
         {
             id: 2,
-            titleKey: 'onboarding.slide_ai_title',
-            descKey: 'onboarding.slide_ai_desc',
+            titleKey: 'onboarding.slide2_title', // Dream
+            descKey: 'onboarding.slide2_desc',
             icon: <AISparkleIcon size={120} color={COLORS.accent} />
         },
         {
             id: 3,
-            titleKey: 'onboarding.slide_community_title',
-            descKey: 'onboarding.slide_community_desc',
-            icon: <Users color={COLORS.accent} size={100} />
+            titleKey: 'onboarding.slide3_title', // Dhikr & Dua
+            descKey: 'onboarding.slide3_desc',
+            icon: <DhikrDuaIcon size={120} color={COLORS.accent} />
         },
         {
             id: 4,
-            titleKey: 'onboarding.slide2_title', // Prayer & Adhan
-            descKey: 'onboarding.slide2_desc',
+            titleKey: 'onboarding.slide4_title', // Community
+            descKey: 'onboarding.slide4_desc',
+            icon: <CommunityIcon size={120} color={COLORS.accent} />
+        },
+        {
+            id: 5,
+            titleKey: 'onboarding.slide5_title', // Daily Content
+            descKey: 'onboarding.slide5_desc',
+            icon: <View style={{ alignItems: 'center' }}>
+                {/* "Meaningless pen and paper style thing" - Made bolder */}
+                <Scroll size={110} color={COLORS.accent} strokeWidth={2} />
+            </View>
+        },
+        {
+            id: 6,
+            titleKey: 'onboarding.slide6_title', // Prayer & Kaaba
+            descKey: 'onboarding.slide6_desc',
             icon: <MapPin color={COLORS.accent} size={100} />
+        },
+        {
+            id: 7,
+            titleKey: 'onboarding.slide7_title', // Qibla & Mosque
+            descKey: 'onboarding.slide7_desc',
+            icon: <Compass color={COLORS.accent} size={110} strokeWidth={1.2} />
+        },
+        {
+            id: 8,
+            titleKey: 'onboarding.slide8_title', // Quran
+            descKey: 'onboarding.slide8_desc',
+            icon: <BookOpen color={COLORS.accent} size={110} strokeWidth={1.2} />
+        },
+        {
+            id: 9,
+            titleKey: 'onboarding.slide9_title', // Zakat
+            descKey: 'onboarding.slide9_desc',
+            icon: <HandCoins color={COLORS.accent} size={110} strokeWidth={1.2} />
+        },
+        {
+            id: 10,
+            titleKey: 'onboarding.slide10_title', // Shop
+            descKey: 'onboarding.slide10_desc',
+            icon: <ShoppingBag color={COLORS.accent} size={100} strokeWidth={1.5} />
         }
     ];
 
@@ -80,13 +199,15 @@ const WelcomeScreen = ({ navigation, onFinish }) => {
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
             onMoveShouldSetPanResponder: (_, gestureState) => {
-                return Math.abs(gestureState.dx) > 20;
+                // More sensitive: trigger pan handling even on smaller movements
+                return Math.abs(gestureState.dx) > 10;
             },
             onPanResponderRelease: (_, gestureState) => {
-                if (gestureState.dx > 50) {
+                // Lower threshold for navigation trigger (30px instead of 50px)
+                if (gestureState.dx > 30) {
                     // Swipe Right -> Go Back
                     handlePrev();
-                } else if (gestureState.dx < -50) {
+                } else if (gestureState.dx < -30) {
                     // Swipe Left -> Go Forward
                     handleNext();
                 }
@@ -207,11 +328,12 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 34,
-        fontWeight: '300',
+        fontWeight: '700', // Changed from 300 to match CommunityScreen header
         color: COLORS.primary,
         marginBottom: 16,
         textAlign: 'center',
         fontFamily: Platform.OS === 'ios' ? 'Optima' : 'serif',
+        letterSpacing: -0.5, // Matches CommunityScreen header look
     },
     description: {
         fontSize: 17,

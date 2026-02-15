@@ -1,5 +1,12 @@
 import { registerRootComponent } from 'expo';
-import { LogBox } from 'react-native';
+import { LogBox, Text, TextInput } from 'react-native';
+
+// Disable infinite font scaling
+if (Text.defaultProps == null) Text.defaultProps = {};
+Text.defaultProps.maxFontSizeMultiplier = 1.3;
+
+if (TextInput.defaultProps == null) TextInput.defaultProps = {};
+TextInput.defaultProps.maxFontSizeMultiplier = 1.3;
 import TrackPlayer from 'react-native-track-player';
 
 // Suppress known warnings

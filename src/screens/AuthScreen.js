@@ -1,3 +1,6 @@
+import * as AppleAuthentication from 'expo-apple-authentication';
+import * as Crypto from 'expo-crypto';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArrowLeft, ArrowRight, KeyRound, Lock, Mail, User } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
@@ -24,12 +27,13 @@ import { COLORS } from '../utils/theme';
 
 const AuthScreen = () => {
     const { t } = useTranslation();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [fullName, setFullName] = useState('');
     const [loading, setLoading] = useState(false);
+    const [googleLoading, setGoogleLoading] = useState(false);
 
     // OTP State
     const [showOtpInput, setShowOtpInput] = useState(false);
@@ -146,6 +150,108 @@ const AuthScreen = () => {
         }
     };
 
+    const handleGoogleSignIn = async () => {
+        setGoogleLoading(true);
+        try {
+            await GoogleSignin.hasPlayServices();
+            const userInfo = await GoogleSignin.signIn();
+
+            if (userInfo.data?.idToken) {
+                const { data, error } = await supabase.auth.signInWithIdToken({
+                    provider: 'google',
+                    token: userInfo.data.idToken,
+                });
+
+                if (error) throw error;
+
+                // Referral link check
+                if (data.user) {
+                    const pendingCode = await getReferralCode();
+                    if (pendingCode) {
+                        await linkUserToReferral(data.user.id, pendingCode);
+                    }
+                }
+            } else {
+                throw new Error('No ID Token found');
+            }
+        } catch (error) {
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                // user cancelled the login flow
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+                // operation (e.g. sign in) is in progress already
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+                // play services not available or outdated
+                Alert.alert(t('error'), t('auth.google_play_unavailable'));
+            } else {
+                // Ignore 'No ID Token found' error as it usually means cancellation
+                if (error.message === 'No ID Token found') return;
+
+                // some other error happened
+                Alert.alert(t('error'), error.message);
+            }
+        } finally {
+            setGoogleLoading(false);
+        }
+    };
+
+    const handleAppleSignIn = async () => {
+        try {
+            // Generate a random nonce
+            const rawNonce = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
+
+            // Hash the nonce
+            const hashedNonce = await Crypto.digestStringAsync(
+                Crypto.CryptoDigestAlgorithm.SHA256,
+                rawNonce
+            );
+
+            const credential = await AppleAuthentication.signInAsync({
+                requestedScopes: [
+                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                ],
+                nonce: hashedNonce,
+            });
+
+            if (credential.identityToken) {
+                const { data, error } = await supabase.auth.signInWithIdToken({
+                    provider: 'apple',
+                    token: credential.identityToken,
+                    nonce: rawNonce,
+                });
+
+                if (error) throw error;
+
+                if (credential.fullName && data.user) {
+                    const name = [credential.fullName.givenName, credential.fullName.familyName]
+                        .filter(Boolean)
+                        .join(' ');
+
+                    if (name) {
+                        await supabase.auth.updateUser({
+                            data: { full_name: name }
+                        });
+                    }
+                }
+
+                if (data.user) {
+                    const pendingCode = await getReferralCode();
+                    if (pendingCode) {
+                        await linkUserToReferral(data.user.id, pendingCode);
+                    }
+                }
+            } else {
+                throw new Error('No Identity Token found');
+            }
+        } catch (e) {
+            if (e.code === 'ERR_REQUEST_CANCELED') {
+                // handle that the user canceled the sign-in flow
+            } else {
+                Alert.alert(t('error'), e.message);
+            }
+        }
+    };
+
     if (showOtpInput) {
         return (
             <RamadanBackground>
@@ -229,8 +335,8 @@ const AuthScreen = () => {
                 <ScrollView contentContainerStyle={styles.scrollContent}>
                     <View style={styles.header}>
                         <Image
-                            source={ramadanModeEnabled ? require('../../assets/images/ramadan-icon.png') : require('../../assets/images/icon.png')}
-                            style={[styles.logo, { borderRadius: 24 }]}
+                            source={require('../../assets/images/onboardslogo.png')}
+                            style={[styles.logo, { borderRadius: 0 }]} // Removed borderRadius as requested logo might not need it, or user can adjust.
                             resizeMode="contain"
                         />
                         <Text style={styles.title}>
@@ -310,6 +416,45 @@ const AuthScreen = () => {
                                 </>
                             )}
                         </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={[styles.button, styles.googleButton]}
+                            onPress={handleGoogleSignIn}
+                            disabled={googleLoading}
+                        >
+                            {googleLoading ? (
+                                <ActivityIndicator color={COLORS.primary} />
+                            ) : (
+                                <>
+                                    <Image
+                                        source={require('../../assets/images/google-icon.png')}
+                                        style={styles.googleIcon}
+                                        resizeMode="contain"
+                                    />
+                                    <Text style={styles.googleButtonText}>
+                                        {t('auth.google_login')}
+                                    </Text>
+                                </>
+                            )}
+                        </TouchableOpacity>
+
+                        {Platform.OS === 'ios' && (
+                            <View style={styles.appleButtonContainer}>
+                                <TouchableOpacity
+                                    style={[styles.button, styles.appleButton, { marginTop: 0, backgroundColor: '#FFFFFF' }]}
+                                    onPress={handleAppleSignIn}
+                                >
+                                    <Image
+                                        source={require('../../assets/images/apple-logo-final.png')}
+                                        style={styles.googleIcon}
+                                        resizeMode="contain"
+                                    />
+                                    <Text style={styles.appleButtonText}>
+                                        {t('auth.apple_login')}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
                     </View>
 
                     <TouchableOpacity
@@ -345,17 +490,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     logo: {
-        width: 100,
-        height: 100,
+        width: 160,
+        height: 160,
         marginBottom: 20,
     },
     title: {
-        fontSize: 36,
-        fontWeight: '300',
+        fontSize: 34,
+        fontWeight: '700',
         color: COLORS.primary,
-        letterSpacing: -1,
+        letterSpacing: -0.5,
         fontFamily: Platform.OS === 'ios' ? 'Optima' : 'serif',
         marginTop: 16,
+        textAlign: 'center',
     },
     subtitle: {
         fontSize: 16,
@@ -429,11 +575,42 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 8,
         elevation: 4,
+        position: 'relative', // For absolute positioning of icon
     },
     buttonText: {
         color: '#FFFFFF',
         fontSize: 18,
         fontWeight: 'bold',
+    },
+    googleButton: {
+        backgroundColor: '#FFFFFF',
+        marginTop: 15,
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.1)',
+        shadowColor: '#000',
+    },
+    googleIcon: {
+        width: 24,
+        height: 24,
+        position: 'absolute', // Absolute positioning
+        left: 24, // Fixed distance from left
+    },
+    googleButtonText: {
+        color: '#444',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    appleButton: {
+        backgroundColor: '#FFFFFF',
+        marginTop: 15,
+        borderWidth: 1,
+        borderColor: '#000000',
+        shadowColor: '#000',
+    },
+    appleButtonText: {
+        color: '#000000',
+        fontSize: 16,
+        fontWeight: '600',
     },
     resendButton: {
         marginTop: 20,
@@ -452,6 +629,19 @@ const styles = StyleSheet.create({
         color: COLORS.primary,
         fontSize: 15,
         fontWeight: '600',
+    },
+    appleButtonContainer: {
+        marginTop: 15,
+        width: '100%',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    appleButton: {
+        width: '100%',
+        height: 52,
     },
 });
 

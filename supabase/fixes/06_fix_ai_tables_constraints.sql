@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Fix dream_interpretations user_id constraint
+-- Islamvy App - Fix dream_interpretations user_id constraint
 -- Allows Edge Function to create records even if user profile doesn't exist
 -- ============================================
 

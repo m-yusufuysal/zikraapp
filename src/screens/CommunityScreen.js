@@ -1,46 +1,69 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { FlashList } from "@shopify/flash-list";
+import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
-import { ArrowLeft, Bell, HeartHandshake, Lock, Plus, User } from 'lucide-react-native';
+import { Bell, HeartHandshake, Lock, Plus, ShieldCheck, Trophy, User, X } from 'lucide-react-native';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     ActivityIndicator,
     Alert,
     Animated,
-    FlatList,
+    DeviceEventEmitter,
     Keyboard,
     KeyboardAvoidingView,
     Modal,
     PanResponder,
     Platform,
+    RefreshControl,
     ScrollView,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    View
+    View,
+    Image
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CommunityPostCard from '../components/CommunityPostCard';
 import RamadanBackground from '../components/RamadanBackground';
 import { useNotifications } from '../contexts/NotificationContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { createCommunityHatim, createCommunityPost, getCommunityPosts, getHatimGroups, interactWithPost, reportPost, translateText } from '../services/CommunityService';
-import { moderateContent } from '../services/ModerationService';
+import { useAudio } from '../contexts/AudioContext';
+import { useThrottledHaptic } from '../hooks/useThrottledHaptic';
+import { createCommunityHatim, createCommunityPost, getCommunityPosts, getHatimGroups, getWeeklyLeaderboard, interactWithPost, reportPost, translateText } from '../services/CommunityService';
+
+import { moderateContent, moderateTextAI } from '../services/ModerationService';
 import { supabase } from '../services/supabase';
 import { getLocationCache } from '../utils/storage';
 import { COLORS } from '../utils/theme';
 
+
 const CommunityScreen = ({ navigation, route }) => {
     const { t, i18n } = useTranslation();
     const insets = useSafeAreaInsets();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
+
+    // Audio Context for MiniPlayer awareness
+    const { isPlaying, currentAyah, isLoading } = useAudio();
+    const { position } = require('react-native-track-player').useProgress(1000); // Poll less frequently for UI check
+
+    // Determine if MiniPlayer is visible
+    const isPlayerVisible = !!currentAyah && (isPlaying || isLoading || position > 0);
+
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
+
+    // Pagination State
+    const [lastCreatedAt, setLastCreatedAt] = useState(null);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showEulaModal, setShowEulaModal] = useState(false);
+    const [hasAcceptedEula, setHasAcceptedEula] = useState(false);
 
     // Create form state
     const [postType, setPostType] = useState('dua');
@@ -53,17 +76,53 @@ const CommunityScreen = ({ navigation, route }) => {
     const [creating, setCreating] = useState(false);
     const [isPremium, setIsPremium] = useState(false);
     const [userCity, setUserCity] = useState(null);
-    const [showName, setShowName] = useState(false);
+    const [showName, setShowName] = useState(true);
 
     const [interactionHistory, setInteractionHistory] = useState([]);
     const [warningCount, setWarningCount] = useState(0);
     const [bannedUntil, setBannedUntil] = useState(null);
 
-    // Pledge State
-    const [showPledgeModal, setShowPledgeModal] = useState(false);
-    const [pledgeAmount, setPledgeAmount] = useState('100');
-    const [activePledgePostId, setActivePledgePostId] = useState(null);
-    const [pledging, setPledging] = useState(false);
+    // Leaderboard State
+    const [leaderboardData, setLeaderboardData] = useState([]);
+    const [leaderboardLoading, setLeaderboardLoading] = useState(false);
+
+    // Dhikr Support (Mini Zikirmatik) State
+    const [showSupportModal, setShowSupportModal] = useState(false);
+    const [supportCount, setSupportCount] = useState(0);
+    const [activeSupportPostId, setActiveSupportPostId] = useState(null);
+    const [submittingSupport, setSubmittingSupport] = useState(false);
+    const [interactedPosts, setInteractedPosts] = useState(new Set());
+    const [currentUserId, setCurrentUserId] = useState(null);
+
+    // Support Modal Swipe State
+    const panYSupport = useRef(new Animated.Value(0)).current;
+    const resetPanSupport = () => Animated.spring(panYSupport, { toValue: 0, useNativeDriver: true }).start();
+    const closeSupportModal = () => {
+        Animated.timing(panYSupport, { toValue: 1000, duration: 300, useNativeDriver: true }).start(() => {
+            setShowSupportModal(false);
+            panYSupport.setValue(0);
+        });
+    };
+
+    const panResponderSupport = PanResponder.create({
+        onStartShouldSetPanResponder: () => false,
+        onMoveShouldSetPanResponder: (_, gestureState) => {
+            // Recognize a downward swipe (dy > 10)
+            return Math.abs(gestureState.dy) > 10 && gestureState.dy > 0;
+        },
+        onPanResponderMove: (_, gestureState) => {
+            if (gestureState.dy > 0) panYSupport.setValue(gestureState.dy);
+        },
+        onPanResponderRelease: (_, gestureState) => {
+            if (gestureState.dy > 100) closeSupportModal();
+            else resetPanSupport();
+        },
+        // Important: allow touches to pass to children if it's not a swipe
+        onPanResponderTerminationRequest: () => true,
+    });
+
+    const triggerHaptic = useThrottledHaptic();
+
 
     const flatListRef = useRef(null);
 
@@ -89,21 +148,47 @@ const CommunityScreen = ({ navigation, route }) => {
     });
 
     const { unreadCount, clearUnreadCount } = useNotifications();
+    const [refreshing, setRefreshing] = useState(false);
 
     useFocusEffect(
         useCallback(() => {
             checkPremium();
+            loadEulaStatus();
             loadBanStatus();
-            loadPosts();
-        }, [filter])
+            supabase.auth.getUser().then(({ data: { user } }) => {
+                if (user) {
+                    setCurrentUserId(user.id);
+                    const { markAllNotificationsAsRead } = require('../services/CommunityNotificationService');
+                    markAllNotificationsAsRead(user.id).then(() => {
+                        clearUnreadCount();
+                    });
+                }
+            });
+            if (filter === 'leaderboard') {
+                loadLeaderboard();
+            } else {
+                loadPosts(true);
+            }
+        }, [filter, i18n.language])
     );
 
+    // Explicit Tab Press Listener for Refresh & Scroll to Top
     useEffect(() => {
-        loadPosts();
+        const unsubscribe = navigation.addListener('tabPress', (e) => {
+            if (navigation.isFocused()) {
+                // If already focused, scroll to top and refresh
+                flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+                loadPosts(true);
+            }
+        });
+        return unsubscribe;
+    }, [navigation, filter]);
+
+    useEffect(() => {
         detectCity();
     }, [filter]);
 
-    // Highlight Logic
+    // Highlight Logic and Event Listener
     useEffect(() => {
         if (route.params?.highlightPostId && posts.length > 0) {
             const index = posts.findIndex(p => p.id === route.params.highlightPostId);
@@ -113,7 +198,78 @@ const CommunityScreen = ({ navigation, route }) => {
                 }, 600);
             }
         }
-    }, [route.params?.highlightPostId, posts]);
+
+        // Listen for updates from Detail Screen
+        const subscription = DeviceEventEmitter.addListener('communityPostUpdate', ({ postId, increment }) => {
+            setPosts(prev => prev.map(p =>
+                String(p.id) === String(postId)
+                    ? { ...p, current_count: (parseInt(p.current_count) || 0) + increment }
+                    : p
+            ));
+        });
+
+        return () => {
+            subscription.remove();
+        };
+    }, [route.params?.highlightPostId]);
+
+    useEffect(() => {
+        const subscription = DeviceEventEmitter.addListener('refreshCommunity', () => {
+            if (flatListRef.current) {
+                flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+            }
+            loadPosts(true);
+        });
+        return () => subscription.remove();
+    }, []);
+
+    // Realtime Subscription
+    useEffect(() => {
+        const channel = supabase.channel('public:community_posts')
+            .on(
+                'postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'community_posts' },
+                (payload) => {
+                    const newPost = payload.new;
+                    // Only add if it matches current filter or 'all'
+                    // For 'hatim', we might need separate logic, but for general posts:
+                    if (filter === 'all' || filter === newPost.type) {
+                        // Optimistically normalize the post structure if needed (e.g. user info might be missing but we can add placeholders)
+                        const formattedPost = {
+                            ...newPost,
+                            // If we don't have join profile data yet, we can use defaults or fetch it.
+                            // For instant feel, we use what we have.
+                            userName: t('community.someone'), // Placeholder until refresh
+                            user_id: newPost.created_by || newPost.user_id, // ensure ID is set
+                            avatar_url: null
+                        };
+
+                        // Check if we already added it (e.g. via our own optmistic create)
+                        setPosts(prev => {
+                            if (prev.find(p => p.id === newPost.id)) return prev;
+                            return [formattedPost, ...prev];
+                        });
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [filter]);
+
+    const loadLeaderboard = async () => {
+        setLeaderboardLoading(true);
+        try {
+            const data = await getWeeklyLeaderboard(20);
+            setLeaderboardData(data);
+        } catch (e) {
+            console.error('loadLeaderboard Error:', e);
+        } finally {
+            setLeaderboardLoading(false);
+        }
+    };
 
     const detectCity = async () => {
         try {
@@ -144,7 +300,7 @@ const CommunityScreen = ({ navigation, route }) => {
                     const { data: { user } } = await supabase.auth.getUser();
                     if (user) {
                         supabase.from('profiles').update({ location: rawCity }).eq('id', user.id).then(({ error }) => {
-                            if (error) console.log('Location update failed:', error.message);
+                            if (error) if (__DEV__) console.log('Location update failed:', error.message);
                         });
                     }
                 }
@@ -171,35 +327,77 @@ const CommunityScreen = ({ navigation, route }) => {
         setIsPremium(premium === 'true');
     };
 
-    const loadPosts = async () => {
-        setLoading(true);
+    const loadEulaStatus = async () => {
+        const accepted = await AsyncStorage.getItem('eula_accepted');
+        setHasAcceptedEula(accepted === 'true');
+    };
+
+    const handleAcceptEula = async () => {
+        await AsyncStorage.setItem('eula_accepted', 'true');
+        setHasAcceptedEula(true);
+        setShowEulaModal(false);
+        setShowCreateModal(true);
+    };
+
+    const loadPosts = async (isRefresh = false, isLoadMore = false, isSilent = false) => {
+        if (!isRefresh && !isLoadMore && loading) return;
+        if (isLoadMore && (!hasMore || loadingMore)) return;
+
+        if (isRefresh) {
+            if (!isSilent) setLoading(true);
+            setLastCreatedAt(null);
+            setHasMore(true);
+        } else if (isLoadMore) {
+            setLoadingMore(true);
+        }
+
         try {
+            const cursor = isRefresh ? null : lastCreatedAt;
+            const limit = 15;
+
+            let newPosts = [];
             if (filter === 'hatim') {
-                const hatims = await getHatimGroups();
-                setPosts(hatims.map(h => ({ ...h, type: 'hatim' })));
+                newPosts = await getHatimGroups(cursor, limit);
+                newPosts = newPosts.map(h => ({ ...h, type: 'hatim', user_id: h.created_by }));
             } else if (filter === 'all') {
                 const [postsData, hatimsData] = await Promise.all([
-                    getCommunityPosts('all'),
-                    getHatimGroups()
+                    getCommunityPosts('all', cursor, limit),
+                    getHatimGroups(cursor, limit)
                 ]);
                 const combined = [
                     ...postsData,
                     ...hatimsData.map(h => ({
                         ...h,
                         type: 'hatim',
-                        userName: t('community.hatim_group'),
-                        content: h.description
+                        content: h.description,
+                        user_id: h.created_by
                     }))
                 ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                setPosts(combined);
+                newPosts = combined;
             } else {
-                const data = await getCommunityPosts(filter);
-                setPosts(data);
+                newPosts = await getCommunityPosts(filter, cursor, limit);
             }
+
+            if (isRefresh) {
+                setPosts(newPosts);
+            } else {
+                setPosts(prev => [...prev, ...newPosts]);
+            }
+
+            if (newPosts.length > 0) {
+                setLastCreatedAt(newPosts[newPosts.length - 1].created_at);
+            }
+
+            if (newPosts.length < limit) {
+                setHasMore(false);
+            }
+
         } catch (e) {
             console.error('loadPosts Error:', e);
+        } finally {
+            setLoading(false);
+            setLoadingMore(false);
         }
-        setLoading(false);
     };
 
     const handleInteract = async (postId) => {
@@ -233,51 +431,70 @@ const CommunityScreen = ({ navigation, route }) => {
 
         const post = posts.find(p => p.id === postId);
 
-        // If it's a dhikr with a target, show the pledge modal
+        // If it's a dhikr with a target, show the mini zikirmatik modal
         if (post?.type === 'dhikr' && post.target_count > 0) {
             setInteractionHistory(prev => [...prev.filter(time => now - time < 5000), now]);
-            setActivePledgePostId(postId);
-            setPledgeAmount('100');
-            setShowPledgeModal(true);
+            setActiveSupportPostId(postId);
+            setSupportCount(0);
+            setShowSupportModal(true);
             return;
         }
 
         // Otherwise proceed with standard +1 interaction
+        if (interactedPosts.has(postId)) return;
+
         setInteractionHistory(prev => [...prev.filter(time => now - time < 5000), now]);
         const interactionType = post?.type === "dhikr" ? "prayed" : "amen";
         const success = await interactWithPost(postId, user.id, interactionType);
         if (success) {
-            setPosts(prev => prev.map(p => p.id === postId ? { ...p, current_count: p.current_count + 1 } : p));
+            setInteractedPosts(prev => new Set(prev).add(postId));
+            setPosts(prev => prev.map(p => p.id === postId ? { ...p, current_count: (p.current_count || 0) + 1 } : p));
+
+            // Smart Review Trigger - First Amen/Interaction
+            import('../services/StoreReviewService').then(module => {
+                module.default.checkAmenReview();
+            });
         }
     };
 
-    const handlePledge = async () => {
-        if (pledging) return;
-        const amount = parseInt(pledgeAmount) || 0;
-        if (amount <= 0) {
-            Alert.alert(t('error'), t('dhikr.select_msg'));
+    const handleSupportIncrement = () => {
+        triggerHaptic();
+        setSupportCount(prev => prev + 1);
+    };
+
+    const handleSupportSubmit = async () => {
+        if (submittingSupport) return;
+        if (supportCount <= 0) {
+            setShowSupportModal(false);
             return;
         }
 
-        setPledging(true);
+        setSubmittingSupport(true);
         const { data: { user } } = await supabase.auth.getUser();
 
         if (!user) {
             Alert.alert(t('error'), t('auth.required'));
-            setPledging(false);
+            setSubmittingSupport(false);
             return;
         }
 
-        const success = await interactWithPost(activePledgePostId, user.id, 'prayed', amount);
+        const success = await interactWithPost(activeSupportPostId, user.id, 'prayed', supportCount);
 
         if (success) {
-            setPosts(prev => prev.map(p => p.id === activePledgePostId ? { ...p, current_count: (p.current_count || 0) + amount } : p));
-            setShowPledgeModal(false);
-            Alert.alert(t('thanks'), t('community.juz_taken_success'));
+            setPosts(prev => prev.map(p => p.id === activeSupportPostId ? { ...p, current_count: (p.current_count || 0) + supportCount } : p));
+            setShowSupportModal(false);
+
+            // Show success feedback
+            setTimeout(() => {
+                Alert.alert(
+                    t('community.support_success_title'),
+                    t('community.support_success_msg')
+                );
+            }, 600);
         } else {
             Alert.alert(t('error'), t('community.report_error'));
         }
-        setPledging(false);
+        setSubmittingSupport(false);
     };
 
     const handleCreate = async () => {
@@ -290,25 +507,39 @@ const CommunityScreen = ({ navigation, route }) => {
             return;
         }
 
+        // 1. Quick Client-side Safety Checks (IBAN, Phone, Email, etc.)
         const titleMod = moderateContent(newTitle);
         if (!titleMod.isSafe) {
-            Alert.alert(t('community.warning'), `${t('community.input_title')}: ${titleMod.reason}`);
+            Alert.alert(t('community.warning'), t(titleMod.reason), [{ text: t('common.ok') }]);
             return;
         }
 
         const contentMod = moderateContent(newContent);
         if (!contentMod.isSafe) {
-            Alert.alert(t('community.warning'), `${t('community.input_desc')}: ${contentMod.reason}`);
+            Alert.alert(t('community.warning'), t(contentMod.reason), [{ text: t('common.ok') }]);
             return;
         }
 
         setCreating(true);
+
         try {
+            // 2. Comprehensive AI Moderation (Context, Meaning, Tone, Islamic Suitability)
+            const combinedText = `Title: ${newTitle}\nContent: ${newContent}`;
+            const aiMod = await moderateTextAI(combinedText, postType, i18n.language);
+
+            if (!aiMod.isSafe) {
+                setCreating(false);
+                const reasonStr = aiMod.reason ? (aiMod.reason.startsWith('community.') ? t(aiMod.reason) : aiMod.reason) : t('community.moderation_failed');
+                Alert.alert(t('community.warning'), reasonStr, [{ text: t('common.ok') }]);
+                return;
+            }
+
             const { data: { user } } = await supabase.auth.getUser();
             if (postType === 'hatim') {
-                await createCommunityHatim(newTitle, newContent, user.id, selectedSlots, i18n.language, userCity, showName);
+                await createCommunityHatim(newTitle, newContent, user.id, selectedSlots, i18n.language, userCity, true);
+                loadPosts(true, false, true); // Silent refresh for Hatim for now
             } else {
-                await createCommunityPost({
+                const newPostData = await createCommunityPost({
                     user_id: user.id,
                     title: newTitle,
                     content: newContent,
@@ -317,13 +548,26 @@ const CommunityScreen = ({ navigation, route }) => {
                     current_count: postType === 'dhikr' ? parseInt(myInitialCount) || 0 : 0,
                     language_code: (i18n.language || 'tr').split('-')[0],
                     city: userCity,
-                    show_full_name: showName
+                    show_full_name: true
                 });
+
+                // Optimistic Update
+                const optimisticPost = {
+                    ...newPostData,
+                    avatar_url: null, // or fetch if available locally
+                    city: userCity,
+                    userName: user.user_metadata?.full_name || t('community.me') || 'Ben',
+                    created_at: new Date().toISOString()
+                };
+
+                setPosts(prev => [optimisticPost, ...prev]);
+
+                // Silent background refresh to ensure consistency
+                loadPosts(true, false, true);
             }
 
             closeBottomSheet();
             resetForm();
-            loadPosts();
 
             // Prompt to share externally
             setTimeout(() => {
@@ -358,6 +602,7 @@ const CommunityScreen = ({ navigation, route }) => {
             t('community.report_question'),
             [
                 { text: t('cancel'), style: 'cancel' },
+                { text: t('community.block_user'), style: 'destructive', onPress: () => handleBlockUser(postId) },
                 { text: t('community.report_reason_inappropriate'), onPress: () => submitReport(postId, t('community.report_reason_inappropriate')) },
                 { text: t('community.report_reason_spam'), onPress: () => submitReport(postId, t('community.report_reason_spam')) },
                 { text: t('community.report_reason_toxic'), onPress: () => submitReport(postId, t('community.report_reason_toxic')) }
@@ -375,6 +620,36 @@ const CommunityScreen = ({ navigation, route }) => {
         }
     };
 
+    const handleBlockUser = async (postId) => {
+        Alert.alert(
+            t('community.block_confirm_title'),
+            t('community.block_confirm_msg'),
+            [
+                { text: t('cancel'), style: 'cancel' },
+                {
+                    text: t('community.block_user'),
+                    style: 'destructive',
+                    onPress: async () => {
+                        const post = posts.find(p => p.id === postId);
+                        if (!post) return;
+
+                        const userIdToBlock = post.user_id || post.created_by;
+                        if (!userIdToBlock) return;
+
+                        const success = await blockUser(userIdToBlock);
+                        if (success) {
+                            // Immediately remove all posts from this user from the UI
+                            setPosts(prev => prev.filter(p => (p.user_id || p.created_by) !== userIdToBlock));
+                            Alert.alert(t('success'), t('community.user_blocked'));
+                        } else {
+                            Alert.alert(t('error'), t('community.report_error'));
+                        }
+                    }
+                }
+            ]
+        );
+    };
+
     const resetForm = () => {
         setNewTitle('');
         setNewContent('');
@@ -382,7 +657,7 @@ const CommunityScreen = ({ navigation, route }) => {
         setDhikrTarget('');
         setMyInitialCount('');
         setSelectedSlots([]);
-        setShowName(false);
+        setShowName(true);
     };
 
     const toggleSlot = (num) => {
@@ -390,23 +665,40 @@ const CommunityScreen = ({ navigation, route }) => {
     };
 
     const handleTranslate = async (post) => {
-        if (post.isTranslated) {
+        // If already translated and showing, just toggle visibility
+        if (post.isTranslated && post.translatedLanguage === i18n.language) {
             setPosts(prev => prev.map(p => p.id === post.id ? { ...p, isShowingTranslated: !p.isShowingTranslated } : p));
             return;
         }
-        const targetLang = (i18n.language || 'en').split('-')[0];
-        const [tTitle, tContent] = await Promise.all([
-            translateText(post.title, targetLang, post.language_code),
-            translateText(post.content || post.description, targetLang, post.language_code)
-        ]);
-        if ((tTitle && tTitle !== post.title) || (tContent && tContent !== (post.content || post.description))) {
-            setPosts(prev => prev.map(p => p.id === post.id ? {
-                ...p,
-                translatedTitle: tTitle || post.title,
-                translatedContent: tContent || (post.content || post.description),
-                isTranslated: true,
-                isShowingTranslated: true
-            } : p));
+
+        // Force fresh translation if language changed or first time
+        const currentLang = i18n.language || 'en';
+        const targetLang = currentLang.split('-')[0];
+
+        try {
+            const [tTitle, tContent, tCity] = await Promise.all([
+                translateText(post.title, targetLang, post.language_code),
+                translateText(post.content || post.description, targetLang, post.language_code),
+                post.city ? translateText(post.city, targetLang, 'auto') : Promise.resolve(null)
+            ]);
+
+            if ((tTitle && tTitle !== post.title) || (tContent && tContent !== (post.content || post.description))) {
+                setPosts(prev => prev.map(p => p.id === post.id ? {
+                    ...p,
+                    translatedTitle: tTitle || post.title,
+                    translatedContent: tContent || (post.content || post.description),
+                    translatedCity: tCity || post.city,
+                    isTranslated: true,
+                    isShowingTranslated: true,
+                    translatedLanguage: currentLang // Store which language we translated to
+                } : p));
+            } else {
+                // If translation returned same text (or failed silently), just show original but mark as tried
+                Alert.alert(t('community.translate_error'), t('community.translate_same_language'));
+            }
+        } catch (error) {
+            console.error("Translation error:", error);
+            Alert.alert(t('error'), t('community.translate_failed'));
         }
     };
 
@@ -415,10 +707,8 @@ const CommunityScreen = ({ navigation, route }) => {
             <View style={[styles.container, { paddingTop: Math.max(0, insets.top - 15) }]}>
                 {/* Header */}
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
-                        <ArrowLeft size={24} color={COLORS.primary} />
-                    </TouchableOpacity>
-                    <Text style={[styles.title, ramadanModeEnabled && { color: '#FFD700' }]}>{t('community.title')}</Text>
+                    <View style={{ width: 44 }} />
+                    <Text style={[styles.title, { fontFamily: 'KaushanScript_400Regular', fontSize: 32, lineHeight: 55, paddingBottom: 15, paddingTop: 5, paddingHorizontal: 20 }, nightModeEnabled && { color: '#FFD700' }]}>Islamvy</Text>
                     <View style={styles.headerRight}>
                         <TouchableOpacity
                             onPress={() => navigation.navigate('CommunityNotifications')}
@@ -452,44 +742,171 @@ const CommunityScreen = ({ navigation, route }) => {
 
                 {/* Filter Tabs */}
                 <View style={styles.tabBar}>
-                    {['all', 'dua', 'dhikr', 'hatim'].map(tkey => (
+                    {['all', 'dua', 'dhikr', 'hatim', 'leaderboard'].map(tkey => (
                         <TouchableOpacity
                             key={tkey}
                             style={[styles.tab, filter === tkey && styles.activeTab]}
                             onPress={() => setFilter(tkey)}
                         >
-                            <Text style={[styles.tabText, filter === tkey && styles.activeTabText]}>
-                                {tkey === 'all' ? t('common.all') : t(`community.filter_${tkey}`)}
-                            </Text>
+                            {tkey === 'leaderboard' ? (
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 40 }}>
+                                    <Trophy size={20} color={filter === tkey ? '#FFF' : '#7f8c8d'} />
+                                </View>
+                            ) : (
+                                <Text style={[styles.tabText, filter === tkey && styles.activeTabText]}>
+                                    {tkey === 'all' ? t('common.all') : t(`community.filter_${tkey}`)}
+                                </Text>
+                            )}
                         </TouchableOpacity>
                     ))}
                 </View>
 
-                {loading ? (
+                {filter === 'leaderboard' ? (
+                    leaderboardLoading ? (
+                        <View style={styles.center}>
+                            <ActivityIndicator color={COLORS.primary} size="large" />
+                        </View>
+                    ) : (
+                        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 20, paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
+                            <View style={styles.leaderboardHeader}>
+                                <Text style={styles.leaderboardTitle}>{t('community.leaderboard_title') || 'Haftanın Yıldızları'}</Text>
+                                <Text style={styles.leaderboardSubtitle}>{t('community.this_week') || 'Bu hafta en çok paylaşım yapanlar'}</Text>
+                            </View>
+                            {leaderboardData.length === 0 ? (
+                                <View style={styles.emptyBox}>
+                                    <Trophy size={60} color="#DDD" />
+                                    <Text style={styles.emptyText}>{t('community.no_leaderboard') || 'Henüz veri yok'}</Text>
+                                </View>
+                            ) : (
+                                leaderboardData.map((user, index) => (
+                                    <View key={user.user_id || index} style={[
+                                        styles.leaderboardCard,
+                                        index === 0 && styles.leaderboardGold, // 1st Place Enhanced
+                                        index === 1 && styles.leaderboardSilver,
+                                        // index === 2 && styles.leaderboardBronze // 3rd Place Normalized (removed bronze style)
+                                    ]}>
+                                        <View style={styles.leaderboardRank}>
+                                            <Text style={[
+                                                styles.rankText,
+                                                index === 0 && { fontSize: 32, transform: [{ scale: 1.2 }] }, // Bigger for 1st
+                                                index === 1 && { fontSize: 22 }
+                                            ]}>
+                                                {index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`}
+                                            </Text>
+                                        </View>
+                                        <View style={styles.leaderboardInfo}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                                                {/* Avatar */}
+                                                <View style={[
+                                                    { borderRadius: 25, overflow: 'hidden', backgroundColor: '#f0f0f0', justifyContent: 'center', alignItems: 'center' },
+                                                    index === 0 && { borderWidth: 2, borderColor: '#FFD700', width: 54, height: 54 }, // Bigger border for 1st
+                                                    index !== 0 && { width: 40, height: 40 }
+                                                ]}>
+                                                    {user.avatar_url ? (
+                                                        <Image
+                                                            source={{ uri: user.avatar_url }}
+                                                            style={{ width: '100%', height: '100%', backgroundColor: '#f0f0f0' }}
+                                                        />
+                                                    ) : (
+                                                        <Text style={{
+                                                            fontSize: index === 0 ? 24 : 18,
+                                                            fontWeight: 'bold',
+                                                            color: '#555'
+                                                        }}>
+                                                            {(user.full_name && user.full_name.trim()) ? user.full_name.trim().charAt(0).toUpperCase() : '?'}
+                                                        </Text>
+                                                    )}
+                                                </View>
+
+                                                <View>
+                                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                                                        <Text style={[styles.leaderboardName, index === 0 && { fontSize: 18, color: '#d35400' }]}>
+                                                            {(user.full_name && user.full_name.trim()) ? user.full_name : '...'}
+                                                        </Text>
+                                                        <Text style={{ fontSize: 14 }}>{user.badge_emoji}</Text>
+                                                    </View>
+
+                                                    {/* Always show location if available, enhanced for 1st place */}
+                                                    {(user.city && user.city.trim()) ? (
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+                                                            <Text style={{ fontSize: 10 }}>📍</Text>
+                                                            <Text style={[styles.leaderboardCity, index === 0 && { color: '#e67e22', fontWeight: 'bold' }]}>{user.city}</Text>
+                                                        </View>
+                                                    ) : null}
+                                                </View>
+                                            </View>
+                                        </View>
+
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(0,0,0,0.05)' }}>
+                                            {/* Amens */}
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(0,0,0,0.05)' }}>
+                                                {/* 1. Dhikrs (Zikir) */}
+                                                <View style={{ alignItems: 'center', flex: 1 }}>
+                                                    <Text style={{ fontSize: 14, fontWeight: 'bold', color: COLORS.accent }}>📿 {user.completed_dhikrs || 0}</Text>
+                                                    <Text style={{ fontSize: 10, color: '#666', marginTop: 2 }}>{t('community.completed_dhikrs_short') || 'Zikir'}</Text>
+                                                </View>
+
+                                                {/* 2. Amens (Dua) */}
+                                                <View style={{ alignItems: 'center', flex: 1, borderLeftWidth: 1, borderRightWidth: 1, borderColor: 'rgba(0,0,0,0.05)' }}>
+                                                    <Text style={{ fontSize: 14, fontWeight: 'bold', color: COLORS.primary }}>🤲 {user.total_amens || 0}</Text>
+                                                    <Text style={{ fontSize: 10, color: '#666', marginTop: 2 }}>{t('community.total_amens_short') || 'Dua (Amin)'}</Text>
+                                                </View>
+
+                                                {/* 3. Hatims */}
+                                                <View style={{ alignItems: 'center', flex: 1 }}>
+                                                    <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#8e44ad' }}>📖 {user.completed_hatims || 0}</Text>
+                                                    <Text style={{ fontSize: 10, color: '#666', marginTop: 2 }}>{t('community.completed_hatims_short') || 'Hatim'}</Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </View>
+                                ))
+                            )}
+                        </ScrollView>
+                    )
+                ) : loading ? (
                     <View style={styles.center}>
                         <ActivityIndicator color={COLORS.primary} size="large" />
                     </View>
                 ) : (
-                    <FlatList
+                    <FlashList
                         ref={flatListRef}
                         data={posts}
+                        onEndReached={() => loadPosts(false, true)}
+                        onEndReachedThreshold={0.5}
+                        estimatedItemSize={200}
+                        keyExtractor={(item, index) => item.id || index.toString()}
+                        ListFooterComponent={
+                            loadingMore ? (
+                                <ActivityIndicator size="small" color={COLORS.primary} style={{ marginVertical: 20 }} />
+                            ) : (
+                                <View style={{ height: 80 }} />
+                            )
+                        }
+                        refreshControl={
+                            <RefreshControl refreshing={loading} onRefresh={() => loadPosts(true)} tintColor={COLORS.primary} />
+                        }
                         renderItem={({ item }) => (
                             <View style={item.id === route.params?.highlightPostId ? styles.highlightedCard : null}>
                                 <CommunityPostCard
                                     item={item}
-                                    onPressHatim={(hatim) => navigation.navigate('HatimDetail', { hatimId: hatim.id, title: hatim.title, city: hatim.city })}
+                                    nightModeEnabled={nightModeEnabled}
+                                    onPressHatim={(hatim) => navigation.navigate('HatimDetail', {
+                                        hatimId: hatim.id,
+                                        title: hatim.title,
+                                        city: hatim.city,
+                                        userName: hatim.userName
+                                    })}
                                     onInteract={handleInteract}
                                     onReport={handleReport}
                                     onTranslate={handleTranslate}
+                                    isInteracted={interactedPosts.has(item.id)}
+                                    currentUserId={currentUserId}
                                 />
                             </View>
                         )}
-                        keyExtractor={item => item.id}
                         contentContainerStyle={styles.listContent}
                         showsVerticalScrollIndicator={false}
-                        onScrollToIndexFailed={(info) => {
-                            flatListRef.current?.scrollToOffset({ offset: info.averageItemLength * info.index, animated: true });
-                        }}
                         ListEmptyComponent={
                             <View style={styles.emptyBox}>
                                 <HeartHandshake size={60} color="#DDD" />
@@ -499,10 +916,21 @@ const CommunityScreen = ({ navigation, route }) => {
                     />
                 )}
 
-                {/* FAB */}
-                <TouchableOpacity style={styles.fab} onPress={() => setShowCreateModal(true)}>
-                    <Plus size={30} color="#FFF" />
-                </TouchableOpacity>
+                {/* FAB - Only show if NOT on Leaderboard */}
+                {filter !== 'leaderboard' && (
+                    <TouchableOpacity
+                        style={[styles.fab, isPlayerVisible && { bottom: 120 }]}
+                        onPress={() => {
+                            if (hasAcceptedEula) {
+                                setShowCreateModal(true);
+                            } else {
+                                setShowEulaModal(true);
+                            }
+                        }}
+                    >
+                        <Plus size={30} color="#FFF" />
+                    </TouchableOpacity>
+                )}
 
                 {/* Create Modal */}
                 <Modal visible={showCreateModal} animationType="fade" transparent>
@@ -510,34 +938,32 @@ const CommunityScreen = ({ navigation, route }) => {
                         <View style={styles.modalOverlay}>
                             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardAvoidingView}>
                                 <Animated.View
-                                    style={[styles.modalContent, { transform: [{ translateY: panY }] }, ramadanModeEnabled && { backgroundColor: '#1A1A1A' }]}
+                                    style={[styles.modalContent, { transform: [{ translateY: panY }] }, nightModeEnabled && { backgroundColor: '#1A1A1A' }]}
                                     {...panResponder.panHandlers}
                                 >
                                     <View style={styles.modalHandle} />
                                     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.modalScroll}>
-                                        <Text style={[styles.modalTitle, ramadanModeEnabled && { color: '#FFF' }]}>{t('community.create_title')}</Text>
+                                        <Text style={[styles.modalTitle, nightModeEnabled && { color: '#FFF' }]}>{t('community.create_title')}</Text>
 
-                                        {isPremium && (
-                                            <TouchableOpacity
-                                                style={styles.identityToggle}
-                                                onPress={() => setShowName(!showName)}
-                                                activeOpacity={0.8}
-                                            >
-                                                <Text style={[styles.identityText, ramadanModeEnabled && { color: '#CCC' }]}>{t('community.share_with_name')}</Text>
-                                                <View style={[styles.switchTrack, showName ? styles.switchTrackActive : styles.switchTrackInactive]}>
-                                                    <Animated.View style={[
-                                                        styles.switchThumb,
-                                                        { transform: [{ translateX: showName ? 18 : 0 }] }
-                                                    ]} />
-                                                </View>
-                                            </TouchableOpacity>
-                                        )}
+                                        {/* Identity Toggle Removed as per request */}
 
                                         <View style={styles.typeSelector}>
                                             {['dua', 'dhikr', 'hatim'].map(type => (
-                                                <TouchableOpacity key={type} style={[styles.typeBtn, postType === type && styles.activeTypeBtn]} onPress={() => setPostType(type)}>
+                                                <TouchableOpacity
+                                                    key={type}
+                                                    style={[
+                                                        styles.typeBtn,
+                                                        postType === type && styles.activeTypeBtn,
+                                                        nightModeEnabled && postType !== type && { backgroundColor: 'rgba(255, 255, 255, 0.08)', borderColor: 'rgba(255, 255, 255, 0.1)', borderWidth: 1 }
+                                                    ]}
+                                                    onPress={() => setPostType(type)}
+                                                >
                                                     <Text
-                                                        style={[styles.typeBtnText, postType === type && styles.activeTypeBtnText]}
+                                                        style={[
+                                                            styles.typeBtnText,
+                                                            postType === type && styles.activeTypeBtnText,
+                                                            nightModeEnabled && postType !== type && { color: 'rgba(255, 255, 255, 0.7)' }
+                                                        ]}
                                                         numberOfLines={1}
                                                         adjustsFontSizeToFit
                                                         minimumFontScale={0.7}
@@ -547,8 +973,31 @@ const CommunityScreen = ({ navigation, route }) => {
                                                 </TouchableOpacity>
                                             ))}
                                         </View>
-                                        <TextInput style={styles.input} placeholder={postType === 'hatim' ? t('community.input_hatim_title') : t('community.input_title')} value={newTitle} onChangeText={setNewTitle} placeholderTextColor="#999" />
-                                        <TextInput style={[styles.input, { height: 100, textAlignVertical: 'top' }]} placeholder={postType === 'hatim' ? t('community.input_hatim_desc') : t('community.input_desc')} value={newContent} onChangeText={setNewContent} multiline placeholderTextColor="#999" />
+                                        <TextInput
+                                            style={styles.input}
+                                            placeholder={
+                                                postType === 'hatim' ? t('community.input_hatim_title') :
+                                                    postType === 'dua' ? (t('community.input_title_dua') || "Başlık (Örn: Hastamıza Şifa)") :
+                                                        postType === 'dhikr' ? (t('community.input_title_dhikr') || "Zikir Adı (Örn: Ya Şafi)") :
+                                                            t('community.input_title')
+                                            }
+                                            value={newTitle}
+                                            onChangeText={setNewTitle}
+                                            placeholderTextColor="#999"
+                                        />
+                                        <TextInput
+                                            style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
+                                            placeholder={
+                                                postType === 'hatim' ? t('community.input_hatim_desc') :
+                                                    postType === 'dua' ? (t('community.input_desc_dua') || "Durumu anlatacak şekilde detaylı açıklama...") :
+                                                        postType === 'dhikr' ? (t('community.input_desc_dhikr') || "Zikir çekme niyetinizi yazın...") :
+                                                            t('community.input_desc')
+                                            }
+                                            value={newContent}
+                                            onChangeText={setNewContent}
+                                            multiline
+                                            placeholderTextColor="#999"
+                                        />
                                         {postType === 'dhikr' && (
                                             <View style={styles.rowInputs}>
                                                 <TextInput style={[styles.input, { flex: 1, marginRight: 10 }]} placeholder={t('community.input_target')} value={dhikrTarget} onChangeText={setDhikrTarget} keyboardType="numeric" placeholderTextColor="#999" />
@@ -576,7 +1025,7 @@ const CommunityScreen = ({ navigation, route }) => {
                                             </View>
                                         )}
                                     </ScrollView>
-                                    <View style={styles.modalFooter}>
+                                    <View style={[styles.modalFooter, nightModeEnabled && { backgroundColor: '#1A1A1A', borderTopColor: 'rgba(255,255,255,0.1)' }]}>
                                         <TouchableOpacity style={[styles.confirmBtn, !isPremium && { opacity: 0.5 }]} onPress={handleCreate} disabled={creating || !isPremium}>
                                             {creating ? <ActivityIndicator color="#FFF" /> : <Text style={styles.confirmBtnText}>{t('community.share')}</Text>}
                                         </TouchableOpacity>
@@ -587,47 +1036,118 @@ const CommunityScreen = ({ navigation, route }) => {
                     </TouchableWithoutFeedback>
                 </Modal>
 
-                {/* Pledge Modal */}
-                <Modal visible={showPledgeModal} animationType="fade" transparent>
-                    <TouchableWithoutFeedback onPress={() => setShowPledgeModal(false)}>
+                {/* Mini Zikirmatik Support Modal */}
+                <Modal visible={showSupportModal} animationType="fade" transparent>
+                    <TouchableWithoutFeedback onPress={() => setShowSupportModal(false)}>
                         <View style={styles.modalOverlay}>
-                            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardAvoidingView}>
-                                <View style={[styles.modalContent, { paddingBottom: Platform.OS === 'ios' ? 40 : 20 }, ramadanModeEnabled && { backgroundColor: '#1A1A1A' }]}>
-                                    <View style={styles.modalHandle} />
-                                    <Text style={[styles.modalTitle, ramadanModeEnabled && { color: '#FFF' }]}>{t('community.pledge_title')}</Text>
-                                    <Text style={[styles.sectionLabel, { textAlign: 'center', marginBottom: 20 }]}>{t('community.pledge_desc')}</Text>
-
-                                    <TextInput
-                                        style={styles.input}
-                                        placeholder={t('community.input_pledge')}
-                                        value={pledgeAmount}
-                                        onChangeText={setPledgeAmount}
-                                        keyboardType="numeric"
-                                        autoFocus
-                                        placeholderTextColor="#999"
+                            <TouchableWithoutFeedback onPress={() => {/* empty to prevent closing card when clicking ring area directly */ }}>
+                                <Animated.View
+                                    {...panResponderSupport.panHandlers}
+                                    style={[
+                                        styles.supportModalContent,
+                                        nightModeEnabled && { backgroundColor: '#1A1A1A' },
+                                        { transform: [{ translateY: panYSupport }] }
+                                    ]}
+                                >
+                                    {/* Close if clicked on empty background area inside card as requested */}
+                                    <TouchableOpacity
+                                        activeOpacity={1}
+                                        style={StyleSheet.absoluteFill}
+                                        onPress={() => setShowSupportModal(false)}
                                     />
 
-                                    <TouchableOpacity
-                                        style={[styles.confirmBtn, pledging && { opacity: 0.7 }]}
-                                        onPress={handlePledge}
-                                        disabled={pledging}
-                                    >
-                                        {pledging ? <ActivityIndicator color="#FFF" /> : <Text style={styles.confirmBtnText}>{t('community.confirm_pledge')}</Text>}
-                                    </TouchableOpacity>
+                                    <View style={styles.modalHandle} />
 
-                                    <TouchableOpacity
-                                        style={{ marginTop: 15, alignItems: 'center', padding: 10 }}
-                                        onPress={() => setShowPledgeModal(false)}
-                                    >
-                                        <Text style={{ color: '#999', fontWeight: '600' }}>{t('common.cancel')}</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </KeyboardAvoidingView>
+                                    <Text style={[styles.supportModalTitle, nightModeEnabled && { color: '#FFF' }]}>
+                                        {posts.find(p => p.id === activeSupportPostId)?.title || t('community.pledge_title')}
+                                    </Text>
+                                    <Text style={styles.supportModalSubtitle}>{t('community.pledge_desc')}</Text>
+
+                                    <View style={styles.miniRingContainer}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={handleSupportIncrement}
+                                            style={styles.miniRingButton}
+                                        >
+                                            <LinearGradient
+                                                colors={['#333', '#111']}
+                                                style={styles.miniRingBody}
+                                            >
+                                                <View style={styles.miniRingScreen}>
+                                                    <View style={styles.miniLcdContent}>
+                                                        <Text style={styles.miniLcdZeros}>
+                                                            {supportCount.toString().padStart(5, '0')}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+
+                                                <View style={styles.miniRingBtnOuter}>
+                                                    <LinearGradient
+                                                        colors={[COLORS.primary, '#1b5e20']}
+                                                        style={styles.miniRingBtnInner}
+                                                    />
+                                                </View>
+                                            </LinearGradient>
+                                        </TouchableOpacity>
+                                    </View>
+
+                                    <View style={styles.supportModalFooter}>
+                                        <TouchableOpacity
+                                            style={[styles.supportCancelBtn]}
+                                            onPress={() => setShowSupportModal(false)}
+                                        >
+                                            <Text style={styles.supportCancelText}>{t('common.cancel')}</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={[styles.supportConfirmBtn, submittingSupport && { opacity: 0.7 }]}
+                                            onPress={handleSupportSubmit}
+                                            disabled={submittingSupport}
+                                        >
+                                            <Text style={styles.supportConfirmText}>
+                                                {submittingSupport ? <ActivityIndicator color="#FFF" /> : t('common.done')}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </Animated.View>
+                            </TouchableWithoutFeedback>
                         </View>
                     </TouchableWithoutFeedback>
                 </Modal>
+
+                {/* EULA Modal */}
+                <Modal
+                    visible={showEulaModal}
+                    transparent
+                    animationType="fade"
+                    onRequestClose={() => setShowEulaModal(false)}
+                >
+                    <View style={styles.modalOverlay}>
+                        <View style={[styles.modalContent, { maxHeight: '80%', paddingBottom: insets.bottom + 20 }]}>
+                            <View style={styles.modalHeader}>
+                                <ShieldCheck size={24} color={COLORS.primary} style={{ marginRight: 10 }} />
+                                <Text style={styles.modalTitle}>{t('community.eula_title')}</Text>
+                                <TouchableOpacity onPress={() => setShowEulaModal(false)} style={styles.closeBtn}>
+                                    <X size={24} color="#999" />
+                                </TouchableOpacity>
+                            </View>
+
+                            <ScrollView style={styles.eulaScroll} showsVerticalScrollIndicator={false}>
+                                <Text style={styles.eulaText}>{t('community.eula_message')}</Text>
+                            </ScrollView>
+
+                            <TouchableOpacity
+                                style={styles.submitBtn}
+                                onPress={handleAcceptEula}
+                            >
+                                <Text style={styles.submitBtnText}>{t('community.eula_accept')}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
             </View>
-        </RamadanBackground>
+        </RamadanBackground >
+
     );
 };
 
@@ -641,7 +1161,7 @@ const styles = StyleSheet.create({
     badge: { position: 'absolute', top: 2, right: 2, backgroundColor: '#e74c3c', minWidth: 18, height: 18, borderRadius: 9, justifyContent: 'center', alignItems: 'center', borderWidth: 1.5, borderColor: '#000', paddingHorizontal: 2 },
     badgeText: { color: '#FFF', fontSize: 9, fontWeight: 'bold' },
     title: { fontSize: 22, fontWeight: '700', color: COLORS.primary, fontFamily: Platform.OS === 'ios' ? 'Optima' : 'serif' },
-    tabBar: { flexDirection: 'row', paddingHorizontal: 20, gap: 10, marginBottom: 10, marginTop: -28 },
+    tabBar: { flexDirection: 'row', paddingHorizontal: 16, gap: 8, marginBottom: 10, marginTop: -28, flexWrap: 'wrap' },
     tab: { paddingVertical: 8, paddingHorizontal: 16, borderRadius: 20, backgroundColor: 'rgba(0,0,0,0.05)' },
     activeTab: { backgroundColor: COLORS.primary },
     tabText: { fontSize: 13, color: '#7f8c8d', fontWeight: '600' },
@@ -673,7 +1193,7 @@ const styles = StyleSheet.create({
     miniReportText: { fontSize: 11, color: '#f1c40f', fontWeight: '800' },
     translateBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10, alignSelf: 'flex-start', padding: 4 },
     translateText: { fontSize: 12, color: COLORS.primary, fontWeight: '600' },
-    fab: { position: 'absolute', bottom: 30, right: 20, width: 60, height: 60, borderRadius: 30, backgroundColor: COLORS.primary, justifyContent: 'center', alignItems: 'center', elevation: 5, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 10 },
+    fab: { position: 'absolute', bottom: 110, right: 20, width: 60, height: 60, borderRadius: 30, backgroundColor: COLORS.primary, justifyContent: 'center', alignItems: 'center', elevation: 5, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 10 },
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
     keyboardAvoidingView: { width: '100%', justifyContent: 'flex-end' },
     modalContent: { backgroundColor: '#FFF', borderTopLeftRadius: 32, borderTopRightRadius: 32, paddingHorizontal: 24, paddingTop: 24, paddingBottom: 0, maxHeight: '96%', width: '100%', marginBottom: 0, overflow: 'hidden' },
@@ -681,10 +1201,10 @@ const styles = StyleSheet.create({
     modalHandle: { width: 40, height: 4, backgroundColor: '#DDD', borderRadius: 2, alignSelf: 'center', marginBottom: 20 },
     modalScroll: { paddingBottom: 20 },
     modalTitle: { fontSize: 24, fontWeight: 'bold', color: COLORS.primary, marginBottom: 20, textAlign: 'center' },
-    typeSelector: { flexDirection: 'row', gap: 10, marginBottom: 20 },
-    typeBtn: { flex: 1, paddingVertical: 12, borderRadius: 12, backgroundColor: '#F5F5F5', alignItems: 'center' },
+    typeSelector: { flexDirection: 'row', gap: 8, marginBottom: 20 },
+    typeBtn: { flex: 1, paddingVertical: 12, paddingHorizontal: 8, borderRadius: 12, backgroundColor: '#F5F5F5', alignItems: 'center', justifyContent: 'center' },
     activeTypeBtn: { backgroundColor: COLORS.primary },
-    typeBtnText: { fontSize: 13, color: '#999', fontWeight: 'bold' },
+    typeBtnText: { fontSize: 13, color: '#999', fontWeight: 'bold', textAlign: 'center' },
     activeTypeBtnText: { color: '#FFF' },
     input: { backgroundColor: '#F8F8F8', borderRadius: 16, padding: 16, fontSize: 16, marginBottom: 12, color: '#333' },
     rowInputs: { flexDirection: 'row', marginBottom: 12 },
@@ -704,6 +1224,17 @@ const styles = StyleSheet.create({
     emptyBox: { alignItems: 'center', marginTop: 100 },
     emptyText: { marginTop: 15, color: '#999', fontSize: 16 },
     highlightedCard: { borderWidth: 2, borderColor: COLORS.primary, borderRadius: 24, marginBottom: 16, padding: 2 },
+    eulaScroll: {
+        marginVertical: 15,
+        backgroundColor: 'rgba(0,0,0,0.02)',
+        padding: 15,
+        borderRadius: 12,
+    },
+    eulaText: {
+        fontSize: 14,
+        color: '#444',
+        lineHeight: 22,
+    },
     identityToggle: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -747,7 +1278,160 @@ const styles = StyleSheet.create({
     hatimHeader: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10 },
     hatimLabel: { fontSize: 11, fontWeight: '800', color: COLORS.primary, letterSpacing: 1 },
     hatimFooter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 15, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#F5F5F5' },
-    hatimStatus: { fontSize: 13, fontWeight: '700', color: COLORS.matteGreen }
+    hatimStatus: { fontSize: 13, fontWeight: '700', color: COLORS.matteGreen },
+
+    // Mini Zikirmatik Support Styles
+    supportModalContent: {
+        backgroundColor: '#FFF',
+        borderTopLeftRadius: 32,
+        borderTopRightRadius: 32,
+        paddingHorizontal: 24,
+        paddingTop: 24,
+        paddingBottom: Platform.OS === 'ios' ? 44 : 24,
+        width: '100%',
+    },
+    supportModalTitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: COLORS.primary,
+        textAlign: 'center',
+        marginBottom: 8,
+    },
+    supportModalSubtitle: {
+        fontSize: 14,
+        color: '#777',
+        textAlign: 'center',
+        marginBottom: 24,
+    },
+    miniRingContainer: {
+        alignItems: 'center',
+        marginBottom: 30,
+    },
+    miniRingButton: {
+        width: 140,
+        height: 140,
+        borderRadius: 70,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    miniRingBody: {
+        width: 140,
+        height: 140,
+        borderRadius: 70,
+        borderWidth: 2,
+        borderColor: '#333',
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.4,
+        shadowRadius: 12,
+        elevation: 10,
+    },
+    miniRingScreen: {
+        width: 90,
+        height: 40,
+        backgroundColor: '#111',
+        borderRadius: 8,
+        padding: 2,
+        marginBottom: 12,
+    },
+    miniLcdContent: {
+        flex: 1,
+        backgroundColor: '#b0bec5',
+        borderRadius: 6,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    miniLcdZeros: {
+        fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+        fontSize: 18,
+        color: '#263238',
+        fontWeight: 'bold',
+        letterSpacing: 2,
+    },
+    miniRingBtnOuter: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: '#111',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#333',
+    },
+    miniRingBtnInner: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+    },
+    supportModalFooter: {
+        flexDirection: 'row',
+        gap: 12,
+        marginTop: 10,
+    },
+    supportCancelBtn: {
+        flex: 1,
+        height: 56,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 16,
+        backgroundColor: '#F5F5F5',
+    },
+    supportCancelText: {
+        color: '#999',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    supportConfirmBtn: {
+        flex: 2,
+        height: 56,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 16,
+        backgroundColor: COLORS.primary,
+    },
+    supportConfirmText: {
+        color: '#FFF',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    submitBtn: {
+        height: 56,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 16,
+        backgroundColor: COLORS.primary,
+        width: '100%',
+        marginTop: 10,
+    },
+    submitBtnText: {
+        fontWeight: 'bold',
+        color: '#FFF',
+        fontSize: 16,
+    },
+
+    // Leaderboard Styles
+    leaderboardHeader: { alignItems: 'center', marginBottom: 20, paddingTop: 10 },
+    leaderboardTitle: { fontSize: 24, fontWeight: '800', color: '#2c3e50', letterSpacing: -0.5 },
+    leaderboardSubtitle: { fontSize: 13, color: '#7f8c8d', marginTop: 4 },
+    leaderboardCard: {
+        flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF',
+        borderRadius: 16, padding: 16, marginBottom: 10,
+        shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 6, elevation: 2,
+    },
+    leaderboardGold: { backgroundColor: '#FFF9E6', borderWidth: 1.5, borderColor: '#FFD700' },
+    leaderboardSilver: { backgroundColor: '#F8F9FA', borderWidth: 1.5, borderColor: '#C0C0C0' },
+    leaderboardBronze: { backgroundColor: '#FFF5EE', borderWidth: 1.5, borderColor: '#CD7F32' },
+    leaderboardRank: { width: 40, alignItems: 'center', justifyContent: 'center' },
+    rankText: { fontSize: 16, fontWeight: '700', color: '#7f8c8d' },
+    leaderboardInfo: { flex: 1, marginLeft: 12 },
+    leaderboardName: { fontSize: 15, fontWeight: '700', color: '#2c3e50' },
+    leaderboardCity: { fontSize: 12, color: '#95a5a6', marginTop: 2 },
+    leaderboardStats: { alignItems: 'center', paddingLeft: 12 },
+    leaderboardCount: { fontSize: 20, fontWeight: '800', color: COLORS.primary },
+    leaderboardLabel: { fontSize: 10, color: '#95a5a6', fontWeight: '600', textTransform: 'uppercase' },
+    leaderboardAmens: { fontSize: 12, color: '#f39c12', marginTop: 4, fontWeight: '600' },
 });
 
 export default CommunityScreen;

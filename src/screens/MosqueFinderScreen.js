@@ -14,7 +14,7 @@ const { width } = Dimensions.get('window');
 const MosqueFinderScreen = ({ navigation }) => {
     const { t } = useTranslation();
     const insets = useSafeAreaInsets();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
 
     const [location, setLocation] = useState(null);
     const [mosques, setMosques] = useState([]);
@@ -43,39 +43,75 @@ const MosqueFinderScreen = ({ navigation }) => {
     }, []);
 
     const fetchMosques = async (lat, lon) => {
-        try {
-            // Overpass API Query for Mosques within 5km radius
-            const radius = 5000;
-            const query = `
-                [out:json];
-                (
-                  node["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${lat},${lon});
-                  way["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${lat},${lon});
-                  relation["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${lat},${lon});
-                );
-                out center;
-            `;
+        const MAX_RETRIES = 3;
+        let attempt = 0;
+        let success = false;
 
-            const response = await fetch('https://overpass-api.de/api/interpreter', {
-                method: 'POST',
-                body: query
-            });
+        while (attempt < MAX_RETRIES && !success) {
+            try {
+                attempt++;
+                // Overpass API Query for Mosques within 5km radius with timeout
+                const radius = 5000;
+                const query = `
+                    [out:json][timeout:25];
+                    (
+                      node["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${lat},${lon});
+                      way["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${lat},${lon});
+                      relation["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${lat},${lon});
+                    );
+                    out center;
+                `;
 
-            const data = await response.json();
+                const response = await fetch('https://overpass-api.de/api/interpreter', {
+                    method: 'POST',
+                    body: query
+                });
 
-            const places = data.elements.map(el => ({
-                id: el.id,
-                name: el.tags?.name || (el.tags?.["name:en"] || "Mosque"),
-                lat: el.lat || el.center.lat,
-                lon: el.lon || el.center.lon
-            })).filter(p => p.lat && p.lon);
+                const text = await response.text();
 
-            setMosques(places);
-        } catch (error) {
-            console.error("Error fetching mosques:", error);
-            setErrorMsg(t('mosque_finder.error_load'));
-        } finally {
-            setLoading(false);
+                if (!response.ok) {
+                    throw new Error(`Overpass API Error: ${response.status} - ${text.substring(0, 100)}`);
+                }
+
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    // Suppress RedBox for JSON parse errors, just warn
+                    console.warn("Overpass Response was not JSON:", text.substring(0, 200));
+                    throw new Error("Invalid format received from server");
+                }
+
+                if (!data.elements) {
+                    throw new Error("No elements found in response");
+                }
+
+                const places = data.elements.map(el => ({
+                    id: el.id,
+                    name: el.tags?.name || (el.tags?.["name:en"] || "Mosque"),
+                    lat: el.lat || el.center.lat,
+                    lon: el.lon || el.center.lon
+                })).filter(p => p.lat && p.lon);
+
+                setMosques(places);
+                success = true;
+                setErrorMsg(null); // Clear any previous error
+
+            } catch (error) {
+                // Changing console.error to console.warn to avoid RedBox
+                console.warn(`Attempt ${attempt} failed fetching mosques:`, error.message);
+
+                if (attempt >= MAX_RETRIES) {
+                    setErrorMsg(t('mosque_finder.error_load'));
+                } else {
+                    // Wait before retrying (1s, 2s, etc.)
+                    await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+                }
+            } finally {
+                if (attempt >= MAX_RETRIES || success) {
+                    setLoading(false);
+                }
+            }
         }
     };
 
@@ -92,11 +128,11 @@ const MosqueFinderScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             {/* Header */}
-            <View style={[styles.header, { paddingTop: insets.top + 10, backgroundColor: ramadanModeEnabled ? '#1a1a1a' : '#FFF' }]}>
+            <View style={[styles.header, { paddingTop: insets.top + 10, backgroundColor: nightModeEnabled ? '#1a1a1a' : '#FFF' }]}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <ArrowLeft size={24} color={ramadanModeEnabled ? '#FFF' : COLORS.matteBlack} />
+                    <ArrowLeft size={24} color={nightModeEnabled ? '#FFF' : COLORS.matteBlack} />
                 </TouchableOpacity>
-                <Text style={[styles.title, ramadanModeEnabled && { color: '#FFF' }]}>
+                <Text style={[styles.title, nightModeEnabled && { color: '#FFF' }]}>
                     {t('mosque_finder.title')}
                 </Text>
                 <View style={{ width: 40 }} />
@@ -139,7 +175,35 @@ const MosqueFinderScreen = ({ navigation }) => {
                 </MapView>
             ) : (
                 <View style={styles.center}>
-                    <Text style={{ color: 'red' }}>{errorMsg || t('location_error')}</Text>
+                    <Text style={{ color: 'red', marginBottom: 20 }}>{errorMsg || t('mosque_finder.error_load')}</Text>
+                    <TouchableOpacity
+                        style={[styles.retryButton, nightModeEnabled && { backgroundColor: '#333' }]}
+                        onPress={() => {
+                            setLoading(true);
+                            setErrorMsg(null);
+                            // Re-fetch logic
+                            (async () => {
+                                let loc = await Location.getCurrentPositionAsync({});
+                                fetchMosques(loc.coords.latitude, loc.coords.longitude);
+                            })();
+                        }}
+                    >
+                        <Text style={{ color: COLORS.matteGreen, fontWeight: 'bold' }}>{t('retry')}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.mapButton, { marginTop: 10 }]}
+                        onPress={() => {
+                            const query = "Mosques near me";
+                            const url = Platform.select({
+                                ios: `maps:0,0?q=${query}`,
+                                android: `geo:0,0?q=${query}`
+                            });
+                            Linking.openURL(url);
+                        }}
+                    >
+                        <Text style={{ color: '#FFF', fontWeight: 'bold' }}>{t('mosque_finder.open_in_maps')}</Text>
+                    </TouchableOpacity>
                 </View>
             )}
         </View>
@@ -225,6 +289,18 @@ const styles = StyleSheet.create({
         fontSize: 10,
         fontWeight: '600',
         marginLeft: 4
+    },
+    retryButton: {
+        padding: 10,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: COLORS.matteGreen,
+    },
+    mapButton: {
+        backgroundColor: COLORS.matteGreen,
+        padding: 12,
+        borderRadius: 8,
+        elevation: 2,
     }
 });
 

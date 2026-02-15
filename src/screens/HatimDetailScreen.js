@@ -5,6 +5,7 @@ import {
     ActivityIndicator,
     Alert,
     FlatList,
+    Image,
     Platform,
     Share,
     StyleSheet,
@@ -15,7 +16,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import RamadanBackground from '../components/RamadanBackground';
 import { useTheme } from '../contexts/ThemeContext';
-import { getHatimSlots, takeHatimSlot } from '../services/CommunityService';
+import { getHatimSlots, notifyHatimParticipants, takeHatimSlot } from '../services/CommunityService';
 import { supabase } from '../services/supabase';
 import { COLORS } from '../utils/theme';
 
@@ -23,9 +24,10 @@ const HatimDetailScreen = ({ route, navigation }) => {
     const { hatimId, title } = route.params;
     const { t, i18n } = useTranslation();
     const insets = useSafeAreaInsets();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
     const [slots, setSlots] = useState([]);
     const [loading, setLoading] = useState(true);
+    const allCompleted = slots.length > 0 && slots.every(s => s.status !== 'available');
 
     useEffect(() => {
         loadSlots();
@@ -36,6 +38,14 @@ const HatimDetailScreen = ({ route, navigation }) => {
         const data = await getHatimSlots(hatimId);
         setSlots(data);
         setLoading(false);
+
+        // Auto-repair status if all slots are taken but still marked open
+        if (data.length > 0 && data.every(s => s.status !== 'available')) {
+            const { data: group } = await supabase.from('hatim_groups').select('status').eq('id', hatimId).single();
+            if (group && group.status === 'open') {
+                await supabase.from('hatim_groups').update({ status: 'completed' }).eq('id', hatimId);
+            }
+        }
     };
 
     const handleTakeSlot = async (slot) => {
@@ -58,7 +68,14 @@ const HatimDetailScreen = ({ route, navigation }) => {
                         const success = await takeHatimSlot(hatimId, slot.slot_number, user.id);
                         if (success) {
                             Alert.alert(t('success_title'), t('community.juz_taken_success'));
-                            loadSlots();
+                            const updatedSlots = await getHatimSlots(hatimId);
+                            setSlots(updatedSlots);
+
+                            // Check if completion was reached (triggered by DB)
+                            if (updatedSlots.length > 0 && updatedSlots.every(s => s.status !== 'available')) {
+                                // Notify all participants
+                                await notifyHatimParticipants(hatimId, title);
+                            }
                         } else {
                             Alert.alert(t('error'), t('community.report_error'));
                         }
@@ -70,7 +87,15 @@ const HatimDetailScreen = ({ route, navigation }) => {
 
     const handleShare = async () => {
         try {
-            const shareMsg = t('community.share_hatim_msg', { title: title });
+            const cityName = route.params.city || '';
+            const locationName = route.params.location || '';
+            const combinedLocation = [cityName, locationName].filter(Boolean).join(', ');
+
+            const shareMsg = t('community.share_hatim_msg', {
+                title: title,
+                name: route.params.userName || t('common.someone'),
+                location: combinedLocation || t('common.location_missing')
+            });
             await Share.share({
                 message: shareMsg,
             });
@@ -81,26 +106,59 @@ const HatimDetailScreen = ({ route, navigation }) => {
 
     const renderSlot = ({ item }) => {
         const isTaken = item.status !== 'available';
-        const isMine = item.user_id === supabase.auth.user?.id; // Note: simplified check
 
         return (
             <TouchableOpacity
-                style={[styles.slotCard, isTaken && styles.slotTaken]}
+                style={[styles.slotCard, isTaken && styles.slotTaken, nightModeEnabled && { backgroundColor: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)', borderWidth: 1, elevation: 0 }]}
                 onPress={() => handleTakeSlot(item)}
                 disabled={isTaken}
             >
                 <View style={styles.slotLeft}>
-                    <View style={[styles.slotNumberBg, isTaken && styles.slotNumberBgTaken]}>
-                        <Text style={styles.slotNumber}>{item.slot_number}</Text>
+                    <View style={[styles.slotNumberBg, isTaken && styles.slotNumberBgTaken, nightModeEnabled && { backgroundColor: 'rgba(255, 215, 0, 0.1)' }]}>
+                        <Text style={[styles.slotNumber, nightModeEnabled && { color: '#FFD700' }]}>{item.slot_number}</Text>
                     </View>
-                    <Text style={styles.slotLabel}>{item.slot_number}. {t('common.juz')}</Text>
+                    <View>
+                        <Text style={[styles.slotLabel, nightModeEnabled && { color: '#FFF' }]}>{item.slot_number}. {t('common.juz')}</Text>
+                        {isTaken && item.userName && (
+                            <View style={styles.takerContainer}>
+                                <View style={[styles.takerBadge, nightModeEnabled && { backgroundColor: 'rgba(255, 215, 0, 0.1)' }]}>
+                                    {item.avatar_url ? (
+                                        <Image source={{ uri: item.avatar_url }} style={styles.takerAvatar} />
+                                    ) : (
+                                        <Text style={[styles.takerInitial, nightModeEnabled && { color: '#FFD700' }]}>{item.userName.charAt(0)}</Text>
+                                    )}
+                                </View>
+                                <View style={styles.takerInfo}>
+                                    <View style={styles.takerNameRow}>
+                                        <Text style={[styles.takerName, nightModeEnabled && { color: 'rgba(255,255,255,0.9)' }]} numberOfLines={1}>{item.userName}</Text>
+                                    </View>
+                                    {(item.city || item.location) && (
+                                        <Text style={[styles.takerLocation, nightModeEnabled && { color: 'rgba(255,255,255,0.5)' }]} numberOfLines={1}>
+                                            {item.city}{item.city && item.location ? ', ' : ''}{item.location}
+                                        </Text>
+                                    )}
+                                    {item.taken_at && (
+                                        <Text style={[styles.takerTime, nightModeEnabled && { color: 'rgba(255,255,255,0.4)' }]}>
+                                            {new Date(item.taken_at).toLocaleString([], {
+                                                day: 'numeric',
+                                                month: 'numeric',
+                                                year: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })}
+                                        </Text>
+                                    )}
+                                </View>
+                            </View>
+                        )}
+                    </View>
                 </View>
 
                 <View style={styles.slotRight}>
                     {isTaken ? (
                         <View style={styles.takenInfo}>
                             <CheckCircle2 size={16} color="#4CAF50" />
-                            <Text style={styles.takenText}>{t('completed')}</Text>
+                            <Text style={styles.takenText}>{t('community.hatim_completed')}</Text>
                         </View>
                     ) : (
                         <View style={styles.availableInfo}>
@@ -118,21 +176,28 @@ const HatimDetailScreen = ({ route, navigation }) => {
             <View style={[styles.container, { paddingTop: insets.top }]}>
                 {/* Header */}
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
-                        <ArrowLeft size={24} color={COLORS.primary} />
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.iconBtn, nightModeEnabled && { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
+                        <ArrowLeft size={24} color={nightModeEnabled ? '#FFD700' : COLORS.primary} />
                     </TouchableOpacity>
-                    <Text style={[styles.title, ramadanModeEnabled && { color: '#FFF' }]} numberOfLines={1}>
+                    <Text style={[styles.title, nightModeEnabled && { color: '#FFF' }]} numberOfLines={1}>
                         {title}
                     </Text>
-                    <TouchableOpacity onPress={handleShare} style={styles.iconBtn}>
-                        <Share2 size={24} color={COLORS.primary} />
+                    <TouchableOpacity onPress={handleShare} style={[styles.iconBtn, nightModeEnabled && { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
+                        <Share2 size={24} color={nightModeEnabled ? '#FFD700' : COLORS.primary} />
                     </TouchableOpacity>
                 </View>
 
-                <View style={styles.infoCard}>
-                    <BookOpen size={24} color={COLORS.primary} />
-                    <Text style={styles.infoText}>{t('community.hatim_slots_desc')}</Text>
+                <View style={[styles.infoCard, nightModeEnabled && { backgroundColor: 'rgba(255, 215, 0, 0.1)' }]}>
+                    <BookOpen size={24} color={nightModeEnabled ? '#FFD700' : COLORS.primary} />
+                    <Text style={[styles.infoText, nightModeEnabled && { color: '#FFF' }]}>{t('community.hatim_slots_desc')}</Text>
                 </View>
+
+                {allCompleted && (
+                    <View style={styles.allCompletedBanner}>
+                        <CheckCircle2 size={32} color="#FFF" />
+                        <Text style={styles.allCompletedText}>{t('community.all_completed')}</Text>
+                    </View>
+                )}
 
                 {loading ? (
                     <View style={styles.center}>
@@ -186,7 +251,41 @@ const styles = StyleSheet.create({
     takenText: { fontSize: 12, color: '#4CAF50', fontWeight: '700' },
     availableInfo: { flexDirection: 'row', alignItems: 'center', gap: 4 },
     availableText: { fontSize: 12, color: COLORS.primary, fontWeight: '700' },
-    center: { flex: 1, justifyContent: 'center', alignItems: 'center' }
+    center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    takerContainer: { flexDirection: 'column', marginTop: 8, gap: 5 },
+    takerBadge: { width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.primary + '15', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' },
+    takerAvatar: { width: '100%', height: '100%' },
+    takerInitial: { fontSize: 14, fontWeight: 'bold', color: COLORS.primary },
+    takerInfo: { gap: 2 },
+    takerNameRow: { flexDirection: 'row', alignItems: 'center' },
+    takerName: { fontSize: 13, fontWeight: '700', color: '#333' },
+    takerLocation: { fontSize: 10, color: '#666' },
+    takerTime: { fontSize: 10, color: '#999' },
+    allCompletedBanner: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 15,
+        backgroundColor: '#27ae60',
+        marginHorizontal: 0,
+        marginBottom: 20,
+        padding: 20,
+        borderRadius: 0,
+        borderBottomWidth: 4,
+        borderBottomColor: '#1e8449',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 5
+    },
+    allCompletedText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#FFF',
+        textAlign: 'center',
+        flex: 1
+    }
 });
 
 export default HatimDetailScreen;

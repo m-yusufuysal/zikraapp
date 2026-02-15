@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
+import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av';
 import TrackPlayer, {
     AppKilledPlaybackBehavior,
     Capability,
@@ -12,9 +13,12 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 
 const AudioContext = createContext();
-const appLogo = require('../../assets/images/splash-icon.png');
+const AudioProgressContext = createContext();
+// Removed problematic artwork require to fix Metro resolution error
+// const appLogo = require('../../assets/images/splash-icon.png');
 
 export const useAudio = () => useContext(AudioContext);
+export const useAudioProgress = () => useContext(AudioProgressContext);
 
 export const AudioProvider = ({ children }) => {
     const { t } = useTranslation();
@@ -38,10 +42,7 @@ export const AudioProvider = ({ children }) => {
 
             try {
                 // Configure Expo Audio for background playback
-                // This sets up the iOS audio session properly
-                /* 
-                // CONFLICT FIX: Creating conflict with TrackPlayer active session.
-                // TrackPlayer will handle the session.
+                // CRITICAL: This ensures the audio session stays active in background/lock screen
                 await Audio.setAudioModeAsync({
                     staysActiveInBackground: true,
                     interruptionModeIOS: InterruptionModeIOS.DoNotMix,
@@ -49,16 +50,15 @@ export const AudioProvider = ({ children }) => {
                     shouldDuckAndroid: true,
                     interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
                     playThroughEarpieceAndroid: false
-                }); 
-                */
+                });
 
-                console.log('[AudioContext] Setting up TrackPlayer...');
+                if (__DEV__) console.log('[AudioContext] Setting up TrackPlayer...');
 
                 // Check if player is already setup
                 try {
                     const state = await TrackPlayer.getPlaybackState();
                     if (state) {
-                        console.log('[AudioContext] TrackPlayer already initialized');
+                        if (__DEV__) console.log('[AudioContext] TrackPlayer already initialized');
                         setIsSetup(true);
                         return;
                     }
@@ -68,10 +68,10 @@ export const AudioProvider = ({ children }) => {
 
                 await TrackPlayer.setupPlayer({
                     // AGGRESSIVE BUFFER: Drastically reduced minBuffer to prevent stalling
-                    minBuffer: 15,      // Reduced from 50s -> 15s (prevents blocking)
-                    maxBuffer: 300,     // Increased to allow massive lookahead
-                    playBuffer: 1.5,    // Reduced to 1.5s for instant start
-                    backBuffer: 60,     // Keep previous audio
+                    minBuffer: 5,        // Reduced from 15s -> 5s (prevents blocking on slow connections)
+                    maxBuffer: 300,      // Increased to allow massive lookahead
+                    playBuffer: 1.5,     // Reduced to 1.5s for instant start
+                    backBuffer: 60,      // Keep previous audio
                     waitForBuffer: false, // Don't block playback waiting for full buffer
                 });
 
@@ -115,13 +115,13 @@ export const AudioProvider = ({ children }) => {
                     progressUpdateEventInterval: 2,
                 });
 
-                console.log('[AudioContext] TrackPlayer setup complete');
+                if (__DEV__) console.log('[AudioContext] TrackPlayer setup complete');
                 setIsSetup(true);
 
             } catch (error) {
                 // Handle common initialization errors
                 if (error.message?.includes('already') || error.code === 'player_already_initialized') {
-                    console.log('[AudioContext] Player already initialized (checking state)');
+                    if (__DEV__) console.log('[AudioContext] Player already initialized (checking state)');
                     setIsSetup(true);
                 } else {
                     console.error('[AudioContext] TrackPlayer Setup Error:', error);
@@ -142,7 +142,7 @@ export const AudioProvider = ({ children }) => {
                     const tracksToAdd = remaining.map(buildTrack).filter(t => t.url);
 
                     if (tracksToAdd.length > 0) {
-                        console.log(`[AudioContext] Preloading next ${tracksToAdd.length} tracks (limited)`);
+                        if (__DEV__) console.log(`[AudioContext] Preloading next ${tracksToAdd.length} tracks (limited)`);
                         await TrackPlayer.add(tracksToAdd);
                     }
                 }
@@ -156,7 +156,7 @@ export const AudioProvider = ({ children }) => {
         // Handle app state changes
         const appStateSubscription = AppState.addEventListener('change', (nextAppState) => {
             if (appStateRef.current.match(/inactive|background/) && nextAppState === 'active') {
-                console.log('[AudioContext] App came to foreground');
+                if (__DEV__) console.log('[AudioContext] App came to foreground');
                 syncPlaybackState();
             }
             if (nextAppState === 'background') {
@@ -212,7 +212,7 @@ export const AudioProvider = ({ children }) => {
             }
 
             if (event.type === Event.PlaybackQueueEnded) {
-                console.log('[AudioContext] Queue ended, resetting state');
+                if (__DEV__) console.log('[AudioContext] Queue ended, resetting state');
                 setCurrentAyah(null);
                 setIsPlaying(false);
                 setPlaylistPosition({ current: 0, total: 0 });
@@ -249,14 +249,11 @@ export const AudioProvider = ({ children }) => {
             artist: artist,
             album: title, // Use Surah name as album too for consistency
             description: artist,
-            artwork: appLogo,
+            // artwork: appLogo, // Re-enable once the asset path is confirmed
             contentType: 'audio/mpeg',
             duration: item.duration ? item.duration / 1000 : undefined,
         };
     };
-
-
-
 
     // Main Play Function - Windowed Implementation
     const playAyah = async (ayah, list = [], context = null) => {
@@ -335,8 +332,6 @@ export const AudioProvider = ({ children }) => {
     // Calculate Playlist Position
     const [playlistPosition, setPlaylistPosition] = useState({ current: 0, total: 0 });
 
-
-
     return (
         <AudioContext.Provider value={{
             isPlaying,
@@ -346,11 +341,12 @@ export const AudioProvider = ({ children }) => {
             pause,
             resume,
             stop,
-            playbackTime: progress,
             playlistPosition,
             playbackContext
         }}>
-            {children}
+            <AudioProgressContext.Provider value={progress}>
+                {children}
+            </AudioProgressContext.Provider>
         </AudioContext.Provider>
     );
 };

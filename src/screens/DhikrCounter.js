@@ -38,7 +38,7 @@ const DhikrCounter = ({ route, navigation }) => {
     const { t, i18n } = useTranslation();
     const { plan } = route.params;
     const insets = useSafeAreaInsets();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
     const sessionId = plan?.session_id;
 
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -215,6 +215,11 @@ const DhikrCounter = ({ route, navigation }) => {
                     // Finish
                     setIsCompleted(true);
                     if (sessionId) clearDhikrProgress(sessionId); // Clear progress on completion
+
+                    // Smart Review Trigger - Dhikr Completion
+                    import('../services/StoreReviewService').then(module => {
+                        module.default.checkCompletionReview();
+                    });
                 }
                 setIsProcessing(false);
             }, 500);
@@ -232,6 +237,11 @@ const DhikrCounter = ({ route, navigation }) => {
         } else {
             setIsCompleted(true);
             if (sessionId) clearDhikrProgress(sessionId);
+
+            // Smart Review Trigger - Dhikr Completion
+            import('../services/StoreReviewService').then(module => {
+                module.default.checkCompletionReview();
+            });
         }
     };
 
@@ -242,19 +252,10 @@ const DhikrCounter = ({ route, navigation }) => {
         }
     };
 
-    const finishDhikr = async () => {
+    const finishDhikr = () => {
         setIsCompleted(true);
         if (sessionId) {
             clearDhikrProgress(sessionId);
-            // Sync completion to Supabase for notification trigger
-            try {
-                await supabase
-                    .from('dhikr_sessions')
-                    .update({ is_completed: true, status: 'completed' })
-                    .eq('id', sessionId);
-            } catch (e) {
-                console.warn('[DhikrCounter] Sync failed:', e.message);
-            }
         }
     };
 
@@ -357,43 +358,47 @@ const DhikrCounter = ({ route, navigation }) => {
                     contentContainerStyle={[styles.content, { paddingTop: insets.top + 20, paddingBottom: 100 }]}
                     showsVerticalScrollIndicator={false}
                 >
-                    <View style={[styles.successCard, ramadanModeEnabled && { backgroundColor: 'rgba(0,0,0,0.65)', borderWidth: 1, borderColor: 'rgba(255,215,0,0.4)' }]}>
-                        <View style={[styles.iconCircle, ramadanModeEnabled && { backgroundColor: 'rgba(255, 215, 0, 0.2)' }]}>
-                            <CheckCircle2 size={40} color={ramadanModeEnabled ? '#FFD700' : COLORS.matteGreen} />
+                    <View style={[styles.successCard, nightModeEnabled && { backgroundColor: 'rgba(0,0,0,0.65)', borderWidth: 1, borderColor: 'rgba(255,215,0,0.4)' }]}>
+                        <View style={[styles.iconCircle, nightModeEnabled && { backgroundColor: 'rgba(255, 215, 0, 0.2)' }]}>
+                            <CheckCircle2 size={40} color={nightModeEnabled ? '#FFD700' : COLORS.matteGreen} />
                         </View>
-                        <Text style={[styles.successTitle, ramadanModeEnabled && { color: '#FFD700' }]}>{t('dhikr.success_title')}</Text>
-                        <Text style={[styles.successText, ramadanModeEnabled && { color: '#FFF' }]}>{plan.prescription_title || t('dhikr.success_text')}</Text>
+                        <Text style={[styles.successTitle, nightModeEnabled && { color: '#FFD700' }]}>{t('dhikr.success_title')}</Text>
+                        <Text style={[styles.successText, nightModeEnabled && { color: '#FFF' }]}>{plan.prescription_title || t('dhikr.success_text')}</Text>
 
                         {/* Closing Dua */}
                         {plan.closing_dua && (
                             <View style={[
                                 styles.resultCard,
                                 styles.matteBorder,
-                                ramadanModeEnabled && { backgroundColor: 'rgba(255,215,0,0.05)', borderColor: 'rgba(255,215,0,0.1)' },
+                                nightModeEnabled && { backgroundColor: 'rgba(255,215,0,0.05)', borderColor: 'rgba(255,215,0,0.1)' },
                                 { marginTop: 20, width: '100%' }
                             ]}>
-                                <Text style={[styles.cardTitleSmall, ramadanModeEnabled && { color: '#FFD700' }]}>🤲 {t('dhikr.closing_dua')}</Text>
-                                <Text style={[styles.adviceText, ramadanModeEnabled && { color: '#FFF' }]}>"{plan.closing_dua}"</Text>
+                                <Text style={[styles.cardTitleSmall, nightModeEnabled && { color: '#FFD700' }]}>🤲 {t('dhikr.closing_dua')}</Text>
+                                <Text style={[styles.adviceText, nightModeEnabled && { color: '#FFF' }]}>"{plan.closing_dua}"</Text>
                             </View>
                         )}
+
+
+
+
 
                         {/* Recommended Action */}
                         {plan.recommended_action && (
                             <View style={[
                                 styles.resultCard,
                                 styles.actionBorder,
-                                ramadanModeEnabled && { backgroundColor: 'rgba(255,215,0,0.1)', borderColor: '#FFD700' },
+                                nightModeEnabled && { backgroundColor: 'rgba(255,215,0,0.1)', borderColor: '#FFD700' },
                                 { marginTop: 10, width: '100%' }
                             ]}>
-                                <Text style={[styles.cardTitleSmall, ramadanModeEnabled && { color: '#FFD700' }]}>✨ {t('dhikr.recommended_action')}</Text>
-                                <Text style={[styles.actionText, ramadanModeEnabled && { color: '#FFD700' }]}>{plan.recommended_action}</Text>
+                                <Text style={[styles.cardTitleSmall, nightModeEnabled && { color: '#FFD700' }]}>✨ {t('dhikr.recommended_action')}</Text>
+                                <Text style={[styles.actionText, nightModeEnabled && { color: '#FFD700' }]}>{plan.recommended_action}</Text>
                             </View>
                         )}
 
                         {/* AI Disclaimer */}
                         <View style={[styles.disclaimerContainer, { marginTop: 20, marginBottom: 15 }]}>
-                            <AlertCircle size={14} color={ramadanModeEnabled ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)"} />
-                            <Text style={[styles.disclaimerText, ramadanModeEnabled && { color: 'rgba(255,255,255,0.4)' }]}>{t('common.ai_disclaimer')}</Text>
+                            <AlertCircle size={14} color={nightModeEnabled ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)"} />
+                            <Text style={[styles.disclaimerText, nightModeEnabled && { color: 'rgba(255,255,255,0.4)' }]}>{t('common.ai_disclaimer')}</Text>
                         </View>
 
                         {/* Feedback Section - Minimal */}
@@ -403,29 +408,29 @@ const DhikrCounter = ({ route, navigation }) => {
                                     style={[styles.feedbackBtnMinimal, feedback === 'good' && styles.feedbackBtnActive]}
                                     onPress={() => handleFeedback('good')}
                                 >
-                                    <ThumbsUp size={20} color={feedback === 'good' ? (ramadanModeEnabled ? '#FFD700' : COLORS.matteGreen) : (ramadanModeEnabled ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)')} />
+                                    <ThumbsUp size={20} color={feedback === 'good' ? (nightModeEnabled ? '#FFD700' : COLORS.matteGreen) : (nightModeEnabled ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)')} />
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={[styles.feedbackBtnMinimal, feedback === 'bad' && styles.feedbackBtnActive]}
                                     onPress={() => handleFeedback('bad')}
                                 >
-                                    <ThumbsDown size={20} color={feedback === 'bad' ? '#FF453A' : (ramadanModeEnabled ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)')} />
+                                    <ThumbsDown size={20} color={feedback === 'bad' ? '#FF453A' : (nightModeEnabled ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)')} />
                                 </TouchableOpacity>
                             </View>
                         </View>
 
                         <TouchableOpacity
-                            style={[styles.shareSuccessBtn, ramadanModeEnabled && { borderColor: '#FFD700' }, { marginTop: 0 }]}
+                            style={[styles.shareSuccessBtn, nightModeEnabled && { borderColor: '#FFD700' }, { marginTop: 0 }]}
                             onPress={handleShareSuccess}
                         >
-                            <Share2 size={20} color={ramadanModeEnabled ? '#FFD700' : COLORS.primary} />
-                            <Text style={[styles.shareSuccessBtnText, ramadanModeEnabled && { color: '#FFD700' }]}>
+                            <Share2 size={20} color={nightModeEnabled ? '#FFD700' : COLORS.primary} />
+                            <Text style={[styles.shareSuccessBtnText, nightModeEnabled && { color: '#FFD700' }]}>
                                 {t('common.share')}
                             </Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={[styles.primaryBtn, ramadanModeEnabled && { backgroundColor: '#FFD700' }, { marginTop: 20 }]} onPress={() => navigation.navigate('DhikrOnboarding', { clearIntention: true })}>
-                            <Text style={[styles.primaryBtnText, ramadanModeEnabled && { color: '#000' }]}>{t('dhikr.create_new')}</Text>
+                        <TouchableOpacity style={[styles.primaryBtn, nightModeEnabled && { backgroundColor: '#FFD700' }, { marginTop: 20 }]} onPress={() => navigation.navigate('DhikrOnboarding', { clearIntention: true })}>
+                            <Text style={[styles.primaryBtnText, nightModeEnabled && { color: '#000' }]}>{t('dhikr.create_new')}</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView >
@@ -437,8 +442,8 @@ const DhikrCounter = ({ route, navigation }) => {
         <RamadanBackground>
             {/* Header */}
             <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
-                <TouchableOpacity onPress={handleBackPress} style={[styles.iconBtn, ramadanModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.1)' }]}>
-                    <ChevronLeft size={24} color={ramadanModeEnabled ? '#FFF' : COLORS.matteBlack} />
+                <TouchableOpacity onPress={handleBackPress} style={[styles.iconBtn, nightModeEnabled && { backgroundColor: 'rgba(255, 255, 255, 0.1)' }]}>
+                    <ChevronLeft size={24} color={nightModeEnabled ? '#FFF' : COLORS.matteBlack} />
                 </TouchableOpacity>
                 <View style={styles.headerCenter}>
                     {currentDhikr ? (
@@ -446,7 +451,7 @@ const DhikrCounter = ({ route, navigation }) => {
                             {currentDhikr.arabic_text && (
                                 <Text style={styles.arabicText}>{currentDhikr.arabic_text}</Text>
                             )}
-                            <Text style={[styles.headerTitle, ramadanModeEnabled && { color: '#FFF' }]}>{currentDhikr.name}</Text>
+                            <Text style={[styles.headerTitle, nightModeEnabled && { color: '#FFF' }]}>{currentDhikr.name}</Text>
                             {/* Hide pronunciation for Arabic users as they can read the script */}
                             {currentDhikr.pronunciation &&
                                 !i18n.language.startsWith('ar') &&
@@ -476,7 +481,7 @@ const DhikrCounter = ({ route, navigation }) => {
                         <View style={styles.deviceInnerShadow}>
 
                             {/* LCD Screen */}
-                            <View style={[styles.lcdScreen, ramadanModeEnabled && { backgroundColor: '#96A59E', borderColor: '#7E8F85' }]}>
+                            <View style={[styles.lcdScreen, nightModeEnabled && { backgroundColor: '#96A59E', borderColor: '#7E8F85' }]}>
                                 <View style={styles.lcdHeader}>
                                     <Text style={styles.lcdLabel}>{t('dhikr.step').toUpperCase()} {currentStepIndex + 1}/{dhikrSteps.length}</Text>
                                     <Text style={styles.lcdTarget}>{t('dhikr.target_label')}: {currentDhikr.count}</Text>
@@ -515,7 +520,7 @@ const DhikrCounter = ({ route, navigation }) => {
 
                     {/* Meaning Text below device */}
                     <View style={styles.meaningContainer}>
-                        <Text style={[styles.dhikrMeaning, ramadanModeEnabled && { color: 'rgba(255, 255, 255, 0.7)' }]}>{currentDhikr.meaning}</Text>
+                        <Text style={[styles.dhikrMeaning, nightModeEnabled && { color: 'rgba(255, 255, 255, 0.7)' }]}>{currentDhikr.meaning}</Text>
                     </View>
                 </View>
 

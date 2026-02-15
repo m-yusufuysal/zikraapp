@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Schema Update for Personal Closing Dua
+-- Islamvy App - Schema Update for Personal Closing Dua
 -- ============================================
 
 -- Add closing_dua column to dhikr_sessions table if it doesn't exist

@@ -9,17 +9,19 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DeepProcessingModal from '../components/DeepProcessingModal';
 import RamadanBackground from '../components/RamadanBackground';
 import { useTheme } from '../contexts/ThemeContext';
-import { showRewarded } from '../services/adService';
+import { showRewardedAd } from '../utils/AdManager';
 import { checkLimit, incrementUsage } from '../services/LimitService';
 import { supabase } from '../services/supabase';
 import { getUserProfile, updateUserProfile } from '../services/userService';
+import { useRevenueCat } from '../providers/RevenueCatProvider';
 import { invokeEdgeFunction } from '../utils/apiClient';
 import { COLORS } from '../utils/theme';
 
 const DhikrOnboarding = ({ navigation, route }) => {
     const { t, i18n } = useTranslation();
     const insets = useSafeAreaInsets();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
+    const { isPro } = useRevenueCat();
     const [name, setName] = useState('');
     const [birthDate, setBirthDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -44,6 +46,9 @@ const DhikrOnboarding = ({ navigation, route }) => {
         loadUserProfile();
         // Generate initial request hash
         setRequestHash(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
+
+        // Preload Ad
+        import('../utils/AdManager').then(module => module.loadRewardedAd());
     }, []);
 
     useFocusEffect(
@@ -51,6 +56,8 @@ const DhikrOnboarding = ({ navigation, route }) => {
             if (route?.params?.clearIntention) {
                 setIntention('');
                 navigation.setParams({ clearIntention: false });
+                // Also reset hash to be safe
+                setRequestHash(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
             }
         }, [route?.params?.clearIntention])
     );
@@ -123,47 +130,11 @@ const DhikrOnboarding = ({ navigation, route }) => {
         { id: 'custom', name: '✏️', meaning: t('dhikr.custom_label') },
     ];
 
-    const handleGenerate = async () => {
-        if (!name) {
-            Alert.alert(t('missing_info'), t('dhikr.missing_fields'));
-            return;
-        }
-
+    const executeGeneration = async () => {
+        setLoading(true);
         const formattedDate = getFormattedDate(birthDate);
         const formattedTime = getFormattedTime(birthTime);
 
-        // Check Limits
-        const limitCheck = await checkLimit('dhikr');
-
-        if (!limitCheck.allowed) {
-            Alert.alert(
-                t('dhikr.limit_title'),
-                t('premium.features.dhikr_limit', { count: limitCheck.limit }) + "\n" + t('dhikr.limit_message'),
-                [
-                    { text: t('ok'), style: "cancel" },
-                    { text: t('dream.go_premium'), onPress: () => navigation.navigate('Premium') }
-                ]
-            );
-            return;
-        }
-
-
-        // Show Ad (if not premium)
-        try {
-            const isPremium = await AsyncStorage.getItem('isPremium') === 'true';
-
-            if (!isPremium) {
-                const watched = await showRewarded();
-                if (!watched) {
-                    // User cancelled or ad failed
-                    return;
-                }
-            }
-        } catch (adError) {
-            // Ad error - continue anyway
-        }
-
-        setLoading(true);
         try {
             // 1. Get User
             const { data: { user } } = await supabase.auth.getUser();
@@ -228,9 +199,42 @@ const DhikrOnboarding = ({ navigation, route }) => {
             console.error(error);
             setLoading(false); // Stop loading on error so user can retry
             Alert.alert(t('error'), error.message || t('dhikr.error_generating'));
-        } finally {
-            // Loading is handled by navigation blur listener for success case
         }
+    };
+
+    const handleGenerate = async () => {
+        if (!name) {
+            Alert.alert(t('missing_info'), t('dhikr.missing_fields'));
+            return;
+        }
+
+        // Check Premium Status
+        const isPremium = isPro;
+
+        if (!isPremium) {
+            // FORCE AD FOR AI GENERATION
+            // User must watch ad to proceed
+            Alert.alert(
+                t('common.watch_ad_title'),
+                t('common.watch_ad_message'),
+                [
+                    { text: t('cancel'), style: "cancel" },
+                    {
+                        text: t('common.watch_ad'),
+                        onPress: async () => {
+                            const watched = await showRewardedAd();
+                            if (watched) {
+                                executeGeneration();
+                            }
+                        }
+                    },
+                    { text: t('dream.go_premium'), onPress: () => navigation.navigate('Premium') }
+                ]
+            );
+            return;
+        }
+
+        executeGeneration();
     };
 
     // ... (Quick Dhikr Handler removed/kept as is) ...
@@ -242,55 +246,6 @@ const DhikrOnboarding = ({ navigation, route }) => {
                 style={{ flex: 1 }}
             >
                 <ScrollView contentContainerStyle={[styles.content, { paddingTop: insets.top + 20, paddingBottom: 120 }]}>
-
-                    {/* Zikirmatik Entry (Moved to Top) */}
-                    <View style={styles.entryButtonContainer}>
-                        <TouchableOpacity
-                            activeOpacity={0.7}
-                            onPress={() => navigation.navigate('Zikirmatik')}
-                            style={styles.fingerRingButton}
-                        >
-                            {/* Finger Strap */}
-                            <View style={styles.ringStrap} />
-
-                            {/* Main Body */}
-                            <LinearGradient
-                                colors={['#333', '#111']}
-                                style={[styles.ringBody, { borderColor: 'rgba(255,255,255,0.2)' }]}
-                            >
-                                {/* Screen Area */}
-                                <View style={styles.ringScreen}>
-                                    <View style={styles.lcdContent}>
-                                        <Text style={[styles.lcdTitle, { color: '#000' }]}>{t('dhikr.title').toLocaleUpperCase(i18n.language)}</Text>
-                                        <Text style={[styles.lcdZeros, { color: '#000' }]}>00000</Text>
-                                    </View>
-                                </View>
-
-                                {/* Big Button */}
-                                <View style={styles.ringBtnOuter}>
-                                    <LinearGradient
-                                        colors={['#2e7d32', '#1b5e20']}
-                                        style={styles.ringBtnInner}
-                                    />
-                                </View>
-
-                                {/* Reset Button (Small dot) */}
-                                <View style={styles.ringResetBtn} />
-                            </LinearGradient>
-
-                            {/* Label below */}
-                            <View style={styles.ringLabelContainer}>
-                                <Text style={[styles.ringLabelTitle, { color: '#FFF' }]}>{t('dhikr.zikirmatik')}</Text>
-                                <Text style={[styles.ringLabelSubtitle, { color: 'rgba(255,255,255,0.6)' }]}>{t('dhikr.zikirmatik_subtitle')}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.dividerContainer}>
-                        <View style={styles.dividerLine} />
-                        <Text style={styles.dividerText}>{t('auth.or')}</Text>
-                        <View style={styles.dividerLine} />
-                    </View>
 
                     <View style={{ marginBottom: 30, alignItems: 'center' }}>
                         <Text style={[styles.title, { color: '#FFF' }]}>{t('dhikr.title')}</Text>
@@ -410,6 +365,55 @@ const DhikrOnboarding = ({ navigation, route }) => {
                                     <Text style={styles.submitButtonText}>{t('dhikr.create_custom')}</Text>
                                 )}
                             </LinearGradient>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.dividerContainer}>
+                        <View style={styles.dividerLine} />
+                        <Text style={styles.dividerText}>{t('auth.or')}</Text>
+                        <View style={styles.dividerLine} />
+                    </View>
+
+                    {/* Zikirmatik Entry (Moved to Bottom) */}
+                    <View style={styles.entryButtonContainer}>
+                        <TouchableOpacity
+                            activeOpacity={0.7}
+                            onPress={() => navigation.navigate('Zikirmatik')}
+                            style={styles.fingerRingButton}
+                        >
+                            {/* Finger Strap */}
+                            <View style={styles.ringStrap} />
+
+                            {/* Main Body */}
+                            <LinearGradient
+                                colors={['#333', '#111']}
+                                style={[styles.ringBody, { borderColor: 'rgba(255,255,255,0.2)' }]}
+                            >
+                                {/* Screen Area */}
+                                <View style={styles.ringScreen}>
+                                    <View style={styles.lcdContent}>
+                                        <Text style={[styles.lcdTitle, { color: '#000' }]}>{t('dhikr.title').toLocaleUpperCase(i18n.language)}</Text>
+                                        <Text style={[styles.lcdZeros, { color: '#000' }]}>00000</Text>
+                                    </View>
+                                </View>
+
+                                {/* Big Button */}
+                                <View style={styles.ringBtnOuter}>
+                                    <LinearGradient
+                                        colors={['#2e7d32', '#1b5e20']}
+                                        style={styles.ringBtnInner}
+                                    />
+                                </View>
+
+                                {/* Reset Button (Small dot) */}
+                                <View style={styles.ringResetBtn} />
+                            </LinearGradient>
+
+                            {/* Label below */}
+                            <View style={styles.ringLabelContainer}>
+                                <Text style={[styles.ringLabelTitle, { color: '#FFF' }]}>{t('dhikr.zikirmatik')}</Text>
+                                <Text style={[styles.ringLabelSubtitle, { color: 'rgba(255,255,255,0.6)' }]}>{t('dhikr.zikirmatik_subtitle')}</Text>
+                            </View>
                         </TouchableOpacity>
                     </View>
 
@@ -657,7 +661,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginVertical: 20,
+        marginVertical: 40,
         gap: 15,
     },
     dividerLine: {

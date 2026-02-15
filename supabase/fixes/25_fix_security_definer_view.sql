@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Fix Security Definer View
+-- Islamvy App - Fix Security Definer View
 -- Version 1.0
 -- Addresses: security_definer_view (ERROR)
 -- ============================================

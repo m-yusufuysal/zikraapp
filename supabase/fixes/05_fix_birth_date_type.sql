@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Fix Birth Date Column Type
+-- Islamvy App - Fix Birth Date Column Type
 -- Changes birth_date from timestamp to text
 -- ============================================
 

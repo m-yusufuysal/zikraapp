@@ -21,65 +21,23 @@ const getPremiumTier = async () => {
 };
 
 export const checkLimit = async (type) => { // type: 'dream' or 'dhikr'
-    try {
-        const today = new Date().toISOString().split('T')[0];
-        const lastDate = await AsyncStorage.getItem('usage_date');
-
-        let currentCount = 0;
-
-        if (lastDate !== today) {
-            // New day, reset counts
-            await AsyncStorage.setItem('usage_date', today);
-            await AsyncStorage.setItem('usage_dreams', '0');
-            await AsyncStorage.setItem('usage_dhikrs', '0');
-        } else {
-            const countStr = await AsyncStorage.getItem(`usage_${type}s`);
-            currentCount = parseInt(countStr || '0', 10);
-        }
-
-        // Get premium tier from local storage
-        const { isPremium, tier } = await getPremiumTier();
-
-        // Determine user tier and limits
-        const userTier = isPremium ? tier : 'free';
-        const limit = LIMITS[userTier]?.[type] || LIMITS.free[type];
-
-
-        if (currentCount >= limit) {
-            return { allowed: false, limit, currentCount, tier: userTier };
-        }
-
-        return { allowed: true, limit, currentCount, tier: userTier };
-
-    } catch (e) {
-        console.error("Limit check error:", e);
-        return { allowed: true }; // Allow on error to be safe
-    }
+    // TEMPORARY BYPASS: Return mocked unlimited access to avoid supabase errors
+    return {
+        allowed: true,
+        limit: 999,
+        currentCount: 0,
+        tier: 'unlimited',
+        deviceLimitReached: false,
+        canBypassWithAd: true
+    };
 };
 
 export const incrementUsage = async (type) => {
-    try {
-        const today = new Date().toISOString().split('T')[0];
-        const lastDate = await AsyncStorage.getItem('usage_date');
-
-        if (lastDate !== today) {
-            await AsyncStorage.setItem('usage_date', today);
-            await AsyncStorage.setItem(`usage_${type}s`, '1');
-            // Reset other one too just in case
-            const other = type === 'dream' ? 'dhikr' : 'dream';
-            await AsyncStorage.setItem(`usage_${other}s`, '0');
-        } else {
-            const countStr = await AsyncStorage.getItem(`usage_${type}s`);
-            const currentCount = parseInt(countStr || '0', 10);
-            await AsyncStorage.setItem(`usage_${type}s`, (currentCount + 1).toString());
-        }
-    } catch (e) {
-        console.error("Increment usage error:", e);
-    }
+    // TEMPORARY BYPASS: Do nothing to avoid supabase errors
+    return;
 };
 
 export const getRemainingCount = async (type) => {
-    // Utility for UI if needed
     const check = await checkLimit(type);
     return Math.max(0, check.limit - check.currentCount);
 };

@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Security Hardening
+-- Islamvy App - Security Hardening
 -- Version 1.0
 -- Addresses: function_search_path_mutable & rls_policy_always_true
 -- ============================================

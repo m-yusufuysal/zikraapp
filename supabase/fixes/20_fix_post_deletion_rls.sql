@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Fix Post Deletion RLS
+-- Islamvy App - Fix Post Deletion RLS
 -- Allows users to soft-delete their own posts
 -- ============================================
 
@@ -10,7 +10,7 @@ DROP CONSTRAINT IF EXISTS community_posts_status_check;
 
 ALTER TABLE public.community_posts 
 ADD CONSTRAINT community_posts_status_check 
-CHECK (status IN ('active', 'hidden', 'deleted'));
+CHECK (status IN ('active', 'completed', 'hidden', 'deleted'));
 
 -- For Hatim Groups
 ALTER TABLE public.hatim_groups 

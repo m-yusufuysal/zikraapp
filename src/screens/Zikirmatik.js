@@ -1,16 +1,8 @@
-/**
- * Zikirmatik - Production-Grade Finger Dhikr Counter
- * 
- * Architecture: Reanimated Worklets (UI Thread)
- * - Counter state uses useSharedValue (no JS bridge crossing)
- * - Tap animation uses useAnimatedStyle (C++ speed)
- * - Haptic feedback is throttled (prevents UI freezing)
- */
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, RotateCcw } from 'lucide-react-native';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Platform, StyleSheet, Text, TouchableOpacity, View, AppState } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
     Easing,
@@ -21,10 +13,12 @@ import Animated, {
     withTiming
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useThrottledHaptic } from '../hooks/useThrottledHaptic';
 import { COLORS, COMMON_STYLES } from '../utils/theme';
 
 const { width } = Dimensions.get('window');
+const ZIKIRMATIK_STORAGE_KEY = 'zikirmatik_free_count';
 
 const Zikirmatik = ({ navigation }) => {
     const { t } = useTranslation();
@@ -37,8 +31,75 @@ const Zikirmatik = ({ navigation }) => {
     // Display state (JS thread) - synced from worklet
     const [displayCount, setDisplayCount] = React.useState(0);
 
+    // Ref to track if we need to save
+    const lastSavedCount = useRef(0);
+    const saveTimeout = useRef(null);
+
     // Throttled haptic for performance
     const triggerHaptic = useThrottledHaptic();
+
+    // Load initial count
+    useEffect(() => {
+        const loadCount = async () => {
+            try {
+                const saved = await AsyncStorage.getItem(ZIKIRMATIK_STORAGE_KEY);
+                if (saved) {
+                    const parsed = parseInt(saved, 10);
+                    if (!isNaN(parsed)) {
+                        count.value = parsed;
+                        setDisplayCount(parsed);
+                        lastSavedCount.current = parsed;
+                    }
+                }
+            } catch (e) {
+                console.warn('Failed to load Zikirmatik count', e);
+            }
+        };
+        loadCount();
+
+        // AppState listener to save on background
+        const subscription = AppState.addEventListener('change', nextAppState => {
+            if (nextAppState.match(/inactive|background/)) {
+                saveCountNow();
+            }
+        });
+
+        return () => {
+            subscription.remove();
+            saveCountNow(); // Save on unmount
+        };
+    }, []);
+
+    // Save helper
+    const saveCountNow = async () => {
+        // We can't easily read sharedValue from JS synchronously if rely on it, 
+        // but displayCount is synced.
+        // However, inside this closure 'displayCount' might be stale if used directly in useEffect cleanup?
+        // Actually, best to use a ref that updates on every sync.
+        // But let's use the 'displayCount' state effect approach for saving?
+    };
+
+    // Better Save Logic: Update storage when displayCount changes (debounced)
+    useEffect(() => {
+        if (displayCount === lastSavedCount.current) return;
+
+        // Debounce save (e.g. every 1 second or 500ms of inactivity)
+        if (saveTimeout.current) clearTimeout(saveTimeout.current);
+
+        saveTimeout.current = setTimeout(async () => {
+            try {
+                await AsyncStorage.setItem(ZIKIRMATIK_STORAGE_KEY, displayCount.toString());
+                lastSavedCount.current = displayCount;
+            } catch (e) {
+                // ignore
+            }
+        }, 1000);
+
+        return () => {
+            if (saveTimeout.current) clearTimeout(saveTimeout.current);
+        };
+    }, [displayCount]);
+
 
     // === TAP GESTURE (Runs on UI Thread via Gesture Handler) ===
     const tapGesture = Gesture.Tap()
@@ -65,6 +126,8 @@ const Zikirmatik = ({ navigation }) => {
         count.value = 0;
         setDisplayCount(0);
         triggerHaptic();
+        // Clear storage immediately
+        AsyncStorage.setItem(ZIKIRMATIK_STORAGE_KEY, '0').catch(() => { });
     };
 
     // === ANIMATED STYLES (UI Thread) ===

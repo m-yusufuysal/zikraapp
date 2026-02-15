@@ -17,7 +17,7 @@ class InAppNotificationService {
             this.subscription.unsubscribe();
         }
 
-        console.log('[InAppNotification] Starting listener for user:', userId);
+        if (__DEV__) console.log('[InAppNotification] Starting listener for user:', userId);
 
         this.subscription = supabase
             .channel(`public:community_notifications:user_id=eq.${userId}`)
@@ -27,11 +27,11 @@ class InAppNotificationService {
                 table: 'community_notifications',
                 filter: `user_id=eq.${userId}`
             }, (payload) => {
-                console.log('[InAppNotification] REALTIME INSERT detected:', payload.new);
+                if (__DEV__) console.log('[InAppNotification] REALTIME INSERT detected:', payload.new);
                 this.handleNewNotification(payload.new);
             })
             .subscribe((status) => {
-                console.log('[InAppNotification] Subscription status for', userId, ':', status);
+                if (__DEV__) console.log('[InAppNotification] Subscription status for', userId, ':', status);
             });
     }
 
@@ -56,7 +56,7 @@ class InAppNotificationService {
                     break;
                 case 'new_product':
                     body = t('community.new_product_desc');
-                    title = '🛍️ Zikra Shop';
+                    title = '🛍️ Islamvy Shop';
                     break;
                 case 'hatim_slot_taken':
                     body = t('community.hatim_slot_taken_desc');

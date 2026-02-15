@@ -1,20 +1,25 @@
 {
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-7375934958502426~1595318813",
+    "ios_app_id": "ca-app-pub-7375934958502426~1595318813"
+  },
   "expo": {
-    "name": "Zikra",
-    "slug": "zikra",
-    "scheme": "zikra",
+    "name": "islamvy",
+    "slug": "islamvy",
+    "scheme": "islamvy",
     "locales": {
-      "tr": "./locales/tr.json",
-      "en": "./locales/en.json",
-      "ar": "./locales/ar.json",
-      "id": "./locales/id.json"
+      "tr": "./src/i18n/locales/tr.json",
+      "en": "./src/i18n/locales/en.json",
+      "ar": "./src/i18n/locales/ar.json",
+      "id": "./src/i18n/locales/id.json",
+      "fr": "./src/i18n/locales/fr.json"
     },
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/images/splash-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,34 +28,160 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yusuf.zikraapp",
-      "buildNumber": "1",
+      "bundleIdentifier": "com.esat.islamvy",
+      "buildNumber": "2",
+      "entitlements": {
+        "com.apple.security.application-groups": [
+          "group.com.esat.islamvy"
+        ]
+      },
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Zikra requires precise location access to calculate astronomical prayer times and determine the Qibla angle relative to True North for your specific coordinates, in compliance with Diyanet standards.",
-        "NSSpeechRecognitionUsageDescription": "Zikra uses on-device speech recognition to enable hands-free Dhikr counting, allowing accessible usage for users with limited mobility.",
-        "NSMicrophoneUsageDescription": "Zikra accesses the microphone strictly for real-time speech recognition during Dhikr sessions. Audio is processed locally and never stored or transmitted.",
-        "NSUserTrackingUsageDescription": "Zikra requests permission to deliver personalized advertising relevant to your interests. Your data is not linked to your identity across other apps and websites.",
-        "NSCameraUsageDescription": "Zikra needs access to your camera to let you take a profile photo.",
-        "NSPhotoLibraryUsageDescription": "Zikra needs access to your photo library to let you choose a profile photo.",
+        "NSLocationWhenInUseUsageDescription": "Islamvy requires precise location access to calculate astronomical prayer times and determine the Qibla angle relative to True North for your specific coordinates, in compliance with Diyanet standards.",
+        "NSSpeechRecognitionUsageDescription": "Islamvy uses on-device speech recognition to enable hands-free Dhikr counting, allowing accessible usage for users with limited mobility.",
+        "NSMicrophoneUsageDescription": "Islamvy accesses the microphone strictly for real-time speech recognition during Dhikr sessions. Audio is processed locally and never stored or transmitted.",
+        "NSUserTrackingUsageDescription": "Islamvy requests permission to deliver personalized advertising relevant to your interests. Your data is not linked to your identity across other apps and websites.",
+        "NSPhotoLibraryUsageDescription": "Islamvy needs access to your photo library to allow you to upload a profile picture and customize your experience.",
+        "NSPhotoLibraryAddUsageDescription": "Islamvy needs permission to save images to your photo library.",
+        "SKAdNetworkItems": [
+          {
+            "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "4fzdc2evr5.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "2fnua5tdw4.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "ydx93a7ass.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "5a6flpkh64.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "p78axxw29g.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "v72qych5uu.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "c6k4g5qg8m.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "s39g8k73mm.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "3qy4746246.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "3sh42y64q3.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "f38h382jlk.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "hs6bdukanm.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "prcb7njmu6.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "wzmmz9fp6w.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "yclnxrl5pm.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "4468km3ulz.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "t38b2kh725.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "7ug5zh24hu.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "9rd848q2bz.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "n66cz3y3bx.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "kbd757ywx3.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "9t245vhmpl.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "2u9pt9hc89.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "8s468mfl3y.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "av6w8kgt66.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "klf5c3l5u5.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "ppxm28t8ap.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "424m5254lk.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "uw77j35x4d.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "e5fvkxwrpn.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "zq492l623r.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "3qcr597p9d.skadnetwork"
+          }
+        ],
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": false,
           "NSAllowsLocalNetworking": true
         },
         "UIBackgroundModes": [
           "audio",
-          "fetch",
-          "remote-notification"
+          "fetch"
         ],
-        "ITSAppUsesNonExemptEncryption": false
-      }
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "E174.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "C617.1"
+            ]
+          }
+        ]
+      },
+      "appleTeamId": "X96Z5SCQPV"
     },
     "android": {
-      "versionCode": 1,
+      "versionCode": 2,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.yusuf.zikraapp",
+      "package": "com.yusuf.islamvy",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
@@ -62,7 +193,8 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "com.google.android.gms.permission.AD_ID"
       ]
     },
     "web": {},
@@ -70,57 +202,34 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow Zikra to use your location."
-        }
-      ],
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/images/notification-icon.png",
-          "color": "#10B981",
-          "sounds": [
-            "./assets/sounds/adhan.mp3"
-          ]
+          "locationAlwaysAndWhenInUsePermission": "Allow Islamvy to use your location."
         }
       ],
       "@react-native-community/datetimepicker",
       "expo-web-browser",
       "./plugins/withTrackPlayer",
-      "./plugins/withTrackPlayer",
-      "./plugins/withWidget",
+      "expo-tracking-transparency",
       [
-        "expo-dynamic-app-icon",
+        "react-native-google-mobile-ads",
         {
-          "icons": {
-            "light": {
-              "image": "./assets/images/icon_light.png",
-              "prerendered": true
-            },
-            "dark": {
-              "image": "./assets/images/icon_dark.png",
-              "prerendered": true
-            },
-            "blue_gold": {
-              "image": "./assets/images/icon_blue_gold.png",
-              "prerendered": true
-            },
-            "sage": {
-              "image": "./assets/images/icon_sage.png",
-              "prerendered": true
-            },
-            "silver": {
-              "image": "./assets/images/icon_silver.png",
-              "prerendered": true
-            },
-            "burgundy": {
-              "image": "./assets/images/icon_burgundy.png",
-              "prerendered": true
-            },
-            "navy_red": {
-              "image": "./assets/images/icon_navy_red.png",
-              "prerendered": true
-            }
-          }
+          "androidAppId": "ca-app-pub-7375934958502426~1595318813",
+          "iosAppId": "ca-app-pub-7375934958502426~1595318813"
+        }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.419270836391-e995d4kaja9kf8d1aqi7cahig00nnue4"
+        }
+      ],
+      "expo-apple-authentication",
+      [
+        "expo-notifications",
+        {
+          "sounds": [
+            "./assets/sounds/adhan.mp3",
+            "./assets/sounds/islamvyappnotification.wav"
+          ]
         }
       ]
     ],
@@ -129,10 +238,6 @@
         "projectId": "2636bcd5-49b8-4f8d-a35a-0f67d3a4fdad"
       }
     },
-    "owner": "myusufuysal",
-    "react-native-google-mobile-ads": {
-      "android_app_id": "ca-app-pub-3940256099942544~3347511713",
-      "ios_app_id": "ca-app-pub-3940256099942544~1458002511"
-    }
+    "owner": "myusufuysal"
   }
 }

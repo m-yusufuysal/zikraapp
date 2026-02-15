@@ -18,15 +18,15 @@ const RECOVERY_COOLDOWN_MS = 30000; // 30 seconds
 module.exports = async function () {
     // Prevent duplicate registrations
     if (isServiceRegistered) {
-        console.log('[TrackPlayerService] Service already registered, skipping');
+        if (__DEV__) console.log('[TrackPlayerService] Service already registered, skipping');
         return;
     }
     isServiceRegistered = true;
-    console.log('[TrackPlayerService] Registering playback service...');
+    if (__DEV__) console.log('[TrackPlayerService] Registering playback service...');
 
     // Remote Control Events (Lock Screen / Notification Controls)
     TrackPlayer.addEventListener(Event.RemotePlay, async () => {
-        console.log('[TrackPlayerService] RemotePlay received');
+        if (__DEV__) console.log('[TrackPlayerService] RemotePlay received');
         try {
             await TrackPlayer.play();
         } catch (e) {
@@ -35,7 +35,7 @@ module.exports = async function () {
     });
 
     TrackPlayer.addEventListener(Event.RemotePause, async () => {
-        console.log('[TrackPlayerService] RemotePause received');
+        if (__DEV__) console.log('[TrackPlayerService] RemotePause received');
         try {
             await TrackPlayer.pause();
         } catch (e) {
@@ -44,7 +44,7 @@ module.exports = async function () {
     });
 
     TrackPlayer.addEventListener(Event.RemoteStop, async () => {
-        console.log('[TrackPlayerService] RemoteStop received');
+        if (__DEV__) console.log('[TrackPlayerService] RemoteStop received');
         try {
             await TrackPlayer.reset();
         } catch (e) {
@@ -53,7 +53,7 @@ module.exports = async function () {
     });
 
     TrackPlayer.addEventListener(Event.RemoteNext, async () => {
-        console.log('[TrackPlayerService] RemoteNext received');
+        if (__DEV__) console.log('[TrackPlayerService] RemoteNext received');
         try {
             await TrackPlayer.skipToNext();
         } catch (e) {
@@ -62,7 +62,7 @@ module.exports = async function () {
     });
 
     TrackPlayer.addEventListener(Event.RemotePrevious, async () => {
-        console.log('[TrackPlayerService] RemotePrevious received');
+        if (__DEV__) console.log('[TrackPlayerService] RemotePrevious received');
         try {
             await TrackPlayer.skipToPrevious();
         } catch (e) {
@@ -71,7 +71,7 @@ module.exports = async function () {
     });
 
     TrackPlayer.addEventListener(Event.RemoteSeek, async (event) => {
-        console.log('[TrackPlayerService] RemoteSeek received:', event.position);
+        if (__DEV__) console.log('[TrackPlayerService] RemoteSeek received:', event.position);
         try {
             await TrackPlayer.seekTo(event.position);
         } catch (e) {
@@ -81,7 +81,7 @@ module.exports = async function () {
 
     // Audio Focus / Ducking (when phone call comes in, etc.)
     TrackPlayer.addEventListener(Event.RemoteDuck, async (event) => {
-        console.log('[TrackPlayerService] RemoteDuck received:', event);
+        if (__DEV__) console.log('[TrackPlayerService] RemoteDuck received:', event);
         try {
             if (event.paused) {
                 // Another app requested audio focus
@@ -106,18 +106,18 @@ module.exports = async function () {
 
     // Track Changed Event
     TrackPlayer.addEventListener(Event.PlaybackActiveTrackChanged, async (event) => {
-        console.log('[TrackPlayerService] Active track changed:', event.index);
+        if (__DEV__) console.log('[TrackPlayerService] Active track changed:', event.index);
     });
 
     // Queue Ended Event
     TrackPlayer.addEventListener(Event.PlaybackQueueEnded, async (event) => {
-        console.log('[TrackPlayerService] Queue ended');
+        if (__DEV__) console.log('[TrackPlayerService] Queue ended');
         // Do not auto-play here, respect the user's choice to stop at the end of surah/juz
     });
 
     // Playback State Changes - with Auto-Recovery for Premium Users
     TrackPlayer.addEventListener(Event.PlaybackState, async (event) => {
-        console.log('[TrackPlayerService] Playback state changed:', event.state);
+        if (__DEV__) console.log('[TrackPlayerService] Playback state changed:', event.state);
 
         // Auto-recovery for unexpected stops (buffer underrun, iOS interruption, etc.)
         if (event.state === State.Stopped || event.state === State.None || event.state === State.Error) {
@@ -125,12 +125,12 @@ module.exports = async function () {
 
             // Rate limit + max attempts to prevent endless loops
             if (now - lastRecoveryAt < RECOVERY_COOLDOWN_MS) {
-                console.log('[TrackPlayerService] Skipping recovery (cooldown active)');
+                if (__DEV__) console.log('[TrackPlayerService] Skipping recovery (cooldown active)');
                 return;
             }
 
             if (recoveryAttempts >= MAX_RECOVERY_ATTEMPTS) {
-                console.log('[TrackPlayerService] Max recovery attempts reached, stopping');
+                if (__DEV__) console.log('[TrackPlayerService] Max recovery attempts reached, stopping');
                 return;
             }
 
@@ -140,7 +140,7 @@ module.exports = async function () {
 
                 // Only attempt recovery if we have tracks in queue
                 if (queue.length > 0 && currentIndex !== undefined && currentIndex !== null) {
-                    console.log(`[TrackPlayerService] Attempting auto-recovery (attempt ${recoveryAttempts + 1}/${MAX_RECOVERY_ATTEMPTS})...`);
+                    if (__DEV__) console.log(`[TrackPlayerService] Attempting auto-recovery (attempt ${recoveryAttempts + 1}/${MAX_RECOVERY_ATTEMPTS})...`);
                     lastRecoveryAt = now;
                     recoveryAttempts++;
 
@@ -150,12 +150,12 @@ module.exports = async function () {
                             const state = await TrackPlayer.getPlaybackState();
                             if (state.state !== State.Playing) {
                                 await TrackPlayer.play();
-                                console.log('[TrackPlayerService] Auto-recovery successful');
+                                if (__DEV__) console.log('[TrackPlayerService] Auto-recovery successful');
                             }
                         } catch (e) {
                             console.warn('[TrackPlayerService] Auto-recovery play failed:', e);
                         }
-                    }, 3000);
+                    }, 1000);
                 }
             } catch (e) {
                 console.warn('[TrackPlayerService] Auto-recovery check failed:', e);
@@ -168,5 +168,5 @@ module.exports = async function () {
         }
     });
 
-    console.log('[TrackPlayerService] Service registration complete');
+    if (__DEV__) console.log('[TrackPlayerService] Service registration complete');
 };

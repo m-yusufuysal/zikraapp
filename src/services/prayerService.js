@@ -66,7 +66,7 @@ export const getPrayerTimes = async (latitude, longitude, date = new Date()) => 
 const calculateLocalPrayerTimes = (latitude, longitude, date) => {
     try {
         const coordinates = new adhan.Coordinates(latitude, longitude);
-        const params = adhan.CalculationMethod.Turkey(); // Defaults to Diyanet for Zikra app
+        const params = adhan.CalculationMethod.Turkey(); // Defaults to Diyanet for Islamvy app
         const prayerTimes = new adhan.PrayerTimes(coordinates, date, params);
 
         const format = (time) => {
@@ -115,8 +115,12 @@ const getCachedPrayerTimes = async () => {
         const json = await AsyncStorage.getItem(CACHE_KEY);
         if (json) {
             const data = JSON.parse(json);
-            // Only return if it's from today (optional logic)
-            return data.timings;
+            // Only return if it's from today
+            if (data.date === new Date().toDateString()) {
+                return data.timings;
+            }
+            // Stale cache — still usable as last resort but log warning
+            console.warn('[PrayerService] Cache is stale (from', data.date, '), skipping');
         }
     } catch (e) {
         console.error("Error reading prayer cache", e);

@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation } from '@react-navigation/native';
 import { AlertCircle, BookOpen, Calendar, Clock, MapPin, Moon, Share2, ThumbsDown, ThumbsUp } from 'lucide-react-native';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,10 +19,11 @@ import AdBanner from '../components/AdBanner';
 import DeepProcessingModal from '../components/DeepProcessingModal';
 import RamadanBackground from '../components/RamadanBackground';
 import { useTheme } from '../contexts/ThemeContext';
-import { showRewarded } from '../services/adService';
+import { showRewardedAd } from '../utils/AdManager';
 import { checkLimit, incrementUsage } from '../services/LimitService';
 import { supabase } from '../services/supabase';
-import { getUserProfile, updateUserProfile } from '../services/userService';
+import { getUserProfile } from '../services/userService';
+import { useRevenueCat } from '../providers/RevenueCatProvider';
 import { isTablet, TABLET_MAX_WIDTH } from '../utils/responsive';
 import { COLORS } from '../utils/theme';
 
@@ -89,7 +91,8 @@ const StardustButtonOverlay = memo(() => {
 const DreamInterpretation = ({ navigation }) => {
     const insets = useSafeAreaInsets();
     const { t, i18n } = useTranslation();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
+    const { isPro } = useRevenueCat();
 
     const [name, setName] = useState('');
     const [birthPlace, setBirthPlace] = useState('');
@@ -111,6 +114,9 @@ const DreamInterpretation = ({ navigation }) => {
         loadUserProfile();
         // Generate initial request hash
         setRequestHash(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
+
+        // Preload Ad
+        import('../utils/AdManager').then(module => module.loadRewardedAd());
     }, []);
 
     const loadUserProfile = async () => {
@@ -169,49 +175,7 @@ const DreamInterpretation = ({ navigation }) => {
         return `${hours}:${minutes}`;
     };
 
-    const handleInterpret = async () => {
-        if (!name || !dreamDescription) {
-            Alert.alert(t('dream.error_title'), t('dream.error_missing'));
-            return;
-        }
-
-        if (dreamDescription.length < 20) {
-            Alert.alert(t('dream.error_title'), t('dream.error_short'));
-            return;
-        }
-
-        // 1. Check Limits
-        try {
-            const limitCheck = await checkLimit('dream');
-            if (!limitCheck.allowed) {
-                Alert.alert(
-                    t('dream.limit_title'),
-                    t('premium.features.dream_limit', { count: limitCheck.limit }) + "\n" + t('dream.limit_message'),
-                    [
-                        { text: t('ok'), style: "cancel" },
-                        { text: t('dream.go_premium'), onPress: () => navigation.navigate('Premium') }
-                    ]
-                );
-                return;
-            }
-        } catch (limitError) {
-            console.warn("Limit check failed, proceeding anyway:", limitError);
-        }
-
-        // 2. Show Ad (if not premium)
-        try {
-            const isPremium = await AsyncStorage.getItem('isPremium') === 'true';
-            if (!isPremium) {
-                const watched = await showRewarded();
-                if (!watched) {
-                    // User cancelled or ad failed
-                    return;
-                }
-            }
-        } catch (adError) {
-            console.warn("Ad service error:", adError);
-        }
-
+    const executeInterpretation = async () => {
         setLoading(true);
         setInterpretation(null);
 
@@ -219,7 +183,7 @@ const DreamInterpretation = ({ navigation }) => {
         const loadingTimeout = setTimeout(() => {
             if (loading) {
                 setLoading(false);
-                Alert.alert(t('error'), t('quran.generic_error') + " (Timeout)");
+                Alert.alert(t('error'), t('quran.generic_error') + ` (${t('common.timeout')})`);
             }
         }, 45000);
 
@@ -256,23 +220,22 @@ const DreamInterpretation = ({ navigation }) => {
                 throw new Error(result?.error || "Invalid response from server");
             }
 
-            // 5. Update Profile & Increment Usage
-            try {
-                await updateUserProfile(user.id, {
-                    full_name: name,
-                    birth_date: formattedDate,
-                    birth_time: formattedTime,
-                    birth_place: birthPlace
-                });
-                setRequestHash(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
-            } catch (saveError) {
-                console.warn("Profile update failed:", saveError);
-            }
 
             // Increment usage
             await incrementUsage('dream');
 
             setInterpretation(result);
+
+            // Smart Review Trigger
+            // We delay slightly to ensure the UI has updated and user sees the result first
+            setTimeout(() => {
+                import('../services/StoreReviewService').then(module => {
+                    module.default.checkDreamReview();
+                });
+            }, 1000);
+
+            // Regenerate hash for next request to avoid caching old results
+            setRequestHash(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
         } catch (error) {
             clearTimeout(loadingTimeout);
             console.error("DREAM INTERPRET ERROR:", error);
@@ -280,6 +243,46 @@ const DreamInterpretation = ({ navigation }) => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleInterpret = async () => {
+        if (!name || !dreamDescription) {
+            Alert.alert(t('dream.error_title'), t('dream.error_missing'));
+            return;
+        }
+
+        if (dreamDescription.length < 20) {
+            Alert.alert(t('dream.error_title'), t('dream.error_short'));
+            return;
+        }
+
+        // Check Premium Status
+        const isPremium = isPro;
+
+        if (!isPremium) {
+            // FORCE AD FOR DREAM INTERPRETATION
+            // User must watch ad to proceed
+            Alert.alert(
+                t('common.watch_ad_title'),
+                t('common.watch_ad_message'),
+                [
+                    { text: t('cancel'), style: "cancel" },
+                    {
+                        text: t('common.watch_ad'),
+                        onPress: async () => {
+                            const watched = await showRewardedAd();
+                            if (watched) {
+                                executeInterpretation();
+                            }
+                        }
+                    },
+                    { text: t('dream.go_premium'), onPress: () => navigation.navigate('Premium') }
+                ]
+            );
+            return;
+        }
+
+        executeInterpretation();
     };
 
     const handleFeedback = async (rating) => {
@@ -307,7 +310,7 @@ const DreamInterpretation = ({ navigation }) => {
     const handleShare = async () => {
         if (!interpretation) return;
 
-        const shareMessage = `✨ ${t('dream.share_title')} - Zikra App
+        const shareMessage = `✨ ${t('dream.share_title')} - Islamvy App
 
 🌙 ${t('dream.advice')}:
 "${interpretation.spiritual_advice?.substring(0, 150)}..."
@@ -316,14 +319,14 @@ const DreamInterpretation = ({ navigation }) => {
 ${interpretation.recommended_action}
 
 📲 ${t('dream.share_app_link')}:
-https://zikraapp.com/download
+https://islamvy.com/download
 
-#ZikraApp #Zikra #Spiritual`;
+#IslamvyApp #Islamvy #Spiritual`;
 
         try {
             await Share.share({
                 message: shareMessage,
-                title: 'Zikra - Dream Interpretation'
+                title: 'Islamvy - Dream Interpretation'
             });
         } catch (error) {
             // Share error - ignore
@@ -381,8 +384,16 @@ https://zikraapp.com/download
 
                     {/* Header */}
                     <View style={styles.header}>
-                        <View style={styles.iconCircle}>
-                            <Moon size={28} color={'#FFD700'} fill={'#FFD700'} />
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                            <View style={styles.iconCircle}>
+                                <Moon size={28} color={'#FFD700'} fill={'#FFD700'} />
+                            </View>
+                            <TouchableOpacity
+                                style={{ position: 'absolute', right: 0, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 20, width: 40, height: 40, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,215,0,0.2)' }}
+                                onPress={() => navigation.navigate('DreamHistory')}
+                            >
+                                <BookOpen size={20} color="#FFD700" />
+                            </TouchableOpacity>
                         </View>
                         <Text style={[styles.title, { color: '#FFF' }]}>{t('dream.title')}</Text>
                         <Text style={[styles.subtitle, { color: 'rgba(255,255,255,0.7)' }]}>{t('dream.subtitle')}</Text>
@@ -513,6 +524,8 @@ https://zikraapp.com/download
                                 />
                             </View>
 
+
+
                             {/* Submit Button */}
                             <TouchableOpacity
                                 style={[styles.submitButton, { backgroundColor: 'rgba(255, 255, 255, 0.08)', borderColor: 'rgba(255, 255, 255, 0.15)', borderWidth: 1, shadowColor: '#FFF', shadowOpacity: 0.1, shadowRadius: 10, elevation: 5 }]}
@@ -541,6 +554,11 @@ https://zikraapp.com/download
                                         <View key={index} style={styles.symbolItem}>
                                             <Text style={styles.symbolName}>{item.symbol}:</Text>
                                             <Text style={styles.symbolMeaning}>{item.meaning}</Text>
+                                            {item.personal_connection && (
+                                                <Text style={[styles.symbolMeaning, { marginTop: 6, opacity: 0.8, fontSize: 13, color: '#FFD700' }]}>
+                                                    ✨ {t('dream.personal_connection') ? t('dream.personal_connection') + ': ' : ''}{item.personal_connection}
+                                                </Text>
+                                            )}
                                         </View>
                                     ))}
                                 </View>
@@ -578,6 +596,40 @@ https://zikraapp.com/download
                                         <Text style={[styles.resultCardTitle, { color: '#FFFFFF' }]}>{t('dream.recommended_action')}</Text>
                                     </View>
                                     <Text style={styles.actionText}>{interpretation.recommended_action}</Text>
+                                </View>
+                            )}
+
+                            {/* --- NEW AI FIELDS --- */}
+
+                            {/* Contextual Analysis */}
+                            {interpretation.contextual_analysis && (
+                                <View style={[styles.resultCard, { borderColor: 'rgba(255, 215, 0, 0.3)', backgroundColor: 'rgba(255, 215, 0, 0.05)' }]}>
+                                    <View style={styles.resultHeader}>
+                                        <Text style={[styles.resultCardTitle, { color: '#FFD700' }]}>{t('dream.contextual_analysis')}</Text>
+                                    </View>
+                                    <Text style={[styles.resultText, { fontStyle: 'italic' }]}>{interpretation.contextual_analysis}</Text>
+                                </View>
+                            )}
+
+                            {/* Islamic References */}
+                            {interpretation.islamic_references && (
+                                <View style={styles.resultCard}>
+                                    <View style={styles.resultHeader}>
+                                        <BookOpen size={20} color={COLORS.matteGreen} />
+                                        <Text style={[styles.resultCardTitle, { color: COLORS.matteGreen }]}>{t('dream.islamic_references')}</Text>
+                                    </View>
+                                    <Text style={styles.resultText}>{interpretation.islamic_references}</Text>
+                                </View>
+                            )}
+
+                            {/* Timing Advice */}
+                            {interpretation.timing_advice && (
+                                <View style={[styles.resultCard, { borderColor: 'rgba(100, 200, 255, 0.3)' }]}>
+                                    <View style={styles.resultHeader}>
+                                        <Clock size={20} color="#64B5F6" />
+                                        <Text style={[styles.resultCardTitle, { color: '#64B5F6' }]}>{t('dream.timing_advice')}</Text>
+                                    </View>
+                                    <Text style={styles.resultText}>{interpretation.timing_advice}</Text>
                                 </View>
                             )}
 

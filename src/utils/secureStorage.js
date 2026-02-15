@@ -1,4 +1,3 @@
-import { MMKV } from "react-native-mmkv";
 /**
  * Secure Storage Utility
  * 
@@ -10,8 +9,8 @@ import * as Keychain from 'react-native-keychain';
 
 // === MMKV (Fast, Encrypted for Settings) ===
 const storage = new MMKV({
-    id: 'zikra-secure-settings',
-    encryptionKey: 'zikra-mmkv-key-v1', // In production, derive from device secret
+    id: 'islamvy-secure-settings',
+    encryptionKey: 'islamvy-mmkv-key-v1', // In production, derive from device secret
 });
 
 /**
@@ -52,7 +51,7 @@ export const deleteSetting = (key) => {
 
 // === KEYCHAIN (For Secrets like Tokens) ===
 
-const KEYCHAIN_SERVICE = 'com.zikraapp.secrets';
+const KEYCHAIN_SERVICE = 'com.islamvy.secrets';
 
 /**
  * Store secret in Keychain/Keystore (e.g., auth tokens)

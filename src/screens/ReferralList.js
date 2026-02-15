@@ -20,7 +20,7 @@ const ReferralList = ({ route, navigation }) => {
     const { influencerId } = route.params;
     const { t, i18n } = useTranslation();
     const insets = useSafeAreaInsets();
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
     const [loading, setLoading] = useState(true);
     const [referrals, setReferrals] = useState([]);
 
@@ -78,7 +78,7 @@ const ReferralList = ({ route, navigation }) => {
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
                         <ChevronLeft size={28} color={COLORS.primary} />
                     </TouchableOpacity>
-                    <Text style={[styles.title, ramadanModeEnabled && { color: '#FFF' }]}>{t('referral.list_title')}</Text>
+                    <Text style={[styles.title, nightModeEnabled && { color: '#FFF' }]}>{t('referral.list_title')}</Text>
                     <View style={{ width: 40 }} />
                 </View>
 

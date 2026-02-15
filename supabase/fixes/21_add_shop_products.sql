@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Add Shop Products (Affiliate Verified)
+-- Islamvy App - Add Shop Products (Affiliate Verified)
 -- Targeted products with Amazon Affiliate friendly links
 -- Lütfen 'YOUR_TAG_HERE' kısımlarını kendi Amazon Associate ID'nizle değiştirin.
 -- ============================================

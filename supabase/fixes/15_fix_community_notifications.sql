@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Fix Community Notifications
+-- Islamvy App - Fix Community Notifications
 -- This script fixes the type constraint mismatch
 -- and ensures all triggers are properly set up
 -- ============================================

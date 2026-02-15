@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - FORCE FIX SCRIPT (Run this if AI errors persist)
+-- Islamvy App - FORCE FIX SCRIPT (Run this if AI errors persist)
 -- ============================================
 
 DO $$

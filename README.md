@@ -1,11 +1,11 @@
-# Zikra - Islamic Lifestyle App 🕌
+# Islamvy - Islamic Lifestyle App 🕌
 
 A comprehensive Islamic lifestyle companion app built with React Native and Expo.
 
 ## Features
 
-- 📿 **AI-Powered Dhikr**: Personalized dhikr plans Islamic numerology analysis using AI (GPT-4o mini).
-- 🌙 **AI-Dream Interpretation**: Deep personalized Islamic dream analysis using AI (GPT-4o mini).
+- 📿 **AI-Powered Dhikr**: Personalized dhikr plans Islamic numerology analysis using AI 
+- 🌙 **AI-Dream Interpretation**: Deep personalized Islamic dream analysis using AI 
 - 👥 **Spiritual Community**: Share dualar, zikirler, and hatimler. Interact with others via "Amen" and "Prayed".
 - 🛒 **Shop**: Curated Islamic lifestyle products with Amazon affiliate integration.
 - 📜 **AI-Word of the Day**: Contextual Daily Quotes (Verse/Hadith) generated via AI, considering Islamic special days and world agenda.
@@ -18,14 +18,14 @@ A comprehensive Islamic lifestyle companion app built with React Native and Expo
 - 🕌 **Mosque Finder**: Locate nearby mosques using your device location.
 - 💰 **Zakat Calculator**: Calculate your zakat easily based on gold, cash, and other assets.
 - 📢 **Referral System**: Influencer dashboard for tracking clicks, registrations, and conversions.
-- ⭐ **Zikra Premium**:
+- ⭐ **Islamvy Premium**:
   - **Tiers**: Starter ($3.99), Pro ($7.99), Unlimited ($14.99).
   - **Features**: Ad-Free, Background Audio, Daily Limits (3/10/Unlimited).
 
 ## Project Structure
 
 ```
-zikra-app/
+islamvy-app/
 ├── App.js                 # Main entry point & Navigation
 ├── app.json               # Expo configuration (Env & Permissions)
 ├── src/
@@ -74,11 +74,11 @@ zikra-app/
 
 ## Privacy & Security
 
-Zikra takes user privacy seriously:
+Islamvy takes user privacy seriously:
 - **AES-256 Encryption**: For all sensitive user data.
 - **Row Level Security (RLS)**: Strict data isolation for community and personal profile data.
 - **Minimal Tracking**: Location used only for prayer times and mosque finding.
 
 ## License
 
-© 2026 Zikra App. All rights reserved.
+© 2026 Islamvy App. All rights reserved.

@@ -2,9 +2,9 @@ const { withXcodeProject, withDangerousMod, withEntitlementsPlist } = require('@
 const path = require('path');
 const fs = require('fs');
 
-const WIDGET_TARGET_NAME = 'ZikraWidget';
-const WIDGET_BUNDLE_ID = 'com.yusuf.zikraapp.widget'; // Must be consistent
-const APP_GROUP_ID = 'group.com.yusuf.zikraapp';
+const WIDGET_TARGET_NAME = 'IslamvyWidget';
+const WIDGET_BUNDLE_ID = 'com.esat.islamvy.IslamvyWidget'; // Must be consistent
+const APP_GROUP_ID = 'group.com.esat.islamvy';
 
 const withWidgetError = (config, error) => {
     console.log("Widget Plugin Error: ", error);
@@ -19,8 +19,8 @@ const withWidgetXcodeTarget = (config) => {
 
             const group = project.addPbxGroup(
                 [
-                    'ZikraWidget.swift',
-                    'ZikraWidgetBundle.swift',
+                    'IslamvyWidget.swift',
+                    'IslamvyWidgetBundle.swift',
                     'Info.plist',
                     'Assets.xcassets'
                 ],
@@ -30,7 +30,7 @@ const withWidgetXcodeTarget = (config) => {
 
             // Add Build Phases
             project.addBuildPhase(
-                ['ZikraWidget.swift', 'ZikraWidgetBundle.swift'],
+                ['IslamvyWidget.swift', 'IslamvyWidgetBundle.swift'],
                 'PBXSourcesBuildPhase',
                 'Sources',
                 target.uuid
@@ -60,7 +60,7 @@ const withWidgetXcodeTarget = (config) => {
                 }
             }
 
-            // Copy files to ios/ZikraWidget
+            // Copy files to ios/IslamvyWidget
             const widgetSourceDir = path.join(config.modRequest.projectRoot, 'ios-widget');
             const widgetDestDir = path.join(config.modRequest.platformProjectRoot, WIDGET_TARGET_NAME);
 
@@ -69,7 +69,7 @@ const withWidgetXcodeTarget = (config) => {
             }
 
             // Copy standard files
-            ['ZikraWidget.swift', 'ZikraWidgetBundle.swift', 'Info.plist', 'ZikraWidget.entitlements'].forEach(file => {
+            ['IslamvyWidget.swift', 'IslamvyWidgetBundle.swift', 'Info.plist', 'IslamvyWidget.entitlements'].forEach(file => {
                 fs.copyFileSync(
                     path.join(widgetSourceDir, file),
                     path.join(widgetDestDir, file)

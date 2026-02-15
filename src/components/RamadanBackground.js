@@ -13,13 +13,13 @@ const ShimmerStar = memo(({ size, style }) => {
             Animated.sequence([
                 Animated.timing(opacity, {
                     toValue: 0.6 + Math.random() * 0.4,
-                    duration: 2500 + Math.random() * 2500,
+                    duration: 3000 + Math.random() * 3000,
                     easing: Easing.linear,
                     useNativeDriver: true,
                 }),
                 Animated.timing(opacity, {
                     toValue: 0.2 + Math.random() * 0.2,
-                    duration: 2500 + Math.random() * 2500,
+                    duration: 3000 + Math.random() * 3000,
                     easing: Easing.linear,
                     useNativeDriver: true,
                 }),
@@ -36,10 +36,7 @@ const ShimmerStar = memo(({ size, style }) => {
                     height: size,
                     backgroundColor: '#FFF',
                     borderRadius: size / 2,
-                    shadowColor: '#FFF',
-                    shadowOffset: { width: 0, height: 0 },
-                    shadowOpacity: 1,
-                    shadowRadius: size / 2,
+                    // Shadow removed for performance
                 }}
             />
         </Animated.View>
@@ -49,21 +46,21 @@ const ShimmerStar = memo(({ size, style }) => {
 const RamadanBackground = ({
     children,
     style,
-    starCount = 25, // Reduced from 40 for better performance
+    starCount = 10, // Reduced from 15 (originally 25) for maximum smoothness
     forceNormalMode = false,
     forceRamadanAppearance = false,
     customStandardGradient = null
 }) => {
-    const { ramadanModeEnabled } = useTheme();
+    const { nightModeEnabled } = useTheme();
     // Prioritize force props, otherwise use global setting
-    const isRamadanMode = forceRamadanAppearance ? true : (forceNormalMode ? false : ramadanModeEnabled);
+    const isRamadanMode = forceRamadanAppearance ? true : (forceNormalMode ? false : nightModeEnabled);
 
     const fadeAnim = useRef(new Animated.Value(isRamadanMode ? 1 : 0)).current;
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
             toValue: isRamadanMode ? 1 : 0,
-            duration: 300, // Faster transition for snappier feel
+            duration: 300,
             useNativeDriver: true,
         }).start();
     }, [isRamadanMode]);
@@ -86,11 +83,13 @@ const RamadanBackground = ({
 
     return (
         <View style={[styles.container, style]}>
-            {/* Base Layer: Standard Background */}
-            <LinearGradient
-                colors={standardColors}
-                style={StyleSheet.absoluteFill}
-            />
+            {/* Base Layer: Standard Background - Only render if not in Ramadan mode or during transition */}
+            {!isRamadanMode && (
+                <LinearGradient
+                    colors={standardColors}
+                    style={StyleSheet.absoluteFill}
+                />
+            )}
 
             {/* Overlay Layer: Ramadan Background (Fades in/out) - Only render when active */}
             {isRamadanMode && (

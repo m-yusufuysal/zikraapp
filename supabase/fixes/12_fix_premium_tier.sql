@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Schema Migration
+-- Islamvy App - Schema Migration
 -- Fix premium_tier column and update existing premium users
 -- ============================================
 

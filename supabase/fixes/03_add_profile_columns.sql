@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Schema Migration Fix
+-- Islamvy App - Schema Migration Fix
 -- Add missing columns to existing tables
 -- ============================================
 

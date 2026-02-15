@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Clear Rate Limits & Verify Premium
+-- Islamvy App - Clear Rate Limits & Verify Premium
 -- Run this in Supabase SQL Editor to fix issues
 -- ============================================
 

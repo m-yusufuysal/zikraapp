@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Schema Fix Script
+-- Islamvy App - Schema Fix Script
 -- Run this in the Supabase SQL Editor to fix missing columns
 -- ============================================
 

@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - DIAGNOSTIC & TEST SCRIPT
+-- Islamvy App - DIAGNOSTIC & TEST SCRIPT
 -- Run this to verify if the notification system is working
 -- ============================================
 

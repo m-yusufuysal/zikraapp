@@ -1,5 +1,5 @@
 -- ============================================
--- Zikra App - Index Optimizations
+-- Islamvy App - Index Optimizations
 -- Version 1.0
 -- Addresses: unindexed_foreign_keys & unused_index
 -- ============================================
