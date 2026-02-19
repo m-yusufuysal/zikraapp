@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamvy - AI Islamic Dream Interpretation, Dhikr & Prayer Times</title>
+    <meta name="description"
+        content="Islamvy is a comprehensive Islamic lifestyle app powered by AI. Features include accurate AI Islamic Dream Interpretation (Ibn Sirin), Smart Dhikr & Dua, Prayer Times, Qibla Compass, and Quran. Available on iOS and Android.">
+    <meta name="keywords"
+        content="Islamic Dream Interpretation, AI Dream Interpretation Islam, Ibn Sirin AI, Muslim App, Prayer Times, Qibla Finder, Smart Dhikr, Digital Tasbih, Quran App, Islamic AI, Ruya Tabiri, Zikirmatik">
+    <meta name="author" content="Islamvy App">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://islamvy.com/">
+    <meta property="og:title" content="Islamvy - AI Islamic Dream Interpretation & Lifestyle App">
+    <meta property="og:description"
+        content="Discover Islamvy: The most advanced Muslim companion app featuring AI Dream Interpretation, Personalized Dhikr, and accurate Prayer Times.">
+    <meta property="og:image" content="https://islamvy.com/assets/logo.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://islamvy.com/">
+    <meta property="twitter:title" content="Islamvy - AI Islamic Dream Interpretation & Lifestyle App">
+    <meta property="twitter:description"
+        content="Discover Islamvy: The most advanced Muslim companion app featuring AI Dream Interpretation, Personalized Dhikr, and accurate Prayer Times.">
+    <meta property="twitter:image" content="https://islamvy.com/assets/logo.png">
+
+    <!-- Schema.org JSON-LD for Generative Engine Optimization (GEO) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Islamvy",
+          "applicationCategory": "LifestyleApplication",
+          "operatingSystem": "iOS, Android",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "description": "Islamvy is a modern AI-powered Islamic lifestyle application. It provides AI-based Islamic dream interpretation (Ruya Tabiri based on Ibn Sirin), personalized Dhikr (Zikir) plans, accurate Prayer Times, Qibla direction, and a digital Quran reader.",
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "1250"
+          },
+          "downloadUrl": "https://apps.apple.com/app/islamvy",
+          "featureList": "AI Dream Interpretation, Smart Dhikr, Prayer Times, Quran, Qibla Compass, Live Kaaba, Community Dua"
+        },
+        {
+            "@type": "Organization",
+            "name": "Islamvy",
+            "url": "https://islamvy.com",
+            "logo": "https://islamvy.com/assets/logo.png",
+            "sameAs": [
+                "https://apps.apple.com/app/islamvy",
+                "https://play.google.com/store/apps/details?id=com.esat.islamvy"
+            ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is the best app for Islamic AI dream interpretation?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Islamvy is the leading app for Islamic AI dream interpretation. It combines traditional sources like Ibn Sirin with modern AI to provide personalized and context-aware dream meanings."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is there an app for personalized Dhikr and Dua?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, Islamvy offers a 'Smart Dhikr' feature that generates personalized Dhikr and Dua plans based on your current emotional state, time of day, and personal goals."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Islamvy typically interpret dreams according to Sunnah?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, Islamvy's AI engine is trained on authentic Islamic sources including interpretations by Ibn Sirin and Nablusi, ensuring interpretations are respectful of Islamic tradition."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Kaushan+Script&display=swap"
+        rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" href="assets/logo.png">
+    <!-- AOS - Animate On Scroll Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="geometric-bg"></div>
+
+    <nav class="navbar">
+        <div class="logo" data-i18n="nav_logo">
+            Islamvy
+        </div>
+        <div class="nav-right">
+            <div class="nav-store-icons">
+                <a href="https://apps.apple.com/app/islamvy" target="_blank" class="nav-store-link" title="App Store">
+                    <svg viewBox="0 0 384 512" fill="currentColor" width="22" height="22">
+                        <path
+                            d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-54.8-124.3-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z" />
+                    </svg>
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.esat.islamvy" target="_blank"
+                    class="nav-store-link" title="Google Play">
+                    <svg viewBox="0 0 512 512" width="24" height="24">
+                        <path fill="#00E676"
+                            d="M32.021 21.053l296.356 169.117-64.846 64.954-263.639-128.232c-6.195-2.909-6.903-12.721 1.636-16.792l30.493-14.735v-74.312z" />
+                        <path fill="#FFD600"
+                            d="M328.377 190.17l-64.846 64.954 64.846 64.954 116.892-66.904c14.079-8.077 14.079-28.729 0-36.806l-116.892-66.904z" />
+                        <path fill="#FF3D00"
+                            d="M263.531 320.078l64.846 64.954-296.356 169.117c-6.282 3.636-14.079-2.078-14.079-10.455v-351.851l245.589 128.235z" />
+                        <path fill="#448AFF"
+                            d="M18.021 12.053v487.894c0 8.377 7.797 14.091 14.079 10.455l231.431-132.078-245.51-249.48-245.51 249.48-132.078z" />
+                    </svg>
+                </a>
+            </div>
+            <div class="nav-links" style="margin-right: 1.5rem;">
+                <a href="blog/index.html" class="nav-item-link" id="navBlogLink"
+                    style="color: #fff; text-decoration: none; font-weight: 500; font-size: 0.95rem; opacity: 0.9; transition: 0.3s;">Blog</a>
+            </div>
+            <div class="lang-dropdown">
+                <button class="lang-btn" id="langBtn">
+                    <span id="currentLang">EN</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="lang-menu" id="langMenu">
+                    <button class="lang-option" data-lang="en">English</button>
+                    <button class="lang-option" data-lang="tr">Türkçe</button>
+                    <button class="lang-option" data-lang="ar">العربية</button>
+                    <button class="lang-option" data-lang="fr">Français</button>
+                    <button class="lang-option" data-lang="id">Bahasa Indonesia</button>
+                </div>
+            </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <div class="hero-text-container">
+                <div class="hero-text">
+                    <h1 data-i18n="hero_title">Spiritual Harmony<br>for the Modern Soul</h1>
+                    <p data-i18n="hero_subtitle">Experience the perfect blend of tradition and technology. Accurate
+                        prayer
+                        times, immersive Quran reading, and AI-powered spiritual insights.</p>
+                </div>
+
+                <!-- Product Hunt Embed -->
+                <div
+                    style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; border: 1px solid rgb(224, 224, 224); border-radius: 12px; padding: 20px; max-width: 500px; background: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.05) 0px 2px 8px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <img alt="Islamvy"
+                            src="https://ph-files.imgix.net/1bff8b92-9a6d-4d2f-acb3-ed0fbe21d8db.png?auto=format&amp;fit=crop&amp;w=80&amp;h=80"
+                            style="width: 64px; height: 64px; border-radius: 8px; object-fit: cover; flex-shrink: 0;">
+                        <div style="flex: 1 1 0%; min-width: 0px;">
+                            <h3
+                                style="margin: 0px; font-size: 18px; font-weight: 600; color: rgb(26, 26, 26); line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                Islamvy</h3>
+                            <p
+                                style="margin: 4px 0px 0px; font-size: 14px; color: rgb(102, 102, 102); line-height: 1.4; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;">
+                                The First AI-Powered Islamic Lifestyle Super App </p>
+                        </div>
+                    </div>
+                    <a href="https://www.producthunt.com/products/islamvy?embed=true&amp;utm_source=embed&amp;utm_medium=post_embed"
+                        target="_blank" rel="noopener"
+                        style="display: inline-flex; align-items: center; gap: 4px; margin-top: 12px; padding: 8px 16px; background: rgb(255, 97, 84); color: rgb(255, 255, 255); text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600;">Check
+                        it out on Product Hunt →</a>
+                </div>
+
+                <!-- Buttons on the RIGHT side (controlled via CSS grid/flex) -->
+                <div class="hero-cta-group">
+                    <div class="store-badges">
+                        <a href="https://apps.apple.com/app/islamvy" target="_blank" class="store-badge app-store"
+                            aria-label="Download on the App Store">
+                            <div class="badge-content">
+                                <svg class="apple-logo" viewBox="0 0 384 512" fill="currentColor">
+                                    <path
+                                        d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-54.8-124.3-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z" />
+                                </svg>
+                                <div class="badge-text">
+                                    <span class="badge-subtitle" data-i18n="download_on">Download on the</span>
+                                    <span class="badge-title">App Store</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://play.google.com/store/apps/details?id=com.esat.islamvy" target="_blank"
+                            class="store-badge google-play" aria-label="Get it on Google Play">
+                            <div class="badge-content">
+                                <svg class="play-logo" viewBox="0 0 512 512">
+                                    <path fill="#00E676"
+                                        d="M32.021 21.053l296.356 169.117-64.846 64.954-263.639-128.232c-6.195-2.909-6.903-12.721 1.636-16.792l30.493-14.735v-74.312z" />
+                                    <path fill="#FFD600"
+                                        d="M328.377 190.17l-64.846 64.954 64.846 64.954 116.892-66.904c14.079-8.077 14.079-28.729 0-36.806l-116.892-66.904z" />
+                                    <path fill="#FF3D00"
+                                        d="M263.531 320.078l64.846 64.954-296.356 169.117c-6.282 3.636-14.079-2.078-14.079-10.455v-351.851l245.589 128.235z" />
+                                    <path fill="#448AFF"
+                                        d="M18.021 12.053v487.894c0 8.377 7.797 14.091 14.079 10.455l231.431-132.078-245.51-249.48-245.51 249.48-132.078z" />
+                                </svg>
+                                <div class="badge-text">
+                                    <span class="badge-subtitle" data-i18n="get_it_on">GET IT ON</span>
+                                    <span class="badge-title">Google Play</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual" data-aos="zoom-in" data-aos-duration="1200">
+                <div class="phone-wrapper">
+                    <div class="phone-frame">
+                        <div class="dynamic-island"></div>
+                        <div class="volume-btn"></div>
+                        <div class="power-btn"></div>
+                        <div class="screen-content hero-screen" style="border-radius: 40px; overflow: hidden;">
+                            <!-- Status Bar -->
+                            <div class="status-bar">
+                                <span data-i18n="mock_time">18:27</span>
+                                <div class="status-right">
+                                    <i class="fa-solid fa-wifi"></i>
+                                    <i class="fa-solid fa-battery-full"></i>
+                                </div>
+                            </div>
+
+                            <!-- Real App UI Content -->
+                            <div class="app-ui-container">
+                                <!-- Top Header -->
+                                <div class="app-header-row">
+                                    <div class="header-text-col">
+                                        <h2 class="mock-date" data-i18n="mock_date_full">Tuesday, January 27</h2>
+                                        <p class="mock-hijri" data-i18n="mock_hijri">Sha'ban 9, 1447 AH</p>
+                                        <p class="mock-location"><span data-i18n="mock_location">DUBAI, UAE</span></p>
+                                    </div>
+                                    <div class="header-actions-col">
+                                        <div class="action-circle"><i class="fa-regular fa-compass"></i></div>
+                                        <div class="action-circle"><i class="fa-solid fa-tv"></i></div>
+                                        <div class="action-circle"><i class="fa-solid fa-bag-shopping"></i></div>
+                                        <div class="action-circle"><i class="fa-solid fa-handshake"></i><span
+                                                class="action-badge">5</span></div>
+                                    </div>
+                                </div>
+
+                                <!-- Circular Timer -->
+                                <div class="timer-container-large">
+                                    <div class="timer-circle">
+                                        <div class="timer-content-text">
+                                            <span class="t-label" data-i18n="mock_timer_label">TIME REMAINING</span>
+                                            <span class="t-time" data-i18n="mock_timer_value">00:47:57</span>
+                                            <span class="t-next-pill" data-i18n="mock_next_prayer">ISHA</span>
+                                        </div>
+                                        <svg class="progress-ring" width="200" height="200">
+                                            <circle class="progress-ring__circle" stroke="#2d5c48" stroke-width="2"
+                                                fill="transparent" r="90" cx="100" cy="100" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <!-- Prayer Times Grid -->
+                                <div class="prayer-grid-compact">
+                                    <div class="p-grid-card">
+                                        <span class="pg-name" data-i18n="mock_fajr">İmsak</span>
+                                        <span class="pg-time" data-i18n="mock_fajr_time">05:42</span>
+                                    </div>
+                                    <div class="p-grid-card">
+                                        <span class="pg-name" data-i18n="mock_sunrise">Güneş</span>
+                                        <span class="pg-time" data-i18n="mock_sunrise_time">07:08</span>
+                                    </div>
+                                    <div class="p-grid-card">
+                                        <span class="pg-name" data-i18n="mock_dhuhr">Öğle</span>
+                                        <span class="pg-time" data-i18n="mock_dhuhr_time">12:35</span>
+                                    </div>
+                                    <div class="p-grid-card">
+                                        <span class="pg-name" data-i18n="mock_asr">İkindi</span>
+                                        <span class="pg-time" data-i18n="mock_asr_time">15:22</span>
+                                    </div>
+                                    <div class="p-grid-card active-prayer">
+                                        <span class="pg-name" data-i18n="mock_maghrib">Akşam</span>
+                                        <span class="pg-time" data-i18n="mock_maghrib_time">18:02</span>
+                                    </div>
+                                    <div class="p-grid-card">
+                                        <span class="pg-name" data-i18n="mock_isha">Yatsı</span>
+                                        <span class="pg-time" data-i18n="mock_isha_time">19:28</span>
+                                    </div>
+                                </div>
+
+                                <!-- Word of the Day -->
+                                <div class="word-day-card">
+                                    <div class="w-header">
+                                        <i class="fa-solid fa-book-open"></i>
+                                        <span class="w-label" data-i18n="mock_word_label">GÜNÜN SÖZÜ</span>
+                                    </div>
+                                    <p class="w-text" data-i18n="mock_word_text_new">"Bu dünya hayatı ancak bir eğlence
+                                        ve oyundan ibarettir. Ahiret yurduna gelince, işte gerçek hayat odur. Keşke
+                                        bilselerdi!"</p>
+                                    <span class="w-source" data-i18n="mock_word_source_new">Kuran-ı Kerim Ankebut
+                                        29/64</span>
+                                </div>
+
+                            </div>
+
+                            <div class="mock-nav">
+                                <div class="nav-item active"><i class="fa-solid fa-house"></i></div>
+                                <div class="nav-item"><i class="fa-solid fa-book-open"></i></div>
+                                <div class="nav-item"><i class="fa-solid fa-fingerprint"></i></div>
+                                <div class="nav-item"><i class="fa-solid fa-moon"></i></div>
+                                <div class="nav-item"><i class="fa-solid fa-gear"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="features-flow">
+        <!-- Feature 1: AI Dream Interpretation (Lead with AI) -->
+        <!-- Feature 1: AI Dream Interpretation (Lead with AI) -->
+        <div class="feature-row reverse" data-aos="fade-up" data-aos-duration="800">
+            <div class="feature-content">
+                <div class="feature-text-card ftc-dream align-right">
+                    <h3 data-i18n="feat_dream_title">Dream Interpretation</h3>
+                    <p data-i18n="feat_dream_desc">Get instant, Islamic-based insights into your dreams powered by AI.
+                    </p>
+                </div>
+            </div>
+            <div class="feature-visual-container" data-aos="zoom-in" data-aos-delay="200">
+                <div class="phone-wrapper">
+                    <div class="phone-frame">
+                        <div class="dynamic-island"></div>
+                        <div class="screen-content dream-screen">
+                            <div class="status-bar">
+                                <span data-i18n="mock_time">18:27</span>
+                                <div class="status-right">
+                                    <i class="fa-solid fa-wifi"></i>
+                                    <i class="fa-solid fa-battery-full"></i>
+                                </div>
+                            </div>
+
+                            <div class="dream-mock-header">
+                                <div class="dream-moon-icon">🌙</div>
+                                <h4 class="dream-mock-title" data-i18n="mock_dream_title">Dream Interpretation</h4>
+                                <p class="dream-mock-subtitle-new" data-i18n="mock_dream_subtitle_new">Personalized
+                                    interpretation in the light of AI and Islamic sources.</p>
+                            </div>
+
+                            <div class="dream-card personal-info-card">
+                                <h5 class="card-label" data-i18n="mock_dream_pinfo">Kişisel bilgiler</h5>
+                                <div class="mock-input-group">
+                                    <label data-i18n="mock_label_name">Adınız</label>
+                                    <div class="mock-input-field"><span data-i18n="mock_val_name">Yusuf</span></div>
+                                </div>
+                                <div class="mock-row">
+                                    <div class="mock-input-group">
+                                        <label data-i18n="mock_label_dob">Doğum tarihi</label>
+                                        <div class="mock-input-field mini"><span data-i18n="mock_val_dob">17 Ara
+                                                1996</span></div>
+                                    </div>
+                                    <div class="mock-input-group">
+                                        <label data-i18n="mock_label_time">Saat</label>
+                                        <div class="mock-input-field mini"><span data-i18n="mock_val_time">17:45</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mock-input-group">
+                                    <label data-i18n="mock_label_pob">Doğum yeri</label>
+                                    <div class="mock-input-field">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                        <span data-i18n="mock_val_pob">Istanbul, Turkey</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dream-card dream-text-card">
+                                <h5 class="card-label" data-i18n="mock_label_dream">Rüyanız</h5>
+                                <div class="mock-textarea-field">
+                                    <p data-i18n="mock_placeholder_dream">Rüyanızı detaylı bir şekilde anlatın... Ne
+                                        gördünüz? Hangi duyguları hissettiniz? Renkler nasıldı?</p>
+                                </div>
+                            </div>
+
+                            <button class="dream-action-btn">
+                                <span data-i18n="mock_dream_button_new">RÜYAMI YORUMLA</span>
+                            </button>
+
+                            <div class="mock-nav">
+                                <div class="nav-item"><i class="fa-solid fa-house"></i></div>
+                                <div class="nav-item"><i class="fa-solid fa-book-open"></i></div>
+                                <div class="nav-item"><i class="fa-solid fa-fingerprint"></i></div>
+                                <div class="nav-item active"><i class="fa-regular fa-moon"></i></div>
+                                <div class="nav-item"><i class="fa-solid fa-gear"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 2: AI Smart Dhikr -->
+        <div class="feature-row" data-aos="fade-up" data-aos-duration="800">
+            <div class="feature-content">
+                <div class="feature-text-card ftc-dhikr">
+                    <h3 data-i18n="feat_dhikr_title">Smart Dhikr & Dua</h3>
+                    <p data-i18n="feat_dhikr_desc">Digital Tasbih with vibration feedback and AI-powered spiritual
+                        goals.
+                    </p>
+                </div>
+            </div>
+            <div class="feature-visual-container" data-aos="zoom-in" data-aos-delay="200">
+                <div class="phone-wrapper">
+                    <div class="phone-frame">
+                        <div class="dynamic-island"></div>
+                        <div class="screen-content dhikr-screen">
+                            <div class="status-bar" style="color: #fff;">
+                                <span data-i18n="mock_time">18:26</span>
+                                <div class="status-right">
+                                    <i class="fa-solid fa-wifi"></i>
+                                    <i class="fa-solid fa-battery-full"></i>
+                                </div>
+                            </div>
+
+                            <div class="dhikr-content-wrapper">
+                                <!-- TOP SECTION -->
+                                <div class="dhikr-top-section">
+                                    <div class="zikirmatik-device">
+                                        <div class="device-screen">
+                                            <span class="device-count">00000</span>
+                                        </div>
+                                        <div class="device-main-btn"></div>
+                                        <div class="device-small-btn"></div>
+                                    </div>
+                                    <div class="dhikr-mock-header">
+                                        <h4 class="dhikr-mock-title" data-i18n="mock_dhikr_title">Zikirmatik</h4>
+                                        <p class="dhikr-mock-subtitle" data-i18n="mock_dhikr_subtitle">Kendi zikrini çek
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- MIDDLE SECTION -->
+                                <div class="dhikr-middle-section">
+                                    <div class="dhikr-or-divider">
+                                        <span data-i18n="mock_dhikr_or">VEYA</span>
+                                    </div>
+
+                                    <div class="dhikr-main-section">
+                                        <h3 class="dhikr-main-title" data-i18n="mock_dhikr_main_title">Dhikr & Dua</h3>
+                                        <p class="dhikr-main-desc" data-i18n="mock_dhikr_main_desc">Yapay zeka ile
+                                            niyetinize, doğum saatinize ve halinize özel esmanızı keşfedin</p>
+                                    </div>
+
+                                    <div class="mock-card dhikr-form-card">
+                                        <div class="mock-input-group">
+                                            <label data-i18n="mock_label_name">İsminiz</label>
+                                            <div class="mock-input-field"><span data-i18n="mock_val_name">Yusuf</span>
+                                            </div>
+                                        </div>
+                                        <div class="mock-row">
+                                            <div class="mock-input-group">
+                                                <label data-i18n="mock_dream_dob">Doğum tarihi</label>
+                                                <div class="mock-input-field mini"><span data-i18n="mock_val_dob">17 Ara
+                                                        1996</span></div>
+                                            </div>
+                                            <div class="mock-input-group">
+                                                <label data-i18n="mock_dream_time">Saat</label>
+                                                <div class="mock-input-field mini"><span
+                                                        data-i18n="mock_val_time">17:45</span></div>
+                                            </div>
+                                        </div>
+                                        <div class="mock-input-group">
+                                            <label data-i18n="mock_dhikr_intention">Niyetiniz / hâliniz</label>
+                                            <div class="mock-textarea-field dhikr-intent-area">
+                                                <p data-i18n="mock_dhikr_placeholder_intent">Bugün kalbiniz neye ihtiyaç
+                                                    duyuyor?</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- BOTTOM SECTION -->
+                                <div class="dhikr-bottom-section">
+                                    <button class="dhikr-action-btn">
+                                        <span data-i18n="mock_dhikr_button">SANA ÖZEL ZİKRİ OLUŞTUR</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mock-nav">
+                                <div class="nav-item"><i class="fa-solid fa-house"></i></div>
+                                <div class="nav-item"><i class="fa-solid fa-book-open"></i></div>
+                                <div class="nav-item active"><i class="fa-solid fa-fingerprint"></i></div>
+                                <div class="nav-item"><i class="fa-regular fa-moon"></i></div>
+                                <div class="nav-item"><i class="fa-solid fa-gear"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 4: Quran -->
+        <div class="feature-row reverse" data-aos="fade-up" data-aos-duration="800">
+            <div class="feature-content">
+                <div class="feature-text-card ftc-quran align-right">
+                    <h3 data-i18n="feat_quran_title">Holy Quran</h3>
+                    <p data-i18n="feat_quran_desc">Read with ease, listen to beautiful recitations, and track your
+                        progress.
+                    </p>
+                </div>
+            </div>
+            <div class="feature-visual-container" data-aos="zoom-in" data-aos-delay="200">
+                <div class="phone-wrapper">
+                    <div class="phone-frame">
+                        <div class="dynamic-island"></div>
+                        <div class="screen-content quran-screen">
+                            <div class="status-bar">
+                                <span data-i18n="mock_time">18:26</span>
+                                <div class="status-right">
+                                    <i class="fa-solid fa-wifi"></i>
+                                    <i class="fa-solid fa-battery-full"></i>
+                                </div>
+                            </div>
+
+                            <div class="quran-header-enhanced">
+                                <div class="back-circle"><i class="fa-solid fa-chevron-left"></i></div>
+                                <div class="quran-title-group">
+                                    <h3 data-i18n="mock_juz_title">Juz 1</h3>
+                                    <span data-i18n="mock_quran_subtitle">Holy Quran</span>
+                                </div>
+                                <div class="dummy-space"></div> <!-- Spacer -->
+                            </div>
+
+                            <div class="quran-play-btn-large">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+
+                            <div class="quran-cards-list">
+                                <!-- Verse 1 -->
+                                <div class="quran-verse-card">
+                                    <div class="qvc-header">
+                                        <div class="verse-num-badge">1</div>
+                                        <i class="fa-regular fa-circle-play"></i>
+                                    </div>
+                                    <div class="qvc-arabic">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+                                    <div class="qvc-trans" data-i18n="mock_verse_quran_1">In the name of Allah, the
+                                        Entirely Merciful, the Especially
+                                        Merciful.</div>
+                                </div>
+
+                                <!-- Verse 2 -->
+                                <div class="quran-verse-card">
+                                    <div class="qvc-header">
+                                        <div class="verse-num-badge">2</div>
+                                        <i class="fa-regular fa-circle-play"></i>
+                                    </div>
+                                    <div class="qvc-arabic">ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ</div>
+                                    <div class="qvc-trans" data-i18n="mock_verse_quran_2">[All] praise is [due] to
+                                        Allah, Lord of the worlds -</div>
+                                </div>
+                            </div>
+
+                            <div class="mock-nav">
+                                <div class="nav-item"><i class="fa-solid fa-house"></i></div>
+                                <div class="nav-item active"><i class="fa-solid fa-book-open"></i></div>
+                                <div class="nav-item"><i class="fa-solid fa-fingerprint"></i></div>
+                                <div class="nav-item"><i class="fa-regular fa-moon"></i></div>
+                                <div class="nav-item"><i class="fa-solid fa-gear"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 5: Spiritual Community [PROMOTED] -->
+        <div class="feature-row" id="community-section" data-aos="fade-up" data-aos-duration="800">
+            <div class="feature-content">
+                <div class="feature-text-card ftc-comm">
+                    <h3 data-i18n="feat_community_title">Spiritual Community</h3>
+                    <p data-i18n="feat_community_desc">Connect with a global network of believers. Share your prayers,
+                        request duas, and join collective hatims.</p>
+                </div>
+            </div>
+            <div class="feature-visual-container" data-aos="zoom-in" data-aos-delay="200">
+                <div class="phone-wrapper">
+                    <div class="phone-frame">
+                        <div class="dynamic-island"></div>
+                        <div class="screen-content community-screen">
+                            <div class="status-bar">
+                                <span data-i18n="mock_time">18:27</span>
+                                <div class="status-right">
+                                    <i class="fa-solid fa-wifi"></i>
+                                    <i class="fa-solid fa-battery-full"></i>
+                                </div>
+                            </div>
+
+
+                            <div class="community-header">
+                                <div class="back-circle"><i class="fa-solid fa-arrow-left"></i></div>
+                                <h4 class="comm-page-title" data-i18n="mock_comm_title">Manevi Topluluk</h4>
+                                <div class="header-right-btns">
+                                    <div class="action-circle-btn"><i class="fa-solid fa-bell"></i><span
+                                            class="btn-badge">7</span></div>
+                                    <div class="action-circle-btn"><i class="fa-solid fa-user"></i></div>
+                                </div>
+                            </div>
+
+                            <div class="category-filters">
+                                <div class="cat-pill active" data-i18n="mock_comm_all">Tümü</div>
+                                <div class="cat-pill" data-i18n="mock_comm_dua">Dua</div>
+                                <div class="cat-pill" data-i18n="mock_comm_zikir">Dhikr & Dua</div>
+                                <div class="cat-pill" data-i18n="mock_comm_hatim">Hatim</div>
+                            </div>
+
+                            <div class="community-feed-scroll">
+                                <!-- Card 1: Hatim -->
+                                <div class="feed-card hatim-card">
+                                    <div class="card-user-row">
+                                        <div class="user-avatar-mock"><img
+                                                src="https://ui-avatars.com/api/?name=Ahmet+H&background=2ecc71&color=fff"
+                                                alt="Avatar"></div>
+                                        <div class="user-info-text">
+                                            <span class="user-name" data-i18n="mock_comm_user_1">Ahmet H.</span>
+                                            <span class="user-meta" data-i18n="mock_comm_meta_1">İstanbul / Türkiye •
+                                                1/28/2026</span>
+                                        </div>
+                                        <div class="card-type-tag hatim" data-i18n="mock_comm_hatim_invite">HATİM
+                                            GRUBUNA DAVET</div>
+                                    </div>
+                                    <div class="card-body-content">
+                                        <div class="main-label-row"><i class="fa-solid fa-book-open"></i> <span
+                                                data-i18n="mock_comm_hatim_kolektif">KOLEKTİF HATİM</span></div>
+                                        <h4 class="card-headline" data-i18n="mock_comm_hatim_title">Ramazan öncesi için
+                                            hatim başlatıyorum</h4>
+                                        <p class="card-desc" data-i18n="mock_comm_hatim_text">Şefaat ve af için
+                                            katılabilirsiniz.</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="footer-left">
+                                            <span class="share-btn"><i class="fa-solid fa-share-nodes"></i> <span
+                                                    data-i18n="mock_comm_share">Paylaş</span></span>
+                                        </div>
+                                        <div class="footer-right">
+                                            <span class="status-pill green" data-i18n="mock_comm_open">Katılıma
+                                                Açık</span>
+                                            <span class="report-btn"><i class="fa-solid fa-flag"></i> <span
+                                                    data-i18n="mock_comm_report">Şikayet Et</span></span>
+                                            <i class="fa-solid fa-chevron-right chevron-nav"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 2: Dua -->
+                                <div class="feed-card prayer-card">
+                                    <div class="card-user-row">
+                                        <div class="user-avatar-mock"><img
+                                                src="https://ui-avatars.com/api/?name=Zehra+B&background=3498db&color=fff"
+                                                alt="Avatar"></div>
+                                        <div class="user-info-text">
+                                            <span class="user-name" data-i18n="mock_comm_user_2">Zehra B.</span>
+                                            <span class="user-meta" data-i18n="mock_comm_meta_2">Kahire / Mısır •
+                                                1/29/2026</span>
+                                        </div>
+                                        <div class="card-type-tag prayer" data-i18n="mock_comm_dua_req">DUA İSTEĞİ</div>
+                                    </div>
+                                    <div class="card-body-content">
+                                        <h4 class="card-headline" data-i18n="mock_comm_dua_title">Evleneceğim dua lazım
+                                        </h4>
+                                        <p class="card-desc" data-i18n="mock_comm_dua_text">Hayırlı olması için dua
+                                            istiyorum sizden.</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="footer-left">
+                                            <span class="share-btn"><i class="fa-solid fa-share-nodes"></i> <span
+                                                    data-i18n="mock_comm_share">Paylaş</span></span>
+                                        </div>
+                                        <div class="footer-right">
+                                            <div class="action-pill prayer-pill">
+                                                <i class="fa-regular fa-heart"></i> <span
+                                                    data-i18n="mock_comm_amin">Amin</span> <span class="count">0</span>
+                                            </div>
+                                            <span class="report-btn"><i class="fa-solid fa-flag"></i> <span
+                                                    data-i18n="mock_comm_report">Şikayet Et</span></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 3: Zikir -->
+                                <div class="feed-card zikir-card">
+                                    <div class="card-user-row">
+                                        <div class="user-avatar-mock"><img
+                                                src="https://ui-avatars.com/api/?name=Mehmet+A&background=f39c12&color=fff"
+                                                alt="Avatar"></div>
+                                        <div class="user-info-text">
+                                            <span class="user-name" data-i18n="mock_comm_user_3">Mehmet A.</span>
+                                            <span class="user-meta" data-i18n="mock_comm_meta_3">Jakarta / Endonezya •
+                                                1/29/2026</span>
+                                        </div>
+                                        <div class="card-type-tag zikir" data-i18n="mock_comm_zikir_req">DHIKR & DUA
+                                            REQUEST
+                                        </div>
+                                    </div>
+                                    <div class="card-body-content">
+                                        <h4 class="card-headline" data-i18n="mock_comm_zikir_title">We have a patient,
+                                            would you please join the dhikr and dua...</h4>
+                                        <p class="card-desc" data-i18n="mock_comm_zikir_sub">Ya Şafi</p>
+                                        <div class="progress-bar-container">
+                                            <div class="pb-text">
+                                                <span data-i18n="mock_comm_step">Adım</span>
+                                                <span class="pb-count">199 / 1000</span>
+                                            </div>
+                                            <div class="pb-track">
+                                                <div class="pb-fill" style="width: 10%;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="footer-left">
+                                            <span class="share-btn"><i class="fa-solid fa-share-nodes"></i> <span
+                                                    data-i18n="mock_comm_share">Paylaş</span></span>
+                                        </div>
+                                        <div class="footer-right">
+                                            <div class="action-pill zikir-pill">
+                                                <i class="fa-solid fa-heart"></i> <span
+                                                    data-i18n="mock_comm_support">Destek</span> <span
+                                                    class="count highlight">99</span>
+                                            </div>
+                                            <span class="report-btn"><i class="fa-solid fa-flag"></i> <span
+                                                    data-i18n="mock_comm_report">Şikayet Et</span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="community-fab"><i class="fa-solid fa-plus"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+
+
+
+    <!-- Secondary Features Section (Scroll triggered side features) -->
+    <section class="secondary-features">
+        <div class="section-header" data-aos="zoom-in">
+            <h2 data-i18n="feat_more_title">Daha Fazla Manevi Araç</h2>
+            <p data-i18n="feat_more_subtitle">Günlük ibadetleriniz için ihtiyacınız olan her şey tek bir yerde.</p>
+        </div>
+        <div class="side-features-grid">
+            <div class="side-feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="s-feat-icon">📖</div>
+                <div class="s-feat-content">
+                    <h4 data-i18n="feat_hatim_title">Hatim Sistemi</h4>
+                    <p data-i18n="feat_hatim_desc">Otomatik cüz yönetimi ve hatırlatıcılar ile grup hatimlerine kolayca
+                        katılın.</p>
+                </div>
+            </div>
+            <div class="side-feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="s-feat-icon">🧭</div>
+                <div class="s-feat-content">
+                    <h4 data-i18n="feat_qibla_title">Kıble Pusulası</h4>
+                    <p data-i18n="feat_qibla_desc">Hassas kıble yönü bulucu, haptik geri bildirim ve şık tasarım.</p>
+                </div>
+            </div>
+            <div class="side-feature-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="s-feat-icon">🎥</div>
+                <div class="s-feat-content">
+                    <h4 data-i18n="feat_kaaba_title">Canlı Kâbe</h4>
+                    <p data-i18n="feat_kaaba_desc">Mekke'den yüksek kaliteli canlı yayınları doğrudan uygulama üzerinden
+                        izleyin.</p>
+                </div>
+            </div>
+            <div class="side-feature-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="s-feat-icon">🛒</div>
+                <div class="s-feat-content">
+                    <h4 data-i18n="feat_shop_title">İslami Mağaza</h4>
+                    <p data-i18n="feat_shop_desc">Manevi yolculuğunuz için özenle seçilmiş İslami yaşam tarzı ürünlerini
+                        keşfedin.</p>
+                </div>
+            </div>
+            <div class="side-feature-card" data-aos="fade-up" data-aos-delay="500">
+                <div class="s-feat-icon">🕌</div>
+                <div class="s-feat-content">
+                    <h4 data-i18n="feat_mosque_title">Cami Bulucu</h4>
+                    <p data-i18n="feat_mosque_desc">Bulunduğunuz konumu kullanarak yakındaki camileri kolayca bulun.</p>
+                </div>
+            </div>
+            <div class="side-feature-card" data-aos="fade-up" data-aos-delay="600">
+                <div class="s-feat-icon">💰</div>
+                <div class="s-feat-content">
+                    <h4 data-i18n="feat_zakat_title">Zekatmatik</h4>
+                    <p data-i18n="feat_zakat_desc">Altın, nakit ve diğer varlıklarınıza göre zekatınızı doğru şekilde
+                        hesaplayın.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SECTION: SOCIAL PROOF (Infinite Marquee)
+         ============================================ -->
+    <section id="social-proof" class="social-proof-section">
+        <div class="section-header" data-aos="fade-up">
+            <span class="badge-pill" data-i18n="proof_badge">TOPLULUK SEVGİSİ</span>
+            <h2 data-i18n="proof_title">Binlerce Kişi Tarafından Seviliyor</h2>
+            <p data-i18n="proof_subtitle">Islamvy ile manevi yolculuğa çıkanların deneyimleri.</p>
+        </div>
+
+        <div class="marquee-wrapper" data-aos="fade-up">
+            <div class="marquee-track" id="reviews-track">
+                <!-- Reviews injected by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SECTION: FINAL CTA & FOOTER
+         ============================================ -->
+    <footer class="main-footer">
+        <div class="footer-cta-container">
+            <h2 class="footer-headline" data-i18n="cta_title">Yolculuğunuza Bugün Başlayın</h2>
+            <p class="footer-subheadline" data-i18n="cta_subtitle">Islamvy ile huzur, netlik ve bağ bulan binlerce
+                kullanıcıya katılın.</p>
+
+            <div class="footer-store-buttons">
+                <a href="https://apps.apple.com/app/islamvy" target="_blank" class="store-badge app-store"
+                    aria-label="Download on the App Store">
+                    <div class="badge-content">
+                        <svg class="apple-logo" viewBox="0 0 384 512" fill="currentColor">
+                            <path
+                                d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-54.8-124.3-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z" />
+                        </svg>
+                        <div class="badge-text">
+                            <span class="badge-subtitle" data-i18n="download_on">Download on the</span>
+                            <span class="badge-title">App Store</span>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.esat.islamvy" target="_blank"
+                    class="store-badge google-play" aria-label="Get it on Google Play">
+                    <div class="badge-content">
+                        <svg class="play-logo" viewBox="0 0 512 512">
+                            <path fill="#00E676"
+                                d="M32.021 21.053l296.356 169.117-64.846 64.954-263.639-128.232c-6.195-2.909-6.903-12.721 1.636-16.792l30.493-14.735v-74.312z" />
+                            <path fill="#FFD600"
+                                d="M328.377 190.17l-64.846 64.954 64.846 64.954 116.892-66.904c14.079-8.077 14.079-28.729 0-36.806l-116.892-66.904z" />
+                            <path fill="#FF3D00"
+                                d="M263.531 320.078l64.846 64.954-296.356 169.117c-6.282 3.636-14.079-2.078-14.079-10.455v-351.851l245.589 128.235z" />
+                            <path fill="#448AFF"
+                                d="M18.021 12.053v487.894c0 8.377 7.797 14.091 14.079 10.455l231.431-132.078-245.51-249.48-245.51 249.48-132.078z" />
+                        </svg>
+                        <div class="badge-text">
+                            <span class="badge-subtitle" data-i18n="get_it_on">GET IT ON</span>
+                            <span class="badge-title">Google Play</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Product Hunt Badge -->
+                <a href="https://www.producthunt.com/products/islamvy?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-islamvy"
+                    target="_blank" rel="noopener noreferrer"
+                    style="display: flex; align-items: center; border-radius: 12px; overflow: hidden; height: 54px;">
+                    <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1082229&theme=light&t=1771527773943"
+                        alt="Islamvy - The First AI-Powered Islamic Lifestyle Super App | Product Hunt"
+                        style="width: 250px; height: 54px;" width="250" height="54" />
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-bottom-row">
+            <div class="footer-brand">
+                <span class="footer-logo-text">Islamvy</span>
+            </div>
+            <div class="footer-links">
+                <a href="#" class="privacy-trigger" data-i18n="footer_privacy">Gizlilik Politikası</a>
+                <a href="#" class="terms-trigger" data-i18n="footer_terms">Kullanım Koşulları</a>
+                <a href="#" class="contact-trigger" data-i18n="footer_contact">İletişim</a>
+            </div>
+            <div class="footer-copyright" data-i18n="footer_copyright">
+                © 2026 Islamvy App. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Privacy Modal -->
+    <div id="privacy-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title" class="modal-title"></h2>
+            <div id="modal-body" class="modal-body text-center">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <!-- AOS Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            once: true, /* Animate only once - Better Performance */
+            mirror: false, /* Disable mirror - Fixes Mobile Lag */
+            offset: 80,
+            duration: 700,
+            easing: 'ease-out-cubic'
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamvy Blog</title>
+    <meta name="description" content="Islamic Insights">
+    <link rel="canonical" href="https://islamvy.com/blog/en/index.html">
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Kaushan+Script&display=swap" rel="stylesheet">
+    <style>
+        .logo { font-family: 'Kaushan Script', cursive !important; }
+        .lang-option { color: white; text-decoration: none; padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.95rem; transition: 0.3s; display: block; filter: none; }
+        .lang-option:hover { background: rgba(255, 255, 255, 0.15); color: #A3D9C9; }
+        .category-filter-nav { display: flex; gap: 1rem; overflow-x: auto; padding: 1rem 5%; margin-bottom: 2rem; scrollbar-width: none; -ms-overflow-style: none; }
+        .category-filter-nav::-webkit-scrollbar { display: none; }
+        .filter-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 0.6rem 1.2rem; border-radius: 20px; cursor: pointer; white-space: nowrap; transition: 0.3s; font-size: 0.9rem; font-weight: 500; }
+        .filter-btn.active { background: #A3D9C9; color: #1e3e34; border-color: #A3D9C9; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="geometric-bg"></div>
+    
+    <nav class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 5%; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10;">
+        <a href="../../index.html" style="text-decoration:none;">
+            <div class="logo" style="font-family: 'Kaushan Script', cursive; font-size: 2.5rem; color: #FFFFFF; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">Islamvy <span style="font-size: 1.8rem; opacity: 0.8; font-weight: 400;">Blog</span></div>
+        </a>
+        <div class="nav-right" style="display: flex; align-items: center; gap: 1.5rem;">
+             <div class="nav-links" style="margin-right: 1.5rem; display: flex; gap: 1.5rem;">
+                <a href="../../index.html" class="nav-item-link" style="color: #fff; text-decoration: none; font-weight: 500; font-size: 0.95rem; opacity: 0.9; transition: 0.3s;">App Home</a>
+                <a href="../../blog/en/ramadan/index.html" class="nav-item-link" style="color: #A3D9C9; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: 0.3s;"><i class="fa-solid fa-moon"></i> Ramadan 2026</a>
+            </div>
+            
+            <div class="lang-dropdown" style="position: relative;">
+                <button class="lang-btn" onclick="toggleLangMenu(event)" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 0.6rem 1.2rem; border-radius: 99px; color: #FFFFFF; cursor: pointer; transition: 0.3s; backdrop-filter: blur(8px); font-weight: 600; font-size: 0.9rem;">
+                    <span>English</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="lang-menu" id="langMenu" style="display: none; position: absolute; right: 0; top: 120%; background: rgba(30, 62, 52, 0.98); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 0.5rem; min-width: 180px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); z-index: 1000; backdrop-filter: blur(12px);">
+                    <a href="../../blog/en/index.html" class="lang-option">English</a>
+<a href="../../blog/tr/index.html" class="lang-option">Türkçe</a>
+<a href="../../blog/ar/index.html" class="lang-option">العربية</a>
+<a href="../../blog/fr/index.html" class="lang-option">Français</a>
+<a href="../../blog/id/index.html" class="lang-option">Bahasa Indonesia</a>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+    function toggleLangMenu(e) {
+        e.stopPropagation();
+        var menu = document.getElementById('langMenu');
+        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+        menu.style.flexDirection = 'column';
+    }
+    document.addEventListener('click', function() {
+        var menu = document.getElementById('langMenu');
+        if (menu) menu.style.display = 'none';
+    });
+    </script>
+    <style>
+        [dir="rtl"] .lang-menu { right: auto; left: 0; }
+        .nav-item-link:hover { opacity: 1; color: #A3D9C9 !important; }
+    </style>
+
+    <header class="blog-hero">
+        <h1>Islamic Insights & Wisdom</h1>
+        <p>Get answers to your spiritual questions with scholarly references.</p>
+    </header>
+    
+    <nav class="category-filter-nav" id="categoryNav">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="worship">Worship</button>
+        <button class="filter-btn" data-filter="dream">Dreams</button>
+        <button class="filter-btn" data-filter="lifestyle">Lifestyle</button>
+        <button class="filter-btn" data-filter="dhikr">Dhikr & Dua</button>
+        <button class="filter-btn" data-filter="tech">Tech</button>
+    </nav>
+
+    <main class="blog-grid" id="blogGrid">
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Steps of Salah" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Worship Guide</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Steps of Salah</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">A comprehensive guide to performing Salah according to the Sunnah.</p>
+                <a href="posts/steps-of-salah.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="How To Do Wudu" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Worship Guide</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">How To Do Wudu</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Authentic step-by-step guide to Wudu (Ablution).</p>
+                <a href="posts/how-to-do-wudu.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Ghusl Guide" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Worship Guide</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Ghusl Guide</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">How to perform the ritual purification of Ghusl.</p>
+                <a href="posts/ghusl-guide.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Ramadan Patience" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Worship Guide</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Ramadan Patience</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">How to cultivate patience (Sabr) during the blessed month of Ramadan.</p>
+                <a href="posts/ramadan-patience.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Zakat Calculator Meaning" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Worship Guide</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Zakat Calculator Meaning</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Everything you need to know about Zakat: Calculation, Meaning, and Recipients.</p>
+                <a href="posts/zakat-calculator-meaning.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Tahajjud Prayer" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Worship Guide</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Tahajjud Prayer</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The virtues and method of the Night Prayer.</p>
+                <a href="posts/tahajjud-prayer.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Istikhara Guide" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Worship Guide</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Istikhara Guide</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">How to perform Salat al-Istikhara for guidance.</p>
+                <a href="posts/istikhara-guide.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Jummah Friday Prayer" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Worship Guide</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Jummah Friday Prayer</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The virtues and etiquette of the Friday prayer.</p>
+                <a href="posts/jummah-friday-prayer.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Hajj Basics" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Worship Guide</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Hajj Basics</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">A brief overview of the pillars of Hajj.</p>
+                <a href="posts/hajj-basics.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Power of Dua" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dhikr & Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Power of Dua</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Understanding Dua as the essence of worship.</p>
+                <a href="posts/power-of-dua.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Morning Dhikr" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dhikr & Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Morning Dhikr</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The importance of starting the day with remembrance.</p>
+                <a href="posts/morning-dhikr.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Evening Dhikr" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dhikr & Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Evening Dhikr</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Protecting the soul through evening remembrance.</p>
+                <a href="posts/evening-dhikr.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Ayatul Kursi Benefits" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dhikr & Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Ayatul Kursi Benefits</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The greatest verse in the Quran and its profound protective benefits.</p>
+                <a href="posts/ayatul-kursi-benefits.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Istighfar Benefits" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dhikr & Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Istighfar Benefits</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The amazing doors opened by seeking forgiveness (Istighfar).</p>
+                <a href="posts/istighfar-benefits.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Salawat Importance" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dhikr & Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Salawat Importance</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The immense blessings of sending peace and blessings upon Prophet Muhammad (PBUH).</p>
+                <a href="posts/salawat-importance.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Tawheed Meaning" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dhikr & Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Tawheed Meaning</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The core of Islamic belief: The Oneness of Allah.</p>
+                <a href="posts/tawheed-meaning.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Hasbunallah Trust" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dhikr & Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Hasbunallah Trust</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The power of relying solely on Allah.</p>
+                <a href="posts/hasbunallah-trust.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Sleep Adhkar" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dhikr & Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Sleep Adhkar</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Authentic Sunnah Adhkar to recite before sleeping for divine protection and inner peace.</p>
+                <a href="posts/sleep-adhkar.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Dhikr For Peace" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dhikr & Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dhikr For Peace</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Specific Dhikrs to calm the heart, remove anxiety, and restore inner tranquility.</p>
+                <a href="posts/dhikr-for-peace.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Quran Recitation Tips" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Worship Guide</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Quran Recitation Tips</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Practical tips to improve your Quran recitation (Tajweed) and Tadabbur (Reflection).</p>
+                <a href="posts/quran-recitation-tips.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Sabr Patience" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Lifestyle</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Sabr Patience</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The spiritual art of cultivating patience (Sabr) in the face of life's trials.</p>
+                <a href="posts/sabr-patience.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Parents Respect" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Lifestyle</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Parents Respect</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The supreme status of parents in Islamic ethics and social harmony.</p>
+                <a href="posts/parents-respect.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80" alt="Finance Halal" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Lifestyle</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Finance Halal</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Core principles of ethical and halal wealth acquisition in Islam.</p>
+                <a href="posts/finance-halal.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Modesty Hijab" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Lifestyle</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Modesty Hijab</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Understanding the profound concept of Haya (Modesty) and Hijab in Islam.</p>
+                <a href="posts/modesty-hijab.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Animal Rights" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Lifestyle</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Animal Rights</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Compassion towards animals as a manifestation of Islamic mercy.</p>
+                <a href="posts/animal-rights.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Anxiety Islamic Tips" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Lifestyle</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Anxiety Islamic Tips</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Finding inner peace and resilience through faith during anxious times.</p>
+                <a href="posts/anxiety-islamic-tips.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Halal Food" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Lifestyle</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Halal Food</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The vital importance of consuming Halal and Tayyib (Pure/Wholesome) food.</p>
+                <a href="posts/halal-food.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Marriage Rights" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Lifestyle</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Marriage Rights</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The foundations of a healthy, tranquil Islamic marriage.</p>
+                <a href="posts/marriage-rights.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Seeking Knowledge" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Lifestyle</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Seeking Knowledge</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The divine obligation and spiritual virtues of seeking knowledge in Islam.</p>
+                <a href="posts/seeking-knowledge.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Time Management" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Lifestyle</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Time Management</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">An Islamic perspective on the profound value of time and life's moments.</p>
+                <a href="posts/time-management.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Social Media Ethics" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Lifestyle</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Social Media Ethics</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Navigating the complex digital world with Islamic Adab (Etiquette).</p>
+                <a href="posts/social-media-ethics.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="Best Apps 2026" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Tech</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Best Apps 2026</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Top Islamic Apps to boost your productivity, focus, and faith in 2026.</p>
+                <a href="posts/best-apps-2026.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="AI Future Islam" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Tech</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">AI Future Islam</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">How Artificial Intelligence is serving the Ummah while maintaining ethical boundaries.</p>
+                <a href="posts/ai-future-islam.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="Smart Rug Tech" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Tech</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Smart Rug Tech</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Innovations in prayer rugs: From orthopedic comfort to digital Rakat counting.</p>
+                <a href="posts/smart-rug-tech.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="Qibla Tools" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Islamic Tech</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Qibla Tools</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">How modern apps use GPS and AR to find the Qibla accurately.</p>
+                <a href="posts/qibla-tools.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=80" alt="Dream Cat" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Cat</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">In Islamic dream interpretation, a cat often represents a thief from within the household or a servant. According to Ibn Sirin, a calm cat suggests a ...</p>
+                <a href="posts/dream-cat.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1555677284-6a6f971639e0?w=800&q=80" alt="Dream Snake" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Snake</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">A snake is a classic symbol of an enemy. The strength and size of the snake reflect the power of the enemy in waking life. If the snake is in your hou...</p>
+                <a href="posts/dream-snake.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=800&q=80" alt="Dream Gold" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Gold</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">In Islamic tradition, gold is interpreted differently based on its form. Finding gold coins (Dinars) or ornaments represents wealth, joy, and success....</p>
+                <a href="posts/dream-gold.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80" alt="Dream Water" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Water</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Water is the essence of life and represents knowledge, faith, and purity. Drinking clear, cool water signifies gaining wisdom and spiritual growth. Ho...</p>
+                <a href="posts/dream-water.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=800&q=80" alt="Dream Flying" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Flying</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Flying in a dream is generally a positive sign of freedom, travel, and elevated status. If you fly with wings, it signifies a physical journey or a ne...</p>
+                <a href="posts/dream-flying.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?w=800&q=80" alt="Dream Baby" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Baby</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">A baby in a dream often signifies a new beginning, a creative project, or a significant responsibility coming your way. In Islamic tradition, a baby g...</p>
+                <a href="posts/dream-baby.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1476610182048-b716b8518aae?w=800&q=80" alt="Dream Death" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Death</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Death in a dream is a complex symbol that rarely signifies actual physical death. Instead, it often represents a major transition, the end of a diffic...</p>
+                <a href="posts/dream-death.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?w=800&q=80" alt="Dream Rain" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Rain</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rain in a dream is a powerful symbol of divine mercy, knowledge, and relief from distress. In Islamic tradition, if the rain is gentle and timely, it ...</p>
+                <a href="posts/dream-rain.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80" alt="Dream Shoes" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Shoes</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Shoes in a dream represent your career path, your travels, or your marital relationship. New, comfortable shoes signify prosperity, a stable job, or a...</p>
+                <a href="posts/dream-shoes.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1516585427167-9f4af9627e6c?w=800&q=80" alt="Dream Crying" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Crying</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Crying in a dream, contrary to what one might expect, often symbolizes upcoming joy and relief (Faraj) from a difficult situation. It represents the s...</p>
+                <a href="posts/dream-crying.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80" alt="Dream Car" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Car</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">A car in a dream represents your movement through life and the level of control you have over your destiny. Driving a car smoothly on a straight road ...</p>
+                <a href="posts/dream-car.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=800&q=80" alt="Dream Money" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Money</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Money in a dream is a symbol that requires careful analysis of its form. Finding paper money often suggests a worldly trial, a heavy responsibility, o...</p>
+                <a href="posts/dream-money.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80" alt="Dream Sea" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Sea</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The sea is a majestic symbol representing power, vast knowledge, and the depths of the human heart. A calm, clear sea signifies peace of mind, divine ...</p>
+                <a href="posts/dream-sea.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&q=80" alt="Dream House" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream House</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">A house in a dream is a reflection of the dreamer's inner state, spiritual health, and family life. Entering a new, spacious house signifies a positiv...</p>
+                <a href="posts/dream-house.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=800&q=80" alt="Dream Fish" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Fish</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Fish in a dream are primarily symbols of sustenance (Rizq) and profit. If the fish are seen in clear water and can be counted, they represent specific...</p>
+                <a href="posts/dream-fish.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=800&q=80" alt="Dream Teeth" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Teeth</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Teeth represent your family and close relatives. The upper teeth symbolize male relatives from the father's side, while the lower teeth represent fema...</p>
+                <a href="posts/dream-teeth.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80" alt="Dream Fire" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Fire</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Fire is a dual symbol representing both guidance and trial. If the fire is used to light a path, to provide warmth, or for cooking, it is a very posit...</p>
+                <a href="posts/dream-fire.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=800&q=80" alt="Dream Marriage" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Marriage</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Marriage in a dream is a profound symbol of providence, honor, and protection from God. For a single person, it often foretells an actual marriage or ...</p>
+                <a href="posts/dream-marriage.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800&q=80" alt="Dream Sun" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Sun</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">The sun is a majestic symbol representing a leader, a father figure, or clarity of truth in your life. Witnessing the sun shine brightly signifies a p...</p>
+                <a href="posts/dream-sun.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=800&q=80" alt="Dream Prophet" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dream Interpretation</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dream Prophet</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Seeing the Blessed Prophet Muhammad (PBUH) in a dream is considered a 'Truthful Vision' (Ru'ya Sadiqah), as Shaytan cannot take his form. It is one of...</p>
+                <a href="posts/dream-prophet.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        </main>
+
+    <script>
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const blogCards = document.querySelectorAll('.blog-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filter = btn.getAttribute('data-filter');
+            
+            blogCards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+    </script>
+
+    <footer class="main-footer">
+        <div class="footer-bottom-row">
+            <div class="footer-brand" style="font-family: 'Kaushan Script', cursive; font-size: 1.5rem;">Islamvy <span style="font-size: 1rem; opacity:0.8;">Blog</span></div>
+            <div class="footer-copyright">© 2026 Islamvy. All rights reserved.</div>
+        </div>
+    </footer>
+</body>
+</html>

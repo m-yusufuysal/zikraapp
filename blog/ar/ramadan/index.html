@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramadan 2026 | Islamvy</title>
+    <meta name="description" content="Iftar, Sahur, and prayer times for Ramadan 2026.">
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Kaushan+Script&display=swap" rel="stylesheet">
+    <style>
+        .logo { font-family: 'Kaushan Script', cursive !important; }
+        .ramadan-hero { text-align: center; padding: 4rem 5%; background: rgba(163, 217, 201, 0.05); border-radius: 0 0 50px 50px; border-bottom: 1px solid rgba(163, 217, 201, 0.2); }
+        .ramadan-hero i { font-size: 3rem; color: #A3D9C9; margin-bottom: 1.5rem; display: block; }
+        .ramadan-hero h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+        .times-container { max-width: 1000px; margin: 3rem auto; padding: 0 5%; }
+        .city-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px; padding: 2.5rem; backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .city-selector { margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .city-selector select { background: rgba(30, 62, 52, 0.9); border: 1px solid rgba(163, 217, 201, 0.3); color: white; padding: 1rem; border-radius: 12px; font-size: 1.1rem; outline: none; transition: 0.3s; cursor: pointer; }
+        .city-selector select:focus { border-color: #A3D9C9; }
+        
+        .calendar-container { overflow-x: auto; margin-top: 2rem; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .ramadan-calendar { width: 100%; border-collapse: collapse; min-width: 600px; }
+        .ramadan-calendar th, .ramadan-calendar td { padding: 1rem; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .ramadan-calendar th { background: rgba(30, 62, 52, 0.8); color: #A3D9C9; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; position: sticky; top: 0; }
+        .ramadan-calendar tr:hover { background: rgba(255, 255, 255, 0.05); }
+        .ramadan-calendar td { font-family: 'Inter', sans-serif; font-variant-numeric: tabular-nums; }
+        .time-val { font-family: 'Amiri', serif; font-weight: 700; font-size: 1.2rem; }
+        .current-day { background: rgba(163, 217, 201, 0.15) !important; border-left: 4px solid #A3D9C9; }
+        
+        .countdown-banner { background: linear-gradient(135deg, #1e3e34, #2d5a4c); padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem; text-align: center; border: 1px solid rgba(163, 217, 201, 0.3); }
+        optgroup { background: #1e3e34; color: #fff; font-weight: 600; font-family: 'Inter', sans-serif; }
+        option { background: rgba(30, 62, 52, 0.9); }
+    </style>
+</head>
+<body>
+    <div class="geometric-bg"></div>
+    
+    <nav class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 5%; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10;">
+        <a href="../../../index.html" style="text-decoration:none;">
+            <div class="logo" style="font-family: 'Kaushan Script', cursive; font-size: 2.5rem; color: #FFFFFF; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">Islamvy <span style="font-size: 1.8rem; opacity: 0.8; font-weight: 400;">مدونة</span></div>
+        </a>
+        <div class="nav-right" style="display: flex; align-items: center; gap: 1.5rem;">
+             <div class="nav-links" style="margin-right: 1.5rem; display: flex; gap: 1.5rem;">
+                <a href="../../../index.html" class="nav-item-link" style="color: #fff; text-decoration: none; font-weight: 500; font-size: 0.95rem; opacity: 0.9; transition: 0.3s;">الرئيسية</a>
+                <a href="../../../blog/ar/ramadan/index.html" class="nav-item-link" style="color: #A3D9C9; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: 0.3s;"><i class="fa-solid fa-moon"></i> رمضان 2026</a>
+            </div>
+            
+            <div class="lang-dropdown" style="position: relative;">
+                <button class="lang-btn" onclick="toggleLangMenu(event)" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 0.6rem 1.2rem; border-radius: 99px; color: #FFFFFF; cursor: pointer; transition: 0.3s; backdrop-filter: blur(8px); font-weight: 600; font-size: 0.9rem;">
+                    <span>العربية</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="lang-menu" id="langMenu" style="display: none; position: absolute; right: 0; top: 120%; background: rgba(30, 62, 52, 0.98); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 0.5rem; min-width: 180px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); z-index: 1000; backdrop-filter: blur(12px);">
+                    <a href="../../../blog/en/ramadan/index.html" class="lang-option">English</a>
+<a href="../../../blog/tr/ramadan/index.html" class="lang-option">Türkçe</a>
+<a href="../../../blog/ar/ramadan/index.html" class="lang-option">العربية</a>
+<a href="../../../blog/fr/ramadan/index.html" class="lang-option">Français</a>
+<a href="../../../blog/id/ramadan/index.html" class="lang-option">Bahasa Indonesia</a>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+    function toggleLangMenu(e) {
+        e.stopPropagation();
+        var menu = document.getElementById('langMenu');
+        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+        menu.style.flexDirection = 'column';
+    }
+    document.addEventListener('click', function() {
+        var menu = document.getElementById('langMenu');
+        if (menu) menu.style.display = 'none';
+    });
+    </script>
+    <style>
+        [dir="rtl"] .lang-menu { right: auto; left: 0; }
+        .nav-item-link:hover { opacity: 1; color: #A3D9C9 !important; }
+    </style>
+
+    
+    <header class="ramadan-hero">
+        <i class="fa-solid fa-moon"></i>
+        <h1>رمضان 2026</h1>
+        <p style="font-size: 1.2rem; opacity: 0.8;">العد التنازلي لشهور الرحمة والبركات</p>
+    </header>
+ 
+    <div class="times-container">
+        <div class="city-card">
+            <div class="selection-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="city-selector">
+                    <label style="font-weight: 600; font-size: 0.8rem; opacity:0.8; display: block; margin-bottom: 0.4rem;">اختر بلدك</label>
+                    <select id="countrySelect" onchange="populateCities()">
+                                                <option value="Egypt">مصر</option>
+                        <option value="Europe & Others">أوروبا وأخرى</option>
+                        <option value="Gulf">الخليج</option>
+                        <option value="Indonesia">إندونيسيا</option>
+                        <option value="Kuwait">الكويت</option>
+                        <option value="North Africa">شمال أفريقيا</option>
+                        <option value="Qatar">قطر</option>
+                        <option value="Saudi Arabia">المملكة العربية السعودية</option>
+                        <option value="Turkey">تركيا</option>
+
+                    </select>
+                </div>
+                <div class="city-selector">
+                    <label style="font-weight: 600; font-size: 0.8rem; opacity:0.8; display: block; margin-bottom: 0.4rem;">اختر مدينتك</label>
+                    <select id="citySelect" onchange="updateTimes()">
+                        <option value="">اختر مدينتك</option>
+                    </select>
+                </div>
+            </div>
+ 
+            <div class="countdown-banner" id="countdown">
+                <span style="font-size: 0.9rem; opacity: 0.8;">أول أيام رمضان (تقريباً): ١٨ فبراير ٢٠٢٦</span>
+            </div>
+ 
+            <div id="loading" style="display:none; text-align:center; padding: 2rem; color: #A3D9C9;">
+                <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
+            </div>
+ 
+            <div class="calendar-container">
+                <table class="ramadan-calendar">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>السحور (الفجر)</th>
+                            <th>الظهر</th>
+                            <th>العصر</th>
+                            <th>الإفطار (المغرب)</th>
+                            <th>العشاء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendarBody">
+                        <!-- Rows generated by JS -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <p style="margin-top: 2rem; font-size: 0.8rem; text-align: center; opacity: 0.6;">
+                <i class="fa-solid fa-circle-info"></i> يتم حساب الأوقات باستخدام طريقة رابطة العالم الإسلامي. يرجى استشارة المسجد المحلي لمعرفة الأوقات الدقيقة. <span id="methodName"></span>
+            </p>
+        </div>
+        
+        <div style="margin-top: 4rem;">
+            <h2 style="text-align:center; margin-bottom: 2rem;">أساسيات رمضان</h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <a href="../posts/ramadan-patience.html" style="text-decoration:none; color:inherit;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
+                        <h3>الاستعداد الروحي</h3>
+                        <p style="font-size:0.9rem; opacity:0.8;">كيف تهيئ قلبك لشهر القرآن.</p>
+                    </div>
+                </a>
+                <a href="../posts/zakat-calculator-meaning.html" style="text-decoration:none; color:inherit;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
+                        <h3>دليل الزكاة</h3>
+                        <p style="font-size:0.9rem; opacity:0.8;">افهم تزكية المال خلال هذا الشهر الفضيل.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CITIES_DATA = {"Turkey": [{"id": "Adana,TR", "name": "Adana"}, {"id": "Adiyaman,TR", "name": "Adiyaman"}, {"id": "Afyonkarahisar,TR", "name": "Afyonkarahisar"}, {"id": "Agri,TR", "name": "Agri"}, {"id": "Aksaray,TR", "name": "Aksaray"}, {"id": "Amasya,TR", "name": "Amasya"}, {"id": "Ankara,TR", "name": "Ankara"}, {"id": "Antalya,TR", "name": "Antalya"}, {"id": "Ardahan,TR", "name": "Ardahan"}, {"id": "Artvin,TR", "name": "Artvin"}, {"id": "Aydin,TR", "name": "Aydin"}, {"id": "Balikesir,TR", "name": "Balikesir"}, {"id": "Bartin,TR", "name": "Bartin"}, {"id": "Batman,TR", "name": "Batman"}, {"id": "Bayburt,TR", "name": "Bayburt"}, {"id": "Bilecik,TR", "name": "Bilecik"}, {"id": "Bingol,TR", "name": "Bingol"}, {"id": "Bitlis,TR", "name": "Bitlis"}, {"id": "Bolu,TR", "name": "Bolu"}, {"id": "Burdur,TR", "name": "Burdur"}, {"id": "Bursa,TR", "name": "Bursa"}, {"id": "Canakkale,TR", "name": "Canakkale"}, {"id": "Cankiri,TR", "name": "Cankiri"}, {"id": "Corum,TR", "name": "Corum"}, {"id": "Denizli,TR", "name": "Denizli"}, {"id": "Diyarbakir,TR", "name": "Diyarbakir"}, {"id": "Duzce,TR", "name": "Duzce"}, {"id": "Edirne,TR", "name": "Edirne"}, {"id": "Elazig,TR", "name": "Elazig"}, {"id": "Erzincan,TR", "name": "Erzincan"}, {"id": "Erzurum,TR", "name": "Erzurum"}, {"id": "Eskisehir,TR", "name": "Eskisehir"}, {"id": "Gaziantep,TR", "name": "Gaziantep"}, {"id": "Giresun,TR", "name": "Giresun"}, {"id": "Gumushane,TR", "name": "Gumushane"}, {"id": "Hakkari,TR", "name": "Hakkari"}, {"id": "Hatay,TR", "name": "Hatay"}, {"id": "Igdir,TR", "name": "Igdir"}, {"id": "Isparta,TR", "name": "Isparta"}, {"id": "Istanbul,TR", "name": "Istanbul"}, {"id": "Izmir,TR", "name": "Izmir"}, {"id": "Kahramanmaras,TR", "name": "Kahramanmaras"}, {"id": "Karabuk,TR", "name": "Karabuk"}, {"id": "Karaman,TR", "name": "Karaman"}, {"id": "Kars,TR", "name": "Kars"}, {"id": "Kastamonu,TR", "name": "Kastamonu"}, {"id": "Kayseri,TR", "name": "Kayseri"}, {"id": "Kilis,TR", "name": "Kilis"}, {"id": "Kirikkale,TR", "name": "Kirikkale"}, {"id": "Kirklareli,TR", "name": "Kirklareli"}, {"id": "Kirsehir,TR", "name": "Kirsehir"}, {"id": "Kocaeli,TR", "name": "Kocaeli"}, {"id": "Konya,TR", "name": "Konya"}, {"id": "Kutahya,TR", "name": "Kutahya"}, {"id": "Malatya,TR", "name": "Malatya"}, {"id": "Manisa,TR", "name": "Manisa"}, {"id": "Mardin,TR", "name": "Mardin"}, {"id": "Mersin,TR", "name": "Mersin"}, {"id": "Mugla,TR", "name": "Mugla"}, {"id": "Mus,TR", "name": "Mus"}, {"id": "Nevsehir,TR", "name": "Nevsehir"}, {"id": "Nigde,TR", "name": "Nigde"}, {"id": "Ordu,TR", "name": "Ordu"}, {"id": "Osmaniye,TR", "name": "Osmaniye"}, {"id": "Rize,TR", "name": "Rize"}, {"id": "Sakarya,TR", "name": "Sakarya"}, {"id": "Samsun,TR", "name": "Samsun"}, {"id": "Sanliurfa,TR", "name": "Sanliurfa"}, {"id": "Siirt,TR", "name": "Siirt"}, {"id": "Sinop,TR", "name": "Sinop"}, {"id": "Sirnak,TR", "name": "Sirnak"}, {"id": "Sivas,TR", "name": "Sivas"}, {"id": "Tekirdag,TR", "name": "Tekirdag"}, {"id": "Tokat,TR", "name": "Tokat"}, {"id": "Trabzon,TR", "name": "Trabzon"}, {"id": "Tunceli,TR", "name": "Tunceli"}, {"id": "Usak,TR", "name": "Usak"}, {"id": "Van,TR", "name": "Van"}, {"id": "Yalova,TR", "name": "Yalova"}, {"id": "Yozgat,TR", "name": "Yozgat"}, {"id": "Zonguldak,TR", "name": "Zonguldak"}], "Indonesia": [{"id": "Balikpapan,ID", "name": "Balikpapan"}, {"id": "Bandar Lampung,ID", "name": "Bandar Lampung"}, {"id": "Bandung,ID", "name": "Bandung"}, {"id": "Banjarmasin,ID", "name": "Banjarmasin"}, {"id": "Batam,ID", "name": "Batam"}, {"id": "Bekasi,ID", "name": "Bekasi"}, {"id": "Bogor,ID", "name": "Bogor"}, {"id": "Cimahi,ID", "name": "Cimahi"}, {"id": "Denpasar,ID", "name": "Denpasar"}, {"id": "Depok,ID", "name": "Depok"}, {"id": "Jakarta,ID", "name": "Jakarta"}, {"id": "Jambi,ID", "name": "Jambi"}, {"id": "Jayapura,ID", "name": "Jayapura"}, {"id": "Kupang,ID", "name": "Kupang"}, {"id": "Makassar,ID", "name": "Makassar"}, {"id": "Malang,ID", "name": "Malang"}, {"id": "Manado,ID", "name": "Manado"}, {"id": "Medan,ID", "name": "Medan"}, {"id": "Padang,ID", "name": "Padang"}, {"id": "Palembang,ID", "name": "Palembang"}, {"id": "Pekanbaru,ID", "name": "Pekanbaru"}, {"id": "Pontianak,ID", "name": "Pontianak"}, {"id": "Samarinda,ID", "name": "Samarinda"}, {"id": "Semarang,ID", "name": "Semarang"}, {"id": "Serang,ID", "name": "Serang"}, {"id": "Surabaya,ID", "name": "Surabaya"}, {"id": "Surakarta,ID", "name": "Surakarta"}, {"id": "Tangerang,ID", "name": "Tangerang"}, {"id": "Tasikmalaya,ID", "name": "Tasikmalaya"}], "Saudi Arabia": [{"id": "Abha,SA", "name": "Abha"}, {"id": "Al-Hofuf,SA", "name": "Al-Hofuf"}, {"id": "Al-Jubail,SA", "name": "Al-Jubail"}, {"id": "Al-Khobar,SA", "name": "Al-Khobar"}, {"id": "Buraidah,SA", "name": "Buraidah"}, {"id": "Dammam,SA", "name": "Dammam"}, {"id": "Ha'il,SA", "name": "Ha'il"}, {"id": "Jeddah,SA", "name": "Jeddah"}, {"id": "Jizan,SA", "name": "Jizan"}, {"id": "Khamis Mushait,SA", "name": "Khamis Mushait"}, {"id": "Mecca,SA", "name": "Mecca"}, {"id": "Medina,SA", "name": "Medina"}, {"id": "Najran,SA", "name": "Najran"}, {"id": "Riyadh,SA", "name": "Riyadh"}, {"id": "Tabuk,SA", "name": "Tabuk"}, {"id": "Taif,SA", "name": "Taif"}, {"id": "Yanbu,SA", "name": "Yanbu"}], "Egypt": [{"id": "Alexandria,EG", "name": "Alexandria"}, {"id": "Asyut,EG", "name": "Asyut"}, {"id": "Cairo,EG", "name": "Cairo"}, {"id": "Giza,EG", "name": "Giza"}, {"id": "Luxor,EG", "name": "Luxor"}, {"id": "Mansoura,EG", "name": "Mansoura"}, {"id": "Port Said,EG", "name": "Port Said"}, {"id": "Shubra El Kheima,EG", "name": "Shubra El Kheima"}, {"id": "Suez,EG", "name": "Suez"}, {"id": "Tanta,EG", "name": "Tanta"}], "Qatar": [{"id": "Al Khor,QA", "name": "Al Khor"}, {"id": "Al Rayyan,QA", "name": "Al Rayyan"}, {"id": "Al Wakrah,QA", "name": "Al Wakrah"}, {"id": "Doha,QA", "name": "Doha"}], "Kuwait": [{"id": "Farwaniya,KW", "name": "Farwaniya"}, {"id": "Hawally,KW", "name": "Hawally"}, {"id": "Kuwait City,KW", "name": "Kuwait City"}, {"id": "Salmiya,KW", "name": "Salmiya"}], "Gulf": [{"id": "Abu Dhabi,AE", "name": "Abu Dhabi"}, {"id": "Dubai,AE", "name": "Dubai"}, {"id": "Manama,BH", "name": "Manama"}, {"id": "Muscat,OM", "name": "Muscat"}, {"id": "Sharjah,AE", "name": "Sharjah"}], "Europe & Others": [{"id": "Berlin,DE", "name": "Berlin"}, {"id": "Brussels,BE", "name": "Brussels"}, {"id": "Geneva,CH", "name": "Geneva"}, {"id": "London,UK", "name": "London"}, {"id": "Lyon,FR", "name": "Lyon"}, {"id": "Marseille,FR", "name": "Marseille"}, {"id": "New York,US", "name": "New York"}, {"id": "Paris,FR", "name": "Paris"}, {"id": "Sydney,AU", "name": "Sydney"}, {"id": "Toronto,CA", "name": "Toronto"}], "North Africa": [{"id": "Algiers,DZ", "name": "Algiers"}, {"id": "Casablanca,MA", "name": "Casablanca"}, {"id": "Marrakech,MA", "name": "Marrakech"}, {"id": "Oran,DZ", "name": "Oran"}, {"id": "Tripoli,LY", "name": "Tripoli"}, {"id": "Tunis,TN", "name": "Tunis"}]};
+        
+        // Method IDs for Aladhan API based on Country Code
+        const METHOD_MAP = {
+            "TR": 13, // Turkey: Diyanet
+            "SA": 4,  // Saudi Arabia: Umm al-Qura
+            "EG": 5,  // Egypt: Egyptian General Authority of Survey
+            "ID": 20, // Indonesia: Sihat/Kemenag
+            "QA": 10, // Qatar
+            "KW": 9,  // Kuwait
+            "AE": 16, // UAE: Dubai
+            "FR": 12, // France: UOIF
+            "US": 2,  // USA: ISNA
+            "CA": 2,  // Canada: ISNA
+            "MA": 21, // Morocco: Moroccan Ministry of Habous
+            "DZ": 19, // Algeria: Algerian Minister of Religious Affairs
+            "TN": 22, // Tunisia: Ministry of Religious Affairs
+            "GB": 3,  // UK: Muslim World League (or 2 ISNA)
+            "DE": 13, // Germany: Diyanet (popular) or 3
+            "BE": 12, // Belgium: UOIF (or 3)
+            "DEFAULT": 3 // Muslim World League
+        };
+
+        function populateCities() {
+            const country = document.getElementById('countrySelect').value;
+            const citySelect = document.getElementById('citySelect');
+            citySelect.innerHTML = '<option value="">اختر مدينتك</option>';
+            
+            if (CITIES_DATA[country]) {
+                CITIES_DATA[country].forEach(city => {
+                    const opt = document.createElement('option');
+                    opt.value = city.id; // Format: "CityName,CountryCode"
+                    opt.textContent = city.name;
+                    citySelect.appendChild(opt);
+                });
+                
+                // Select first city by default
+                if (CITIES_DATA[country].length > 0) {
+                    citySelect.value = CITIES_DATA[country][0].id;
+                    updateTimes();
+                }
+            }
+        }
+ 
+        async function updateTimes() {
+            const cityId = document.getElementById('citySelect').value;
+            if (!cityId) return;
+            
+            // Extract Country Code from cityId "Name,Code"
+            const countryCode = cityId.split(',')[1] || "DEFAULT";
+            
+            const country = document.getElementById('countrySelect').value;
+            const cityData = CITIES_DATA[country].find(c => c.id === cityId);
+            if (!cityData) return;
+
+            const loading = document.getElementById('loading');
+            const tbody = document.getElementById('calendarBody');
+            
+            loading.style.display = 'block';
+            tbody.innerHTML = ''; // Clear table
+            
+            const method = METHOD_MAP[countryCode] || METHOD_MAP["DEFAULT"];
+            document.getElementById('methodName').textContent = `(Method ID: ${method})`;
+
+            try {
+                // Fetch Feb and March 2026
+                const [feb, mar] = await Promise.all([
+                    fetch(`https://api.aladhan.com/v1/calendarByCity?city=${cityData.name}&country=${countryCode}&method=${method}&month=02&year=2026`).then(r => r.json()),
+                    fetch(`https://api.aladhan.com/v1/calendarByCity?city=${cityData.name}&country=${countryCode}&method=${method}&month=03&year=2026`).then(r => r.json())
+                ]);
+
+                const allDays = [...(feb.data || []), ...(mar.data || [])];
+                
+                // Approximate Ramadan 2026 Start: Feb 18
+                // We will display 30 days starting from Feb 18
+                const ramadanStart = "18-02-2026"; 
+                let startIndex = allDays.findIndex(d => d.date.gregorian.date === ramadanStart);
+                if (startIndex === -1) startIndex = 17; // Fallback index
+
+                // Show 30 days
+                let ramadanDays = allDays.slice(startIndex, startIndex + 30);
+                
+                if (ramadanDays.length === 0) {
+                     ramadanDays = allDays.filter(d => {
+                        const [day, month, year] = d.date.gregorian.date.split('-').map(Number);
+                        if (year !== 2026) return false;
+                        if (month === 2 && day >= 18) return true;
+                        if (month === 3 && day <= 19) return true;
+                        return false;
+                     });
+                }
+
+                ramadanDays.forEach((day, index) => {
+                    const row = document.createElement('tr');
+                    const timings = day.timings;
+                    
+                    // Highlight current day
+                    const today = new Date();
+                    const isToday = day.date.gregorian.day == today.getDate() && day.date.gregorian.month.number == (today.getMonth() + 1) && day.date.gregorian.year == today.getFullYear();
+                    if (isToday) row.classList.add('current-day');
+
+                    // Clean time format (remove (EEST) etc)
+                    const cleanTime = (t) => t.split(' ')[0];
+
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td style="font-size:0.9rem;">${day.date.gregorian.day} ${day.date.gregorian.month.en}</td>
+                        <td class="time-val">${cleanTime(timings.Fajr)}</td>
+                        <td class="time-val">${cleanTime(timings.Dhuhr)}</td>
+                        <td class="time-val">${cleanTime(timings.Asr)}</td>
+                        <td class="time-val" style="color: #D4AF37;">${cleanTime(timings.Maghrib)}</td>
+                        <td class="time-val">${cleanTime(timings.Isha)}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error('Error fetching prayer times:', error);
+                tbody.innerHTML = '<tr><td colspan="7" style="color:salmon;">Error loading data. Please try again later.</td></tr>';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Initial population
+        window.onload = populateCities;
+    </script>
+
+    <footer class="main-footer">
+        <div class="footer-bottom-row">
+            <div class="footer-brand" style="font-family: 'Kaushan Script', cursive; font-size: 1.5rem;">Islamvy <span style="font-size: 1rem; opacity:0.8;">مدونة</span></div>
+            <div class="footer-copyright">© 2026 Islamvy. جميع الحقوق محفوظة.</div>
+        </div>
+    </footer>
+</body>
+</html>

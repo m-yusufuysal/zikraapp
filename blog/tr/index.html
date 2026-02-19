@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamvy Blog</title>
+    <meta name="description" content="İslami İçgörüler">
+    <link rel="canonical" href="https://islamvy.com/blog/tr/index.html">
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Kaushan+Script&display=swap" rel="stylesheet">
+    <style>
+        .logo { font-family: 'Kaushan Script', cursive !important; }
+        .lang-option { color: white; text-decoration: none; padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.95rem; transition: 0.3s; display: block; filter: none; }
+        .lang-option:hover { background: rgba(255, 255, 255, 0.15); color: #A3D9C9; }
+        .category-filter-nav { display: flex; gap: 1rem; overflow-x: auto; padding: 1rem 5%; margin-bottom: 2rem; scrollbar-width: none; -ms-overflow-style: none; }
+        .category-filter-nav::-webkit-scrollbar { display: none; }
+        .filter-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 0.6rem 1.2rem; border-radius: 20px; cursor: pointer; white-space: nowrap; transition: 0.3s; font-size: 0.9rem; font-weight: 500; }
+        .filter-btn.active { background: #A3D9C9; color: #1e3e34; border-color: #A3D9C9; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="geometric-bg"></div>
+    
+    <nav class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 5%; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10;">
+        <a href="../../index.html" style="text-decoration:none;">
+            <div class="logo" style="font-family: 'Kaushan Script', cursive; font-size: 2.5rem; color: #FFFFFF; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">Islamvy <span style="font-size: 1.8rem; opacity: 0.8; font-weight: 400;">Blog</span></div>
+        </a>
+        <div class="nav-right" style="display: flex; align-items: center; gap: 1.5rem;">
+             <div class="nav-links" style="margin-right: 1.5rem; display: flex; gap: 1.5rem;">
+                <a href="../../index.html" class="nav-item-link" style="color: #fff; text-decoration: none; font-weight: 500; font-size: 0.95rem; opacity: 0.9; transition: 0.3s;">Uygulama Ana Sayfa</a>
+                <a href="../../blog/tr/ramadan/index.html" class="nav-item-link" style="color: #A3D9C9; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: 0.3s;"><i class="fa-solid fa-moon"></i> Ramazan 2026</a>
+            </div>
+            
+            <div class="lang-dropdown" style="position: relative;">
+                <button class="lang-btn" onclick="toggleLangMenu(event)" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 0.6rem 1.2rem; border-radius: 99px; color: #FFFFFF; cursor: pointer; transition: 0.3s; backdrop-filter: blur(8px); font-weight: 600; font-size: 0.9rem;">
+                    <span>Türkçe</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="lang-menu" id="langMenu" style="display: none; position: absolute; right: 0; top: 120%; background: rgba(30, 62, 52, 0.98); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 0.5rem; min-width: 180px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); z-index: 1000; backdrop-filter: blur(12px);">
+                    <a href="../../blog/en/index.html" class="lang-option">English</a>
+<a href="../../blog/tr/index.html" class="lang-option">Türkçe</a>
+<a href="../../blog/ar/index.html" class="lang-option">العربية</a>
+<a href="../../blog/fr/index.html" class="lang-option">Français</a>
+<a href="../../blog/id/index.html" class="lang-option">Bahasa Indonesia</a>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+    function toggleLangMenu(e) {
+        e.stopPropagation();
+        var menu = document.getElementById('langMenu');
+        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+        menu.style.flexDirection = 'column';
+    }
+    document.addEventListener('click', function() {
+        var menu = document.getElementById('langMenu');
+        if (menu) menu.style.display = 'none';
+    });
+    </script>
+    <style>
+        [dir="rtl"] .lang-menu { right: auto; left: 0; }
+        .nav-item-link:hover { opacity: 1; color: #A3D9C9 !important; }
+    </style>
+
+    <header class="blog-hero">
+        <h1>İslami İçgörüler & Hikmet</h1>
+        <p>Manevi sorularınıza alim referanslarıyla cevap bulun.</p>
+    </header>
+    
+    <nav class="category-filter-nav" id="categoryNav">
+        <button class="filter-btn active" data-filter="all">Tümü</button>
+        <button class="filter-btn" data-filter="worship">İbadet</button>
+        <button class="filter-btn" data-filter="dream">Rüya</button>
+        <button class="filter-btn" data-filter="lifestyle">Yaşam</button>
+        <button class="filter-btn" data-filter="dhikr">Zikir & Dua</button>
+        <button class="filter-btn" data-filter="tech">Teknoloji</button>
+    </nav>
+
+    <main class="blog-grid" id="blogGrid">
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Namazın Kılınışı" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İbadet Rehberi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Namazın Kılınışı</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Sünnete göre namaz kılma rehberi.</p>
+                <a href="posts/steps-of-salah.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Abdest Nasıl Alınır?" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İbadet Rehberi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Abdest Nasıl Alınır?</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Adım adım abdest alma rehberi.</p>
+                <a href="posts/how-to-do-wudu.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Boy Abdesti (Gusül) Rehberi" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İbadet Rehberi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Boy Abdesti (Gusül) Rehberi</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Gusül abdestinin (Boy Abdesti) alınışı.</p>
+                <a href="posts/ghusl-guide.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Ramazan ve Sabır" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İbadet Rehberi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Ramazan ve Sabır</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Mübarek Ramazan ayında sabrı (Sabır) nasıl geliştirebilirsiniz?</p>
+                <a href="posts/ramadan-patience.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Zekat Hesaplama ve Anlamı" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İbadet Rehberi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Zekat Hesaplama ve Anlamı</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Zekat hakkında bilmeniz gereken her şey: Hesaplama, Anlam ve Verilecek Kişiler.</p>
+                <a href="posts/zakat-calculator-meaning.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Teheccüd Namazı" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İbadet Rehberi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Teheccüd Namazı</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Teheccüd (Gece) Namazının faziletleri ve kılınışı.</p>
+                <a href="posts/tahajjud-prayer.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="İstihare Rehberi" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İbadet Rehberi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">İstihare Rehberi</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">İstihare namazının kılınışı ve önemi.</p>
+                <a href="posts/istikhara-guide.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Cuma Namazı" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İbadet Rehberi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Cuma Namazı</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Cuma namazının faziletleri ve adabı.</p>
+                <a href="posts/jummah-friday-prayer.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Haccın Temelleri" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İbadet Rehberi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Haccın Temelleri</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Hac ibadetinin rükunlarına kısa bir bakış.</p>
+                <a href="posts/hajj-basics.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Duanın Gücü" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Zikir ve Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Duanın Gücü</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">İbadetin özü olarak Dua'yı anlamak.</p>
+                <a href="posts/power-of-dua.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Sabah Zikirleri" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Zikir ve Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Sabah Zikirleri</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Güne zikirle başlamanın önemi.</p>
+                <a href="posts/morning-dhikr.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Akşam Zikirleri" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Zikir ve Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Akşam Zikirleri</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Akşam zikriyle ruhu korumak.</p>
+                <a href="posts/evening-dhikr.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Ayetel Kürsi Faziletleri" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Zikir ve Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Ayetel Kürsi Faziletleri</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Kuran'daki en büyük ayet ve onun derin koruyucu faziletleri.</p>
+                <a href="posts/ayatul-kursi-benefits.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="İstiğfarın Faydaları" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Zikir ve Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">İstiğfarın Faydaları</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Bağışlanma dilemenin (İstiğfar) açtığı mucizevi kapılar.</p>
+                <a href="posts/istighfar-benefits.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Salavatın Önemi" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Zikir ve Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Salavatın Önemi</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Hz. Muhammed'e (S.A.V) salat ve selam getirmenin muazzam bereketi.</p>
+                <a href="posts/salawat-importance.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Tevhidin Anlamı" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Zikir ve Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Tevhidin Anlamı</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">İslam inancının özü: Allah'ın Birliği.</p>
+                <a href="posts/tawheed-meaning.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Hasbunallah ve Güven" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Zikir ve Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Hasbunallah ve Güven</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Sadece Allah'a güvenmenin gücü.</p>
+                <a href="posts/hasbunallah-trust.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Uyku Zikirleri" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Zikir ve Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Uyku Zikirleri</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">İlahi korunma ve iç huzur için uykudan önce okunacak Sünnet Zikirleri.</p>
+                <a href="posts/sleep-adhkar.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Huzur İçin Zikirlar" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Zikir ve Dua</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Huzur İçin Zikirlar</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Kalbi sakinleştirmek, kaygıyı gidermek ve iç huzuru yeniden kazanmak için özel Zikirler.</p>
+                <a href="posts/dhikr-for-peace.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Kuran Okuma İpuçları" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İbadet Rehberi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Kuran Okuma İpuçları</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Kuran tilavetinizi (Tecvid) ve Tedebbürünüzü (Tefekkür) geliştirmek için pratik ipuçları.</p>
+                <a href="posts/quran-recitation-tips.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Sabrın Önemi" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Yaşam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Sabrın Önemi</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Hayatın imtihanları karşısında sabrı (Sabr) geliştirmenin manevi sanatı.</p>
+                <a href="posts/sabr-patience.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Anne Babaya Saygı" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Yaşam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Anne Babaya Saygı</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">İslami ahlak ve toplumsal huzurda anne ve babanın yüce makamı.</p>
+                <a href="posts/parents-respect.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80" alt="Helal Finans" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Yaşam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Helal Finans</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">İslam'da etik ve helal kazanç elde etmenin temel ilkeleri.</p>
+                <a href="posts/finance-halal.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Haya ve Tesettür" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Yaşam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Haya ve Tesettür</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">İslam'da Haya (Edep) ve Tesettür kavramını derinlemesine anlamak.</p>
+                <a href="posts/modesty-hijab.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Hayvan Hakları" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Yaşam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Hayvan Hakları</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">İslami merhametin bir tecellisi olarak hayvan hakları.</p>
+                <a href="posts/animal-rights.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Kaygı İçin İslami Tavsiyeler" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Yaşam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Kaygı İçin İslami Tavsiyeler</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Kaygılı zamanlarda inanç yoluyla iç huzuru ve dayanıklılığı bulmak.</p>
+                <a href="posts/anxiety-islamic-tips.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Helal Gıda" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Yaşam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Helal Gıda</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Helal ve Tayyib (Temiz/Hoş) gıda tüketmenin hayati önemi.</p>
+                <a href="posts/halal-food.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Evlilik Hakları" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Yaşam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Evlilik Hakları</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Huzurlu ve sağlıklı bir İslami evliliğin temelleri.</p>
+                <a href="posts/marriage-rights.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="İlim Talebi" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Yaşam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">İlim Talebi</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">İslam'da ilim talep etmenin ilahi yükümlülüğü ve manevi faziletleri.</p>
+                <a href="posts/seeking-knowledge.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Zaman Yönetimi" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Yaşam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Zaman Yönetimi</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Zamanın derin değeri ve hayatın anları üzerine İslami bir bakış.</p>
+                <a href="posts/time-management.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Sosyal Medya Ahlakı" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Yaşam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Sosyal Medya Ahlakı</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Karmaşık dijital dünyada İslami Edep ile yol almak.</p>
+                <a href="posts/social-media-ethics.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="En İyi İslami Uygulamalar 2026" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Teknoloji</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">En İyi İslami Uygulamalar 2026</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">2026'da üretkenliğinizi, odağınızı ve imanınızı artıracak en iyi İslami Uygulamalar.</p>
+                <a href="posts/best-apps-2026.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="Yapay Zeka ve İslam'ın Geleceği" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Teknoloji</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Yapay Zeka ve İslam'ın Geleceği</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Yapay Zeka, etik sınırları koruyarak Ümmete nasıl hizmet ediyor?</p>
+                <a href="posts/ai-future-islam.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="Akıllı Seccade Teknolojisi" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Teknoloji</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Akıllı Seccade Teknolojisi</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Seccadelerde yenilikler: Ortopedik konfordan dijital rekat sayımına.</p>
+                <a href="posts/smart-rug-tech.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="Kıble Bulma Araçları" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">İslami Teknoloji</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Kıble Bulma Araçları</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Modern uygulamalar Kıble'yi doğru bulmak için GPS ve AR'yi nasıl kullanıyor?</p>
+                <a href="posts/qibla-tools.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=80" alt="Rüyada Kedi Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Kedi Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">İslami rüya tabirlerinde kedi genellikle hane içinden bir hırsızı veya bir hizmetçiyi temsil eder. İbn-i Şirin'e göre uysal bir kedi huzurlu bir yılı,...</p>
+                <a href="posts/dream-cat.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1555677284-6a6f971639e0?w=800&q=80" alt="Rüyada Yılan Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Yılan Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Yılan, düşmanın klasik bir sembolüdür. Yılanın gücü ve boyutu, gerçek hayattaki düşmanın gücünü yansıtır. Yılan evinizdeyse düşman bir akrabadır; dışa...</p>
+                <a href="posts/dream-snake.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=800&q=80" alt="Rüyada Altın Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Altın Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">İslami gelenekte altın, formuna göre farklı yorumlanır. Altın para (Dinar) veya takı bulmak zenginlik, sevinç ve başarıyı temsil eder. Ancak işlenmemi...</p>
+                <a href="posts/dream-gold.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80" alt="Rüyada Su Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Su Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Su hayatın özüdür; ilim, iman ve safiyeti temsil eder. Berrak ve serin su içmek, hikmet kazanmaya ve manevi büyümeye işarettir. Ancak suda boğulmak, d...</p>
+                <a href="posts/dream-water.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=800&q=80" alt="Rüyada Uçmak" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Uçmak</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rüyada uçmak genellikle özgürlük, yolculuk ve yükselen statünün olumlu bir işaretidir. Kanatlarla uçmak, fiziksel bir yolculuğu veya yeni bir fırsatı ...</p>
+                <a href="posts/dream-flying.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?w=800&q=80" alt="Rüyada Bebek Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Bebek Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rüyada bebek genellikle yeni bir başlangıcı, yaratıcı bir projeyi veya yolda olan önemli bir sorumluluğu simgeler. İslami gelenekte kız bebek genellik...</p>
+                <a href="posts/dream-baby.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1476610182048-b716b8518aae?w=800&q=80" alt="Rüyada Ölüm Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Ölüm Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rüyada ölüm, nadiren fiziksel ölümü simgeleyen karmaşık bir semboldür. Bunun yerine genellikle büyük bir geçişi, zor bir evrenin sonlanmasını veya man...</p>
+                <a href="posts/dream-death.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?w=800&q=80" alt="Rüyada Yağmur Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Yağmur Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rüyada yağmur; ilahi rahmetin, ilmin ve sıkıntıdan kurtuluşun güçlü bir sembolüdür. İslami gelenekte yağmur yumuşak ve zamanındaysa, hem toprak hem de...</p>
+                <a href="posts/dream-rain.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80" alt="Rüyada Ayakkabı Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Ayakkabı Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rüyada ayakkabı; kariyer yolunuzu, yolculuklarınızı veya evlilik ilişkinizi temsil eder. Yeni ve rahat ayakkabılar refahı, istikrarlı bir işi veya uyu...</p>
+                <a href="posts/dream-shoes.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1516585427167-9f4af9627e6c?w=800&q=80" alt="Rüyada Ağlamak" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Ağlamak</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rüyada ağlamak, beklenenin aksine genellikle yaklaşan bir sevinci ve zor bir durumdan kurtuluşu (Ferec) simgeler. Yüklerin atılmasını ve kalbin arınma...</p>
+                <a href="posts/dream-crying.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80" alt="Rüyada Araba Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Araba Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rüyada araba; hayattaki ilerleyişinizi ve kaderiniz üzerindeki kontrolünüzü temsil eder. Düz bir yolda sorunsuz bir şekilde araba sürmek ilerlemeyi, d...</p>
+                <a href="posts/dream-car.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=800&q=80" alt="Rüyada Para Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Para Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rüyada para, formuna göre dikkatli analiz edilmesi gereken bir semboldür. Kağıt para bulmak genellikle dünyevi bir imtihanı, ağır bir sorumluluğu veya...</p>
+                <a href="posts/dream-money.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80" alt="Rüyada Deniz Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Deniz Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Deniz; gücü, engin ilmi ve insan kalbinin derinliklerini temsil eden görkemli bir semboldür. Sakin ve berrak bir deniz; zihin huzurunu, ilahi inayeti ...</p>
+                <a href="posts/dream-sea.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&q=80" alt="Rüyada Ev Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Ev Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rüyada ev; rüya sahibinin iç dünyasının, manevi sağlığının ve aile hayatının bir yansımasıdır. Yeni ve ferah bir eve girmek; evlilik, yeni bir iş veya...</p>
+                <a href="posts/dream-house.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=800&q=80" alt="Rüyada Balık Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Balık Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rüyada balık, birincil olarak rızık ve kazanç sembolüdür. Berrak suda görülen ve sayılabilen balıklar, yolunuza çıkan belirli maddi kazançları veya be...</p>
+                <a href="posts/dream-fish.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=800&q=80" alt="Rüyada Diş Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Diş Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Dişler ailenizi ve yakın akrabalarınızı temsil eder. Üst dişler baba tarafındaki erkek akrabaları, alt dişler ise anne tarafındaki kadın akrabaları si...</p>
+                <a href="posts/dream-teeth.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80" alt="Rüyada Ateş Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Ateş Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Ateş, hem hidayeti hem de imtihanı temsil eden çift yönlü bir semboldür. Eğer ateş bir yolu aydınlatmak, ısınmak veya yemek pişirmek için kullanılıyor...</p>
+                <a href="posts/dream-fire.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=800&q=80" alt="Rüyada Evlenmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Evlenmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rüyada evlenmek; ilahi inayet, onur ve Allah'ın korumasının derin bir sembolüdür. Bekar bir kişi için genellikle gerçek bir evliliği veya önemli bir y...</p>
+                <a href="posts/dream-marriage.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800&q=80" alt="Rüyada Güneş Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Güneş Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Güneş; hayatınızdaki bir lideri, babayı veya hakikatin berraklığını temsil eden görkemli bir semboldür. Güneşin parlak bir şekilde doğduğunu görmek; h...</p>
+                <a href="posts/dream-sun.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=800&q=80" alt="Rüyada Peygamberimizi Görmek" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Rüya Tabirleri</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Rüyada Peygamberimizi Görmek</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rüyada Alemlere Rahmet Hazreti Muhammed (S.A.V)'i görmek, Şeytan O'nun suretine giremeyeceği için 'Sadık Rüya' (Hak Rüya) kabul edilir. Bir müminin al...</p>
+                <a href="posts/dream-prophet.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        </main>
+
+    <script>
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const blogCards = document.querySelectorAll('.blog-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filter = btn.getAttribute('data-filter');
+            
+            blogCards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+    </script>
+
+    <footer class="main-footer">
+        <div class="footer-bottom-row">
+            <div class="footer-brand" style="font-family: 'Kaushan Script', cursive; font-size: 1.5rem;">Islamvy <span style="font-size: 1rem; opacity:0.8;">Blog</span></div>
+            <div class="footer-copyright">© 2026 Islamvy. All rights reserved.</div>
+        </div>
+    </footer>
+</body>
+</html>

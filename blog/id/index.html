@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Islamvy</title>
+    <meta name="description" content="Wawasan Islam">
+    <link rel="canonical" href="https://islamvy.com/blog/id/index.html">
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Kaushan+Script&display=swap" rel="stylesheet">
+    <style>
+        .logo { font-family: 'Kaushan Script', cursive !important; }
+        .lang-option { color: white; text-decoration: none; padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.95rem; transition: 0.3s; display: block; filter: none; }
+        .lang-option:hover { background: rgba(255, 255, 255, 0.15); color: #A3D9C9; }
+        .category-filter-nav { display: flex; gap: 1rem; overflow-x: auto; padding: 1rem 5%; margin-bottom: 2rem; scrollbar-width: none; -ms-overflow-style: none; }
+        .category-filter-nav::-webkit-scrollbar { display: none; }
+        .filter-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 0.6rem 1.2rem; border-radius: 20px; cursor: pointer; white-space: nowrap; transition: 0.3s; font-size: 0.9rem; font-weight: 500; }
+        .filter-btn.active { background: #A3D9C9; color: #1e3e34; border-color: #A3D9C9; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="geometric-bg"></div>
+    
+    <nav class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 5%; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10;">
+        <a href="../../index.html" style="text-decoration:none;">
+            <div class="logo" style="font-family: 'Kaushan Script', cursive; font-size: 2.5rem; color: #FFFFFF; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">Islamvy <span style="font-size: 1.8rem; opacity: 0.8; font-weight: 400;">Blog</span></div>
+        </a>
+        <div class="nav-right" style="display: flex; align-items: center; gap: 1.5rem;">
+             <div class="nav-links" style="margin-right: 1.5rem; display: flex; gap: 1.5rem;">
+                <a href="../../index.html" class="nav-item-link" style="color: #fff; text-decoration: none; font-weight: 500; font-size: 0.95rem; opacity: 0.9; transition: 0.3s;">Beranda Aplikasi</a>
+                <a href="../../blog/id/ramadan/index.html" class="nav-item-link" style="color: #A3D9C9; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: 0.3s;"><i class="fa-solid fa-moon"></i> Ramadan 2026</a>
+            </div>
+            
+            <div class="lang-dropdown" style="position: relative;">
+                <button class="lang-btn" onclick="toggleLangMenu(event)" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 0.6rem 1.2rem; border-radius: 99px; color: #FFFFFF; cursor: pointer; transition: 0.3s; backdrop-filter: blur(8px); font-weight: 600; font-size: 0.9rem;">
+                    <span>Bahasa Indonesia</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="lang-menu" id="langMenu" style="display: none; position: absolute; right: 0; top: 120%; background: rgba(30, 62, 52, 0.98); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 0.5rem; min-width: 180px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); z-index: 1000; backdrop-filter: blur(12px);">
+                    <a href="../../blog/en/index.html" class="lang-option">English</a>
+<a href="../../blog/tr/index.html" class="lang-option">Türkçe</a>
+<a href="../../blog/ar/index.html" class="lang-option">العربية</a>
+<a href="../../blog/fr/index.html" class="lang-option">Français</a>
+<a href="../../blog/id/index.html" class="lang-option">Bahasa Indonesia</a>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+    function toggleLangMenu(e) {
+        e.stopPropagation();
+        var menu = document.getElementById('langMenu');
+        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+        menu.style.flexDirection = 'column';
+    }
+    document.addEventListener('click', function() {
+        var menu = document.getElementById('langMenu');
+        if (menu) menu.style.display = 'none';
+    });
+    </script>
+    <style>
+        [dir="rtl"] .lang-menu { right: auto; left: 0; }
+        .nav-item-link:hover { opacity: 1; color: #A3D9C9 !important; }
+    </style>
+
+    <header class="blog-hero">
+        <h1>Wawasan & Hikmah Islam</h1>
+        <p>Dapatkan jawaban spiritual berdasarkarn referensi shahih.</p>
+    </header>
+    
+    <nav class="category-filter-nav" id="categoryNav">
+        <button class="filter-btn active" data-filter="all">Semua</button>
+        <button class="filter-btn" data-filter="worship">Ibadah</button>
+        <button class="filter-btn" data-filter="dream">Mimpi</button>
+        <button class="filter-btn" data-filter="lifestyle">Gaya Hidup</button>
+        <button class="filter-btn" data-filter="dhikr">Dzikir</button>
+        <button class="filter-btn" data-filter="tech">Teknologi</button>
+    </nav>
+
+    <main class="blog-grid" id="blogGrid">
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Tata Cara Shalat" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Panduan Ibadah</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Tata Cara Shalat</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Panduan komprehensif untuk mendirikan shalat sesuai Sunnah.</p>
+                <a href="posts/steps-of-salah.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Cara Berwudhu" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Panduan Ibadah</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Cara Berwudhu</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Panduan wudu (bersuci) langkah demi langkah yang otentik.</p>
+                <a href="posts/how-to-do-wudu.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Panduan Mandi Wajib" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Panduan Ibadah</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Panduan Mandi Wajib</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Cara melakukan penyucian ritual Ghusl (Mandi Wajib).</p>
+                <a href="posts/ghusl-guide.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Ramadhan dan Kesabaran" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Panduan Ibadah</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Ramadhan dan Kesabaran</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Cara memupuk kesabaran (Sabr) selama bulan suci Ramadhan.</p>
+                <a href="posts/ramadan-patience.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Kalkulator Zakat dan Maknanya" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Panduan Ibadah</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Kalkulator Zakat dan Maknanya</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Segala hal yang perlu Anda ketahui tentang Zakat: Perhitungan, Makna, dan Penerima.</p>
+                <a href="posts/zakat-calculator-meaning.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Shalat Tahajjud" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Panduan Ibadah</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Shalat Tahajjud</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Keutamaan dan tata cara Shalat Malam (Tahajjud).</p>
+                <a href="posts/tahajjud-prayer.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Panduan Istikharah" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Panduan Ibadah</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Panduan Istikharah</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Cara melakukan Shalat Istikharah untuk memohon petunjuk.</p>
+                <a href="posts/istikhara-guide.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Shalat Jumat" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Panduan Ibadah</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Shalat Jumat</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Keutamaan dan adab shalat Jumat.</p>
+                <a href="posts/jummah-friday-prayer.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Dasar-dasar Haji" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Panduan Ibadah</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dasar-dasar Haji</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Tinjauan singkat tentang rukun Haji.</p>
+                <a href="posts/hajj-basics.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Kekuatan Doa" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dzikir & Doa</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Kekuatan Doa</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Memahami Doa sebagai inti dari ibadah.</p>
+                <a href="posts/power-of-dua.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Dzikir Pagi" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dzikir & Doa</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dzikir Pagi</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Pentingnya memulai hari dengan dzikir.</p>
+                <a href="posts/morning-dhikr.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Dzikir Petang" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dzikir & Doa</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dzikir Petang</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Melindungi jiwa melalui dzikir petang.</p>
+                <a href="posts/evening-dhikr.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Manfaat Ayat Kursi" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dzikir & Doa</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Manfaat Ayat Kursi</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Ayat teragung dalam Al-Quran dan manfaat perlindungannya yang mendalam.</p>
+                <a href="posts/ayatul-kursi-benefits.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Manfaat Istighfar" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dzikir & Doa</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Manfaat Istighfar</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Pintu-pintu menakjubkan yang dibuka dengan memohon ampunan (Istighfar).</p>
+                <a href="posts/istighfar-benefits.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Pentingnya Shalawat" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dzikir & Doa</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Pentingnya Shalawat</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Berkah yang sangat besar dari bershalawat kepada Nabi Muhammad (SAW).</p>
+                <a href="posts/salawat-importance.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Makna Tauhid" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dzikir & Doa</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Makna Tauhid</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Inti dari keyakinan Islam: Keesaan Allah.</p>
+                <a href="posts/tawheed-meaning.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Hasbunallah dan Tawakkal" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dzikir & Doa</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Hasbunallah dan Tawakkal</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Kekuatan hanya mengandalkan Allah.</p>
+                <a href="posts/hasbunallah-trust.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Dzikir Sebelum Tidur" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dzikir & Doa</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dzikir Sebelum Tidur</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Dzikir Sunnah otentik sebelum tidur untuk perlindungan ilahi dan ketenangan batin.</p>
+                <a href="posts/sleep-adhkar.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Dzikir untuk Ketenangan" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Dzikir & Doa</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Dzikir untuk Ketenangan</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Dzikir khusus untuk menenangkan hati, menghilangkan kecemasan, dan mengembalikan ketenangan batin.</p>
+                <a href="posts/dhikr-for-peace.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Tips Tilawah Quran" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Panduan Ibadah</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Tips Tilawah Quran</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Tips praktis untuk meningkatkan tilawah Quran (Tajwid) dan Tadabbur (Perenungan).</p>
+                <a href="posts/quran-recitation-tips.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Pentingnya Sabar" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Gaya Hidup</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Pentingnya Sabar</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Seni spiritual dalam memupuk kesabaran (Sabr) menghadapi ujian hidup.</p>
+                <a href="posts/sabr-patience.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Berbakti kepada Orang Tua" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Gaya Hidup</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Berbakti kepada Orang Tua</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Kedudukan tertinggi orang tua dalam etika Islam dan harmoni sosial.</p>
+                <a href="posts/parents-respect.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80" alt="Keuangan Halal" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Gaya Hidup</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Keuangan Halal</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Prinsip utama pemerolehan kekayaan yang etis dan halal dalam Islam.</p>
+                <a href="posts/finance-halal.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Haya dan Hijab" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Gaya Hidup</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Haya dan Hijab</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Memahami konsep mendalam Haya (Malu/Kesopanan) dan Hijab dalam Islam.</p>
+                <a href="posts/modesty-hijab.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Hak-hak Hewan" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Gaya Hidup</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Hak-hak Hewan</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Kasih sayang terhadap hewan sebagai manifestasi rahmat Islami.</p>
+                <a href="posts/animal-rights.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Tips Islami Menghadapi Kecemasan" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Gaya Hidup</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Tips Islami Menghadapi Kecemasan</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Menemukan ketenangan batin dan ketangguhan melalui iman di saat-saat cemas.</p>
+                <a href="posts/anxiety-islamic-tips.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Makanan Halal" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Gaya Hidup</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Makanan Halal</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Pentingnya mengonsumsi makanan Halal dan Tayyib (Baik/Murni).</p>
+                <a href="posts/halal-food.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Hak-hak Pernikahan" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Gaya Hidup</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Hak-hak Pernikahan</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Landasan pernikahan Islami yang sehat dan tenang.</p>
+                <a href="posts/marriage-rights.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Menuntut Ilmu" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Gaya Hidup</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Menuntut Ilmu</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Kewajiban ilahi dan keutamaan spiritual dalam menuntut ilmu dalam Islam.</p>
+                <a href="posts/seeking-knowledge.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Manajemen Waktu" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Gaya Hidup</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Manajemen Waktu</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Perspektif Islam tentang nilai waktu yang mendalam dan momen-momen kehidupan.</p>
+                <a href="posts/time-management.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="Etika Media Sosial" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Gaya Hidup</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Etika Media Sosial</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Menavigasi dunia digital yang kompleks dengan Adab (Etika) Islam.</p>
+                <a href="posts/social-media-ethics.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="Aplikasi Islam Terbaik 2026" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Technologi Islam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Aplikasi Islam Terbaik 2026</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Aplikasi Islami Terbaik untuk meningkatkan produktivitas, fokus, dan iman Anda di tahun 2026.</p>
+                <a href="posts/best-apps-2026.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="AI dan Masa Depan Islam" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Technologi Islam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">AI dan Masa Depan Islam</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Bagaimana Kecerdasan Buatan melayani Umat sambil tetap menjaga batasan etika.</p>
+                <a href="posts/ai-future-islam.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="Teknologi Sajadah Pintar" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Technologi Islam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Teknologi Sajadah Pintar</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Inovasi sajadah: Dari kenyamanan ortopedi hingga penghitungan Rakaat digital.</p>
+                <a href="posts/smart-rug-tech.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="Alat Penentu Kiblat" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Technologi Islam</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Alat Penentu Kiblat</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Bagaimana aplikasi modern menggunakan GPS dan AR untuk menemukan Kiblat secara akurat.</p>
+                <a href="posts/qibla-tools.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=80" alt="Mimpi Kucing" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Kucing</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Dalam tafsir mimpi Islam, kucing seringkali melambangkan pencuri dari dalam rumah atau seorang pelayan. Menurut Ibnu Sirin, kucing yang tenang menanda...</p>
+                <a href="posts/dream-cat.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1555677284-6a6f971639e0?w=800&q=80" alt="Mimpi Ular" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Ular</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Ular adalah simbol klasik dari musuh. Kekuatan dan ukuran ular mencerminkan kekuatan musuh di dunia nyata. Jika ular ada di dalam rumah, musuhnya adal...</p>
+                <a href="posts/dream-snake.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=800&q=80" alt="Mimpi Emas" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Emas</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Dalam tradisi Islam, emas ditafsirkan secara berbeda berdasarkan bentuknya. Menemukan koin emas (Dinar) atau perhiasan melambangkan kekayaan dan kesuk...</p>
+                <a href="posts/dream-gold.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80" alt="Mimpi Air" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Air</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Air adalah esensi kehidupan dan melambangkan ilmu, iman, dan kemurnian. Minum air yang jernih dan sejuk menandakan mendapatkan hikmah. Namun, tenggela...</p>
+                <a href="posts/dream-water.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=800&q=80" alt="Mimpi Terbang" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Terbang</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Terbang dalam mimpi umumnya merupakan pertanda positif tentang kebebasan, perjalanan, dan status yang tinggi. Terbang dengan sayap menandakan perjalan...</p>
+                <a href="posts/dream-flying.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?w=800&q=80" alt="Mimpi Bayi" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Bayi</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Bayi melambangkan awal yang baru, proyek kreatif, atau tanggung jawab besar di depan mata. Dalam tradisi Islam, bayi perempuan umumnya dipandang sebag...</p>
+                <a href="posts/dream-baby.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1476610182048-b716b8518aae?w=800&q=80" alt="Mimpi Kematian" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Kematian</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Kematian dalam mimpi adalah simbol kompleks yang jarang berarti kematian fisik. Sebaliknya, ini sering mewakili transisi besar, akhir dari fase sulit,...</p>
+                <a href="posts/dream-death.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?w=800&q=80" alt="Mimpi Hujan" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Hujan</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Hujan melambangkan rahmat Ilahi, ilmu, dan kelegaan dari kesusahan. Dalam tradisi Islam, jika hujan turun dengan lembut, itu meramalkan datangnya berk...</p>
+                <a href="posts/dream-rain.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80" alt="Mimpi Sepatu" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Sepatu</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Sepatu melambangkan jalur karir, perjalanan, atau hubungan pernikahan. Sepatu baru yang nyaman menandakan kemakmuran atau pasangan yang cocok. Kehilan...</p>
+                <a href="posts/dream-shoes.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1516585427167-9f4af9627e6c?w=800&q=80" alt="Mimpi Menangis" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Menangis</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Menangis dalam mimpi seringkali melambangkan kegembiraan yang akan datang dan kelegaan dari kesulitan. Ini mewakili pelepasan beban dan pembersihan ha...</p>
+                <a href="posts/dream-crying.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80" alt="Mimpi Mobil" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Mobil</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Mobil melambangkan pergerakan hidup Anda dan tingkat kendali Anda atas masa depan. Mengemudi dengan mulus di jalan lurus menunjukkan kemajuan, disipli...</p>
+                <a href="posts/dream-car.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=800&q=80" alt="Mimpi Uang" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Uang</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Uang dalam mimpi adalah simbol yang membutuhkan analisis bentuknya. Menemukan uang kertas menunjukkan ujian duniawi atau stres yang akan berlalu. Seba...</p>
+                <a href="posts/dream-money.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80" alt="Mimpi Laut" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Laut</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Laut melambangkan kekuatan, ilmu yang luas, dan kedalaman hati manusia. Laut yang tenang menandakan ketenangan pikiran dan pertolongan Ilahi. Berjalan...</p>
+                <a href="posts/dream-sea.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&q=80" alt="Mimpi Rumah" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Rumah</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Rumah mencerminkan keadaan batin, kesehatan spiritual, dan kehidupan keluarga. Memasuki rumah baru yang luas menandakan transisi positif. Rumah yang k...</p>
+                <a href="posts/dream-house.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=800&q=80" alt="Mimpi Ikan" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Ikan</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Ikan adalah simbol rezeki dan keuntungan. Ikan di air jernih yang bisa dihitung melambangkan keuntungan finansial. Ikan besar melambangkan kekayaan, s...</p>
+                <a href="posts/dream-fish.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=800&q=80" alt="Mimpi Gigi" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Gigi</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Gigi melambangkan keluarga dan kerabat dekat. Gigi atas melambangkan kerabat laki-laki dari pihak ayah, sedangkan gigi bawah melambangkan kerabat pere...</p>
+                <a href="posts/dream-teeth.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80" alt="Mimpi Api" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Api</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Api adalah simbol ganda yang mewakili petunjuk dan ujian. Jika api digunakan untuk penerangan atau kehangatan, itu tanda positif. Melihat api dari kej...</p>
+                <a href="posts/dream-fire.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=800&q=80" alt="Mimpi Menikah" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Menikah</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Pernikahan melambangkan inayah (perlindungan) Ilahi, kehormatan, dan perlindungan dari Allah. Bagi lajang, ini sering meramalkan pernikahan yang nyata...</p>
+                <a href="posts/dream-marriage.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800&q=80" alt="Mimpi Matahari" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Matahari</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Matahari melambangkan pemimpin, ayah, atau kejelasan kebenaran. Melihat matahari bersinar terang menandakan petunjuk dan kemenangan. Jika matahari ter...</p>
+                <a href="posts/dream-sun.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=800&q=80" alt="Mimpi Melihat Nabi" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">Tafsir Mimpi</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">Mimpi Melihat Nabi</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">Melihat Nabi Muhammad (SAW) dianggap sebagai 'Mimpi yang Nyata' karena Setan tidak dapat menyerupai beliau. Ini adalah berkah terbesar, menandakan ker...</p>
+                <a href="posts/dream-prophet.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        </main>
+
+    <script>
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const blogCards = document.querySelectorAll('.blog-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filter = btn.getAttribute('data-filter');
+            
+            blogCards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+    </script>
+
+    <footer class="main-footer">
+        <div class="footer-bottom-row">
+            <div class="footer-brand" style="font-family: 'Kaushan Script', cursive; font-size: 1.5rem;">Islamvy <span style="font-size: 1rem; opacity:0.8;">Blog</span></div>
+            <div class="footer-copyright">© 2026 Islamvy. All rights reserved.</div>
+        </div>
+    </footer>
+</body>
+</html>

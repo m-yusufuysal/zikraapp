@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدونة Islamvy</title>
+    <meta name="description" content="رؤى إسلامية">
+    <link rel="canonical" href="https://islamvy.com/blog/ar/index.html">
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Kaushan+Script&display=swap" rel="stylesheet">
+    <style>
+        .logo { font-family: 'Kaushan Script', cursive !important; }
+        .lang-option { color: white; text-decoration: none; padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.95rem; transition: 0.3s; display: block; filter: none; }
+        .lang-option:hover { background: rgba(255, 255, 255, 0.15); color: #A3D9C9; }
+        .category-filter-nav { display: flex; gap: 1rem; overflow-x: auto; padding: 1rem 5%; margin-bottom: 2rem; scrollbar-width: none; -ms-overflow-style: none; }
+        .category-filter-nav::-webkit-scrollbar { display: none; }
+        .filter-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 0.6rem 1.2rem; border-radius: 20px; cursor: pointer; white-space: nowrap; transition: 0.3s; font-size: 0.9rem; font-weight: 500; }
+        .filter-btn.active { background: #A3D9C9; color: #1e3e34; border-color: #A3D9C9; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="geometric-bg"></div>
+    
+    <nav class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 5%; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10;">
+        <a href="../../index.html" style="text-decoration:none;">
+            <div class="logo" style="font-family: 'Kaushan Script', cursive; font-size: 2.5rem; color: #FFFFFF; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">Islamvy <span style="font-size: 1.8rem; opacity: 0.8; font-weight: 400;">مدونة</span></div>
+        </a>
+        <div class="nav-right" style="display: flex; align-items: center; gap: 1.5rem;">
+             <div class="nav-links" style="margin-right: 1.5rem; display: flex; gap: 1.5rem;">
+                <a href="../../index.html" class="nav-item-link" style="color: #fff; text-decoration: none; font-weight: 500; font-size: 0.95rem; opacity: 0.9; transition: 0.3s;">الرئيسية</a>
+                <a href="../../blog/ar/ramadan/index.html" class="nav-item-link" style="color: #A3D9C9; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: 0.3s;"><i class="fa-solid fa-moon"></i> رمضان 2026</a>
+            </div>
+            
+            <div class="lang-dropdown" style="position: relative;">
+                <button class="lang-btn" onclick="toggleLangMenu(event)" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 0.6rem 1.2rem; border-radius: 99px; color: #FFFFFF; cursor: pointer; transition: 0.3s; backdrop-filter: blur(8px); font-weight: 600; font-size: 0.9rem;">
+                    <span>العربية</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="lang-menu" id="langMenu" style="display: none; position: absolute; right: 0; top: 120%; background: rgba(30, 62, 52, 0.98); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 0.5rem; min-width: 180px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); z-index: 1000; backdrop-filter: blur(12px);">
+                    <a href="../../blog/en/index.html" class="lang-option">English</a>
+<a href="../../blog/tr/index.html" class="lang-option">Türkçe</a>
+<a href="../../blog/ar/index.html" class="lang-option">العربية</a>
+<a href="../../blog/fr/index.html" class="lang-option">Français</a>
+<a href="../../blog/id/index.html" class="lang-option">Bahasa Indonesia</a>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+    function toggleLangMenu(e) {
+        e.stopPropagation();
+        var menu = document.getElementById('langMenu');
+        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+        menu.style.flexDirection = 'column';
+    }
+    document.addEventListener('click', function() {
+        var menu = document.getElementById('langMenu');
+        if (menu) menu.style.display = 'none';
+    });
+    </script>
+    <style>
+        [dir="rtl"] .lang-menu { right: auto; left: 0; }
+        .nav-item-link:hover { opacity: 1; color: #A3D9C9 !important; }
+    </style>
+
+    <header class="blog-hero">
+        <h1>رؤى وبصائر إسلامية</h1>
+        <p>احصل على إجابات لأسئلتك الروحية مع مراجع علمية.</p>
+    </header>
+    
+    <nav class="category-filter-nav" id="categoryNav">
+        <button class="filter-btn active" data-filter="all">الكل</button>
+        <button class="filter-btn" data-filter="worship">العبادة</button>
+        <button class="filter-btn" data-filter="dream">الأحلام</button>
+        <button class="filter-btn" data-filter="lifestyle">نمط الحياة</button>
+        <button class="filter-btn" data-filter="dhikr">الذكر والدعاء</button>
+        <button class="filter-btn" data-filter="tech">التكنولوجيا</button>
+    </nav>
+
+    <main class="blog-grid" id="blogGrid">
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="خطوات الصلاة" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">دليل العبادة</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">خطوات الصلاة</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">دليل شامل لأداء الصلاة وفق السنة النبوية.</p>
+                <a href="posts/steps-of-salah.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="كيفية الوضوء" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">دليل العبادة</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">كيفية الوضوء</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">دليل خطوة بخطوة للوضوء (الطهارة).</p>
+                <a href="posts/how-to-do-wudu.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="دليل الغسل" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">دليل العبادة</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">دليل الغسل</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">كيفية أداء الغسل (الطهارة الكبرى).</p>
+                <a href="posts/ghusl-guide.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="رمضان والصبر" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">دليل العبادة</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">رمضان والصبر</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">كيف تنمي الصبر خلال شهر رمضان المبارك.</p>
+                <a href="posts/ramadan-patience.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="حساب الزكاة ومعناها" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">دليل العبادة</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حساب الزكاة ومعناها</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">كل ما تحتاج معرفته عن الزكاة: حسابها، معناها، ومستحقيها.</p>
+                <a href="posts/zakat-calculator-meaning.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="صلاة التهجد" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">دليل العبادة</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">صلاة التهجد</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">فضائل وكيفية صلاة الليل (التهجد).</p>
+                <a href="posts/tahajjud-prayer.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="دليل الاستخارة" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">دليل العبادة</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">دليل الاستخارة</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">كيفية صلاة الاستخارة لطلب الخيرة من الله.</p>
+                <a href="posts/istikhara-guide.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="صلاة الجمعة" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">دليل العبادة</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">صلاة الجمعة</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">فضائل وآداب صلاة الجمعة.</p>
+                <a href="posts/jummah-friday-prayer.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="أساسيات الحج" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">دليل العبادة</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">أساسيات الحج</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">نظرة موجزة على أركان الحج.</p>
+                <a href="posts/hajj-basics.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="قوة الدعاء" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">الذكر والدعاء</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">قوة الدعاء</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">فهم الدعاء كمخ العبادة.</p>
+                <a href="posts/power-of-dua.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="أذكار الصباح" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">الذكر والدعاء</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">أذكار الصباح</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">أهمية بدء اليوم بذكر الله.</p>
+                <a href="posts/morning-dhikr.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="أذكار المساء" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">الذكر والدعاء</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">أذكار المساء</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">حماية النفس بأذكار المساء.</p>
+                <a href="posts/evening-dhikr.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="فضائل آية الكرسي" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">الذكر والدعاء</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">فضائل آية الكرسي</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">أعظم آية في كتاب الله وفوائدها الوقائية والروحية العظيمة.</p>
+                <a href="posts/ayatul-kursi-benefits.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="فوائد الاستغفار" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">الذكر والدعاء</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">فوائد الاستغفار</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الأبواب العجيبة التي يفتحها الاستغفار في حياة المؤمن.</p>
+                <a href="posts/istighfar-benefits.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="أهمية الصلاة على النبي" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">الذكر والدعاء</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">أهمية الصلاة على النبي</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">البركات العظيمة والمزايا الجليلة للصلاة والسلام على النبي محمد (صلى الله عليه وسلم).</p>
+                <a href="posts/salawat-importance.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="معنى التوحيد" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">الذكر والدعاء</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">معنى التوحيد</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">جوهر العقيدة الإسلامية: توحيد الله.</p>
+                <a href="posts/tawheed-meaning.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="حسبنا الله والتوكل" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">الذكر والدعاء</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حسبنا الله والتوكل</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">قوة التوكل على الله وحده.</p>
+                <a href="posts/hasbunallah-trust.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="أذكار النوم" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">الذكر والدعاء</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">أذكار النوم</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">أذكار السنة الصحيحة قبل النوم للحفظ الإلهي والسكينة النفسية.</p>
+                <a href="posts/sleep-adhkar.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dhikr" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="ذكر للراحة النفسية" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">الذكر والدعاء</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">ذكر للراحة النفسية</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">أذكار مخصوصة لتهدئة القلب ولطرد القلق واستعادة السكينة الداخلية.</p>
+                <a href="posts/dhikr-for-peace.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="worship" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="نصائح لتلاوة القرآن" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">دليل العبادة</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">نصائح لتلاوة القرآن</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">نصائح عملية لتحسين تلاوة القرآن (التجويد) وتدبره.</p>
+                <a href="posts/quran-recitation-tips.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="أهمية الصبر" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">نمط الحياة الإسلامي</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">أهمية الصبر</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الفن الروحي لتنمية الصبر الجميل في مواجهة ابتلاءات الحياة.</p>
+                <a href="posts/sabr-patience.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="بر الوالدين" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">نمط الحياة الإسلامي</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">بر الوالدين</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">المكانة الأسمى للوالدين في الأخلاق الإسلامية وأثرها في التراحم الاجتماعي.</p>
+                <a href="posts/parents-respect.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80" alt="التمويل الحلال" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">نمط الحياة الإسلامي</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">التمويل الحلال</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">المبادئ الجوهرية لاكتساب الثروة الأخلاقية والحلال في الإسلام.</p>
+                <a href="posts/finance-halal.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="الحياء والحجاب" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">نمط الحياة الإسلامي</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">الحياء والحجاب</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">فهم مفهوم الحياء والحجاب العميق في ميزان الشريعة الإسلامية.</p>
+                <a href="posts/modesty-hijab.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="حقوق الحيوان" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">نمط الحياة الإسلامي</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حقوق الحيوان</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الرفق بالحيوان كمظهر من مظاهر الرحمة الإسلامية.</p>
+                <a href="posts/animal-rights.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="نصائح إسلامية للقلق" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">نمط الحياة الإسلامي</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">نصائح إسلامية للقلق</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">إيجاد السكينة الداخلية والمرونة من خلال الإيمان في أوقات القلق.</p>
+                <a href="posts/anxiety-islamic-tips.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="الطعام الحلال" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">نمط الحياة الإسلامي</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">الطعام الحلال</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الأهمية البالغة لتناول الطعام الحلال والطيّب في الإسلام.</p>
+                <a href="posts/halal-food.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="حقوق الزواج" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">نمط الحياة الإسلامي</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حقوق الزواج</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">أسس الزواج الإسلامي الصحي القائم على السكينة والطمأنينة.</p>
+                <a href="posts/marriage-rights.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="طلب العلم" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">نمط الحياة الإسلامي</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">طلب العلم</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">فرضية طلب العلم وفضائله الروحية في ميزان الإسلام.</p>
+                <a href="posts/seeking-knowledge.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="إدارة الوقت" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">نمط الحياة الإسلامي</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">إدارة الوقت</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">منظور إسلامي عميق حول قيمة الوقت ولحظات العمر.</p>
+                <a href="posts/time-management.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="lifestyle" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&q=80" alt="أخلاق وسائل التواصل" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">نمط الحياة الإسلامي</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">أخلاق وسائل التواصل</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">التعامل مع العالم الرقمي المعقد بآداب الإسلام وأخلاقه.</p>
+                <a href="posts/social-media-ethics.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="أفضل التطبيقات الإسلامية ٢٠٢٦" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تكنولوجيا إسلامية</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">أفضل التطبيقات الإسلامية ٢٠٢٦</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">أفضل التطبيقات الإسلامية لتعزيز الإنتاجية والتركيز والإيمان في عام 2026.</p>
+                <a href="posts/best-apps-2026.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="الذكاء الاصطناعي ومستقبل الإسلام" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تكنولوجيا إسلامية</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">الذكاء الاصطناعي ومستقبل الإسلام</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">كيف يخدم الذكاء الاصطناعي الأمة الإسلامية مع الحفاظ على الحدود الأخلاقية والشرعية.</p>
+                <a href="posts/ai-future-islam.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="تقنية السجاد الذكي" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تكنولوجيا إسلامية</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">تقنية السجاد الذكي</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">ابتكارات في سجاد الصلاة: من الراحة الطبية إلى عد الركعات الرقمي.</p>
+                <a href="posts/smart-rug-tech.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="tech" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="أدوات القبلة" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تكنولوجيا إسلامية</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">أدوات القبلة</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">كيف تستخدم التطبيقات الحديثة نظام GPS والواقع المعزز (AR) لتحديد القبلة بدقة.</p>
+                <a href="posts/qibla-tools.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=80" alt="حلم القطة" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم القطة</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">في تفسير الأحلام الإسلامي، غالباً ما تمثل القطة لصاً من أهل البيت أو خادماً. وفقاً لابن سيرين، فإن القطة الهادئة تبشر بسنة سلمية، بينما القطة الوحشية ...</p>
+                <a href="posts/dream-cat.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1555677284-6a6f971639e0?w=800&q=80" alt="حلم الثعبان" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم الثعبان</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الثعبان رمز كلاسيكي للعدو. تعكس قوة وحجم الثعبان قوة العدو في الحياة الواقعية. إذا كان الثعبان في منزلك، فالعدو قريب أو من الأقارب؛ وإذا كان في الخارج...</p>
+                <a href="posts/dream-snake.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=800&q=80" alt="حلم الذهب" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم الذهب</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">في التقاليد الإسلامية، يُفسر الذهب بشكل مختلف بناءً على شكله. فالعثور على عملات ذهبية (دنانير) أو حلي يمثل الثروة والفرح والنجاح. ومع ذلك، فإن العثور ...</p>
+                <a href="posts/dream-gold.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80" alt="حلم الماء" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم الماء</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الماء هو جوهر الحياة ويمثل العلم والإيمان والطهارة. شرب الماء الصافي البارد يدل على نيل الحكمة والنمو الروحي. ومع ذلك، فإن الغرق في الماء قد يمثل الان...</p>
+                <a href="posts/dream-water.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=800&q=80" alt="حلم الطيران" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم الطيران</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الطيران في الحلم بشكل عام علامة إيجابية على الحرية والسفر وارتفاع المكانة. إذا كنت تطير بأجنحة، فهذا يدل على سفر مادي أو فرصة جديدة. أما الطيران بدون ...</p>
+                <a href="posts/dream-flying.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?w=800&q=80" alt="حلم الطفل" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم الطفل</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الطفل في الحلم غالباً ما يرمز إلى بداية جديدة، أو مشروع إبداعي، أو مسؤولية كبيرة قادمة في طريقك. في التقاليد الإسلامية، تُعتبر الطفلة الأنثى عموماً بش...</p>
+                <a href="posts/dream-baby.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1476610182048-b716b8518aae?w=800&q=80" alt="حلم الموت" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم الموت</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الموت في المنام رمز معقد نادراً ما يشير إلى الموت الفيزيائي الحقيقي. بدلاً من ذلك، غالباً ما يمثل انتقالاً كبيراً، أو نهاية مرحلة صعبة، أو يقظة روحية....</p>
+                <a href="posts/dream-death.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?w=800&q=80" alt="حلم المطر" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم المطر</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">المطر في المنام رمز قوي للرحمة الإلهية والعلم والفرج من الكرب. في التقاليد الإسلامية، إذا كان المطر لطيفاً وفي وقته، فإنه يبشر بموسم من البركة والوفرة...</p>
+                <a href="posts/dream-rain.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80" alt="حلم الحذاء" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم الحذاء</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الحذاء في المنام يمثل مسار حياتك المهنية، أو أسفارك، أو علاقتك الزوجية. الحذاء الجديد المريح يدل على سعة الرزق، أو وظيفة مستقرة، أو شريك متوافق. فقدان...</p>
+                <a href="posts/dream-shoes.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1516585427167-9f4af9627e6c?w=800&q=80" alt="حلم البكاء" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم البكاء</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">البكاء في المنام، على عكس المتوقع، غالباً ما يرمز إلى الفرح القادم والفرج من ضيق. إنه يمثل التخلص من الأعباء وطهارة القلب. ومع ذلك، هناك فرق: فإذا كان...</p>
+                <a href="posts/dream-crying.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80" alt="حلم السيارة" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم السيارة</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">السيارة في المنام تمثل حركتك في الحياة ومستوى سيطرتك على مصيرك. قيادة السيارة بسلاسة على طريق مستقيم تدل على التقدم والانضباط والنجاح في تحقيق أهدافك....</p>
+                <a href="posts/dream-car.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=800&q=80" alt="حلم المال" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم المال</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">المال في المنام رمز يتطلب تحليلاً دقيقاً لشكله. العثور على نقود ورقية غالباً ما يوحي بابتلاء دنيوي، أو مسؤولية ثقيلة، أو هم سيأتي ثم يزول. وفي المقابل...</p>
+                <a href="posts/dream-money.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80" alt="حلم البحر" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم البحر</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">البحر رمز مهيب يمثل القوة والعلم الواسع وأعماق قلب الإنسان. البحر الهادئ الصافي يدل على راحة البال، وتوفيق الله، وعلاقة مستقرة مع أصحاب السلطة أو مع ا...</p>
+                <a href="posts/dream-sea.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&q=80" alt="حلم البيت" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم البيت</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">البيت في المنام هو انعكاس لحال الرائي الباطني، وصحته الروحية، وحياته الأسرية. دخول بيت جديد واسع يدل على تحول إيجابي، كالزواج، أو وظيفة جديدة، أو الشف...</p>
+                <a href="posts/dream-house.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=800&q=80" alt="حلم السمك" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم السمك</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">السمك في المنام هو في المقام الأول رمز للرزق والربح. إذا شوهد السمك في ماء صافٍ وكان معدوداً، فهو يمثل مكاسب مادية محددة أو بركات في طريقها إليك. السم...</p>
+                <a href="posts/dream-fish.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=800&q=80" alt="حلم الأسنان" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم الأسنان</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الأسنان تمثل عائلتك وأقاربك المقربين. ترمز الأسنان العليا إلى الأقارب الذكور من جهة الأب، بينما تمثل الأسنان السفلى الأقارب الإناث من جهة الأم. وتمثل ...</p>
+                <a href="posts/dream-teeth.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80" alt="حلم النار" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم النار</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">النار رمز مزدوج يمثل الهداية والابتلاء معاً. إذا كانت النار تُستخدم لإنارة طريق، أو للدفء، أو للطهي، فهي علامة إيجابية جداً على العلم والحكمة والكرم. ...</p>
+                <a href="posts/dream-fire.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=800&q=80" alt="حلم الزواج" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم الزواج</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الزواج في الحلم رمز عميق للعناية الإلهية والشرف والحفظ من الله. بالنسبة للأعزب، غالباً ما يبشر بزواج حقيقي أو عقد جديد مهم. وبالنسبة للمتزوج بالفعل، ق...</p>
+                <a href="posts/dream-marriage.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800&q=80" alt="حلم الشمس" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم الشمس</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">الشمس رمز مهيب يمثل القائد، أو الأب، أو وضوح الحق في حياتك. رؤية الشمس تشرق بوضوح تدل على فترة من الهداية والنصر على الباطل وتوفيق الله. إذا طلعت الشم...</p>
+                <a href="posts/dream-sun.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        
+        <article class="blog-card" data-category="dream" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: 0.4s;">
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=800&q=80" alt="حلم رؤية النبي" style="width: 100%; height: 200px; object-fit: cover;">
+                <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(30, 62, 52, 0.9); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #A3D9C9; backdrop-filter: blur(4px); border: 1px solid rgba(163, 217, 201, 0.2);">تفسير الأحلام</span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <h2 style="font-size: 1.25rem; margin: 0 0 0.5rem 0; color:#fff;">حلم رؤية النبي</h2>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">رؤية النبي المصطفى محمد (صلى الله عليه وسلم) في المنام تُعد 'رؤيا صادقة'، لأن الشيطان لا يتمثل في صورته. وهي من أعظم البشارات التي قد ينالها المؤمن، و...</p>
+                <a href="posts/dream-prophet.html" style="color: #A3D9C9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">اقرأ المزيد <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+        </main>
+
+    <script>
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const blogCards = document.querySelectorAll('.blog-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filter = btn.getAttribute('data-filter');
+            
+            blogCards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+    </script>
+
+    <footer class="main-footer">
+        <div class="footer-bottom-row">
+            <div class="footer-brand" style="font-family: 'Kaushan Script', cursive; font-size: 1.5rem;">Islamvy <span style="font-size: 1rem; opacity:0.8;">مدونة</span></div>
+            <div class="footer-copyright">© 2026 Islamvy. All rights reserved.</div>
+        </div>
+    </footer>
+</body>
+</html>

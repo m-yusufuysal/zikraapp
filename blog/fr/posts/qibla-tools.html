@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outils pour la Qibla | Islamvy Blog</title>
+    <meta name="description" content="Comment les applications modernes utilisent le GPS et la RA pour trouver la Qibla avec précision.">
+    <link rel="canonical" href="https://islamvy.com/blog/fr/posts/qibla-tools.html">
+    <link rel="alternate" hreflang="en" href="https://islamvy.com/blog/en/posts/qibla-tools.html" />
+    <link rel="alternate" hreflang="tr" href="https://islamvy.com/blog/tr/posts/qibla-tools.html" />
+    <link rel="alternate" hreflang="ar" href="https://islamvy.com/blog/ar/posts/qibla-tools.html" />
+    <link rel="alternate" hreflang="fr" href="https://islamvy.com/blog/fr/posts/qibla-tools.html" />
+    <link rel="alternate" hreflang="id" href="https://islamvy.com/blog/id/posts/qibla-tools.html" />
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Kaushan+Script&display=swap" rel="stylesheet">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Blog", "item": "https://islamvy.com/blog/fr/index.html"}, {"@type": "ListItem", "position": 2, "name": "Technologie Islamique", "item": "https://islamvy.com/blog/fr/index.html"}, {"@type": "ListItem", "position": 3, "name": "Outils pour la Qibla", "item": "https://islamvy.com/blog/fr/posts/qibla-tools.html"}]}</script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Outils pour la Qibla",
+      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
+      "author": { "@type": "Organization", "name": "Islamvy" },
+      "publisher": { "@type": "Organization", "name": "Islamvy", "logo": { "@type": "ImageObject", "url": "https://islamvy.com/assets/logo.png" } },
+      "datePublished": "2026-02-15",
+      "description": "Comment les applications modernes utilisent le GPS et la RA pour trouver la Qibla avec précision."
+    }
+    </script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Puis-je faire confiance \u00e0 la boussole de mon t\u00e9l\u00e9phone ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui, mais calibrez-la d'abord. Si le r\u00e9sultat semble erron\u00e9, v\u00e9rifiez les interf\u00e9rences magn\u00e9tiques \u00e0 proximit\u00e9."}}, {"@type": "Question", "name": "Que faire si je n'ai pas de t\u00e9l\u00e9phone et que je ne trouve pas la Qibla ?", "acceptedAnswer": {"@type": "Answer", "text": "Faites de votre mieux pour estimer la direction \u00e0 l'aide du soleil ou de la lune. Si vous avez fait un effort sinc\u00e8re, votre pri\u00e8re est valide selon la majorit\u00e9 des savants."}}]}</script>
+    <style>
+        .logo { font-family: 'Kaushan Script', cursive !important; }
+        .lang-option { color: white; text-decoration: none; padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.95rem; transition: 0.3s; display: block; filter: none; }
+        .lang-option:hover { background: rgba(255, 255, 255, 0.15); color: #A3D9C9; }
+    </style>
+</head>
+<body>
+    <div class="geometric-bg"></div>
+    
+    <nav class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 5%; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10;">
+        <a href="../../../index.html" style="text-decoration:none;">
+            <div class="logo" style="font-family: 'Kaushan Script', cursive; font-size: 2.5rem; color: #FFFFFF; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">Islamvy <span style="font-size: 1.8rem; opacity: 0.8; font-weight: 400;">Blog</span></div>
+        </a>
+        <div class="nav-right" style="display: flex; align-items: center; gap: 1.5rem;">
+             <div class="nav-links" style="margin-right: 1.5rem; display: flex; gap: 1.5rem;">
+                <a href="../../../index.html" class="nav-item-link" style="color: #fff; text-decoration: none; font-weight: 500; font-size: 0.95rem; opacity: 0.9; transition: 0.3s;">Accueil App</a>
+                <a href="../../../blog/fr/ramadan/index.html" class="nav-item-link" style="color: #A3D9C9; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: 0.3s;"><i class="fa-solid fa-moon"></i> Ramadan 2026</a>
+            </div>
+            
+            <div class="lang-dropdown" style="position: relative;">
+                <button class="lang-btn" onclick="toggleLangMenu(event)" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 0.6rem 1.2rem; border-radius: 99px; color: #FFFFFF; cursor: pointer; transition: 0.3s; backdrop-filter: blur(8px); font-weight: 600; font-size: 0.9rem;">
+                    <span>Français</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="lang-menu" id="langMenu" style="display: none; position: absolute; right: 0; top: 120%; background: rgba(30, 62, 52, 0.98); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 0.5rem; min-width: 180px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); z-index: 1000; backdrop-filter: blur(12px);">
+                    <a href="../../../blog/en/posts/qibla-tools.html" class="lang-option">English</a>
+<a href="../../../blog/tr/posts/qibla-tools.html" class="lang-option">Türkçe</a>
+<a href="../../../blog/ar/posts/qibla-tools.html" class="lang-option">العربية</a>
+<a href="../../../blog/fr/posts/qibla-tools.html" class="lang-option">Français</a>
+<a href="../../../blog/id/posts/qibla-tools.html" class="lang-option">Bahasa Indonesia</a>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+    function toggleLangMenu(e) {
+        e.stopPropagation();
+        var menu = document.getElementById('langMenu');
+        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+        menu.style.flexDirection = 'column';
+    }
+    document.addEventListener('click', function() {
+        var menu = document.getElementById('langMenu');
+        if (menu) menu.style.display = 'none';
+    });
+    </script>
+    <style>
+        [dir="rtl"] .lang-menu { right: auto; left: 0; }
+        .nav-item-link:hover { opacity: 1; color: #A3D9C9 !important; }
+    </style>
+
+    <article class="post-container">
+        <div class="breadcrumbs"><a href="../../index.html">Blog</a> <span>/</span> Technologie Islamique</div>
+        <header class="post-header">
+            <span class="blog-category">Technologie Islamique</span>
+            <h1 class="post-title">Outils pour la Qibla</h1>
+            <div class="post-meta">February 19, 2026 • 1 min read</div>
+            <div class="scholar-badge" style="display: inline-flex; align-items:center; gap:8px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--accent-gold); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; color: var(--accent-gold); margin-top: 1rem;">
+                <i class="fa-solid fa-certificate"></i> Contenu révisé par des savants
+            </div>
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="Outils pour la Qibla" class="post-featured-image" style="margin-top: 2rem;">
+        </header>
+        <div class="tldr-section" style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border-left: 4px solid var(--accent-gold);">
+            <h3 style="margin-top:0; color:var(--accent-gold); font-size:1.1rem;"><i class="fa-solid fa-bolt"></i> En résumé</h3>
+            <p style="margin-bottom:0.5rem; font-style:italic;">Trouver la Qibla est une condition pour la prière. La technologie rend cela plus facile et précis partout dans le monde.</p>
+        </div>
+        <div class="post-content">
+            <p>S'orienter vers la Kaaba est une exigence fondamentale. Les applications modernes comme Islamvy utilisent le GPS pour votre position et la réalité augmentée (RA) pour visualiser la direction. Elles utilisent des calculs de 'Grand Cercle' pour trouver le chemin le plus court vers La Mecque. Pour assurer la précision, calibrez toujours votre appareil en faisant un mouvement en '8' et éloignez-le des objets métalliques.</p>
+            <div class="references-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <h2 style="font-size: 1.5rem;"><i class="fa-solid fa-book-quran"></i> Références & Citations</h2>
+                <ul><li>L'astronomie dans l'histoire islamique</li><li>Fiqh de l'orientation</li><li>Documentation Islamvy</li></ul>
+            </div>
+            <div class="ai-commentary" style="margin-top: 2rem; padding: 1rem; border-radius: 8px; background: rgba(163, 217, 201, 0.05); border: 1px solid rgba(163, 217, 201, 0.2);">
+                <p style="font-size: 0.85rem; margin: 0; opacity: 0.8;">
+                    <i class="fa-solid fa-robot"></i> <strong>Divulgation IA:</strong> Ce contenu a été généré et organisé par l'IA, puis vérifié par rapport aux textes islamiques établis (Coran, Sahih Al-Bukhari, Sahih Muslim et savants classiques comme Ibn Sirin).
+                </p>
+            </div>
+            <div class="faq-section" style="margin-top: 3rem;">
+                <h2>Questions Fréquemment Posées</h2>
+                <div style="margin-bottom:1.5rem;"><h3 style="color:#A3D9C9;">Puis-je faire confiance à la boussole de mon téléphone ?</h3><p>Oui, mais calibrez-la d'abord. Si le résultat semble erroné, vérifiez les interférences magnétiques à proximité.</p></div><div style="margin-bottom:1.5rem;"><h3 style="color:#A3D9C9;">Que faire si je n'ai pas de téléphone et que je ne trouve pas la Qibla ?</h3><p>Faites de votre mieux pour estimer la direction à l'aide du soleil ou de la lune. Si vous avez fait un effort sincère, votre prière est valide selon la majorité des savants.</p></div>
+            </div>
+        </div>
+    </article>
+    <footer class="main-footer">
+        <div class="footer-bottom-row">
+            <div class="footer-brand"><span class="footer-logo-text" style="font-family: 'Kaushan Script', cursive;">Islamvy <span style="font-size: 1rem; opacity:0.8;">Blog</span></span></div>
+            <div class="footer-copyright">© 2026 Islamvy. Tous droits réservés.</div>
+        </div>
+    </footer>
+</body>
+</html>
